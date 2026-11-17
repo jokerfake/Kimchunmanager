@@ -6769,7 +6769,7 @@ let repairJobsSearch = '';
 async function loadRepairJobs(){
   if(typeof supabaseClient === 'undefined' || !supabaseClient){ repairJobsError = 'ยังไม่ได้เชื่อมต่อ Supabase'; return; }
   repairJobsLoading = true; repairJobsError = '';
-  const { data, error } = await supabaseClient.from('repair_jobs').select('*').order('created_at', { ascending:false }).limit(500);
+  const { data, error } = await supabaseClient.rpc('list_repair_jobs', { p_secret: APP_SYNC_SECRET });
   repairJobsLoading = false;
   if(error){ repairJobsError = error.message || String(error); repairJobs = []; }
   else repairJobs = data || [];
@@ -6897,7 +6897,7 @@ async function rjNotifyDone(id){
 }
 async function rjSetStatus(id, status){
   const patch = status === 'done' ? { status, closed_at: new Date().toISOString() } : { status, closed_at: null };
-  const { error } = await supabaseClient.from('repair_jobs').update(patch).eq('id', id);
+  const { error } = await supabaseClient.rpc('save_repair_job', { p_secret: APP_SYNC_SECRET, p_id: id, p_patch: patch });
   if(error){ alert('บันทึกไม่สำเร็จ: ' + error.message); return; }
   let msg = '';
   if(status === 'done'){
@@ -6910,7 +6910,7 @@ async function rjSetStatus(id, status){
 async function rjDelete(id){
   const j = repairJobs.find(x=>x.id===id); if(!j) return;
   if(!confirm(`ลบงานซ่อม #${j.job_no} ${j.plate||''} ${j.title||''} ?`)) return;
-  const { error } = await supabaseClient.from('repair_jobs').delete().eq('id', id);
+  const { error } = await supabaseClient.rpc('delete_repair_job', { p_secret: APP_SYNC_SECRET, p_id: id });
   if(error){ alert('ลบไม่สำเร็จ: ' + error.message); return; }
   const mi = db.maintenanceLogs.findIndex(l=>l.id==='rj_'+id && l.source==='line');
   if(mi>-1){ db.maintenanceLogs.splice(mi,1); saveDB(); }
@@ -6947,7 +6947,7 @@ function rjEdit(id){
     });
     if(!patch.title){ alert('กรุณาใส่รายการซ่อม'); return; }
     patch.photos = keep;
-    const { error } = await supabaseClient.from('repair_jobs').update(patch).eq('id', id);
+    const { error } = await supabaseClient.rpc('save_repair_job', { p_secret: APP_SYNC_SECRET, p_id: id, p_patch: patch });
     if(error){ alert('บันทึกไม่สำเร็จ: ' + error.message); return; }
     ov.remove(); await loadRepairJobs();
   };
