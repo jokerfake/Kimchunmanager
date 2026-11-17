@@ -5587,11 +5587,14 @@ async function submitMaintenanceLogModal(){
   }
 
   const wasEditing = !!maintLogEditId;
+  let prevLine = null;
   if(maintLogEditId){
     const idx = db.maintenanceLogs.findIndex(l=>l.id===maintLogEditId);
-    if(idx>-1) db.maintenanceLogs.splice(idx,1);
+    if(idx>-1){ prevLine = db.maintenanceLogs[idx]; db.maintenanceLogs.splice(idx,1); }
   }
   const entry = {id: maintLogEditId || uid(), vehicleId, title, date, km, note};
+  if(prevLine && prevLine.lineImages && prevLine.lineImages.length) entry.lineImages = prevLine.lineImages; // คงรูปจาก LINE ไว้
+  if(prevLine && prevLine.repairJobId) entry.repairJobId = prevLine.repairJobId;
   if(cost!=null && !isNaN(cost)) entry.cost = cost;
   if(receiptImage) entry.receiptImage = receiptImage;
   db.maintenanceLogs.push(entry);
@@ -5642,6 +5645,7 @@ function renderMaintenanceLogPanel(){
         <div class="name">${escapeHtml(l.title)}${l.cost!=null ? ` <span style="color:var(--accent); font-family:'JetBrains Mono'; font-weight:700; font-size:13px;">— ${l.cost.toLocaleString()} บาท</span>` : ''}</div>
         ${l.note ? `<div class="detail" style="font-family:'Sarabun'; margin-top:2px;">${escapeHtml(l.note)}</div>` : ''}
         ${l.receiptImage ? `<img src="${l.receiptImage}" style="height:44px;border-radius:4px;border:1px solid var(--steel);margin-top:6px;cursor:pointer;" onclick="openImageLightbox('${l.receiptImage}')" title="คลิกเพื่อดูขนาดเต็ม">` : ''}
+        ${(l.lineImages||[]).length ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">${l.lineImages.map(u=>`<img src="${escapeHtml(u)}" loading="lazy" style="height:56px;width:56px;object-fit:cover;border-radius:4px;border:1px solid var(--steel);cursor:pointer;" onclick="openImageLightbox('${escapeHtml(u)}')" title="รูปจากงานซ่อม LINE — คลิกเพื่อดูขนาดเต็ม">`).join('')}</div>` : ''}
       </div>
       <div class="task-actions">
         <div style="display:flex; gap:6px;">
@@ -6461,11 +6465,11 @@ function rjSyncAllToMaint(){
     }
     const date = j.repair_date || (j.created_at||'').slice(0,10) || todayStr();
     const note = ['จากงานซ่อม LINE #'+j.job_no, j.garage ? 'อู่ '+j.garage : '', j.reported_name ? 'แจ้งโดย '+j.reported_name : ''].filter(Boolean).join(' · ');
-    const entry = {id, vehicleId:v.id, title:j.title||'งานซ่อม', date, km:null, note, cost, source:'line', repairJobId:j.id};
+    const entry = {id, vehicleId:v.id, title:j.title||'งานซ่อม', date, km:null, note, cost, source:'line', repairJobId:j.id, lineImages:rjPhotos(j)};
     if(idx>-1){
       const old = db.maintenanceLogs[idx];
       if(old.source!=='line') return; // ผู้ใช้แก้เองแล้ว ไม่ทับ
-      if(old.vehicleId!==entry.vehicleId||old.title!==entry.title||old.date!==entry.date||old.cost!==entry.cost||old.note!==entry.note){
+      if(old.vehicleId!==entry.vehicleId||old.title!==entry.title||old.date!==entry.date||old.cost!==entry.cost||old.note!==entry.note||JSON.stringify(old.lineImages||[])!==JSON.stringify(entry.lineImages)){
         db.maintenanceLogs[idx] = entry; changed = true;
       }
     }else if(!skip.has(id)){
