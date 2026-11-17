@@ -5610,6 +5610,7 @@ function deleteMaintenanceLogEntry(logId){
   const l = db.maintenanceLogs.find(l=>l.id===logId);
   if(!confirm('ลบบันทึกนี้?')) return;
   db.maintenanceLogs = db.maintenanceLogs.filter(l=>l.id!==logId);
+  if(String(logId).startsWith('rj_')){ db.settings = db.settings||{}; db.settings.repairLogSkip = [...(db.settings.repairLogSkip||[]), logId]; }
   logActivity('ลบบันทึกซ่อมบำรุง', l ? l.title : logId);
   saveDB();
   render();
@@ -5618,9 +5619,23 @@ function deleteMaintenanceLogEntry(logId){
 function renderMaintenanceLogPanel(){
   const panel = document.getElementById('maintenanceLogPanel');
   if(!panel) return;
-  const list = db.maintenanceLogs.filter(l=>l.vehicleId===currentVehicleId).sort((a,b)=> b.date.localeCompare(a.date));
+  const own = db.maintenanceLogs.filter(l=>l.vehicleId===currentVehicleId);
+  // รวมรายการเปลี่ยนน้ำมันเครื่อง/เปลี่ยนยางที่มีค่าใช้จ่าย มาแสดงในรายการนี้ด้วย (อ่านอย่างเดียว ไม่นับซ้ำในค่าใช้จ่ายรายเดือน)
+  const extra = [
+    ...db.oilLogs.filter(l=>l.vehicleId===currentVehicleId && l.cost!=null).map(l=>({id:'oil_'+l.id, ro:true, kind:'🛢️ เปลี่ยนน้ำมันเครื่อง', title:'เปลี่ยนน้ำมันเครื่อง', date:l.date, km:l.km, cost:Number(l.cost), note:l.note||'', receiptImage:l.receiptImage})),
+    ...(db.tireLogs||[]).filter(l=>l.vehicleId===currentVehicleId && l.cost!=null && l.date && !(typeof isTireRelocationLog==='function' && isTireRelocationLog(l))).map(l=>({id:'tire_'+l.id, ro:true, kind:'🛞 เปลี่ยนยาง', title:'เปลี่ยนยาง'+(l.count?` ${l.count} เส้น`:''), date:l.date, km:l.km, cost:Number(l.cost), note:l.note||'', receiptImage:l.receiptImage}))
+  ];
+  const list = [...own, ...extra].sort((a,b)=> String(b.date).localeCompare(String(a.date)));
   if(!list.length){ panel.innerHTML = '<div class="hint">ยังไม่มีบันทึก — กด "+ เพิ่มบันทึก" ด้านบน</div>'; return; }
-  panel.innerHTML = list.map(l=>`
+  panel.innerHTML = list.map(l=> l.ro ? `
+    <div class="task-card" style="align-items:flex-start;">
+      <div class="task-main">
+        <div class="cat">${l.date}${l.km!=null ? ' · ไมล์ ' + Number(l.km).toLocaleString() + ' กม.' : ''} · <span style="opacity:.8;">${l.kind} (แก้ที่เมนูเดิม)</span></div>
+        <div class="name">${escapeHtml(l.title)} <span style="color:var(--accent); font-family:'JetBrains Mono'; font-weight:700; font-size:13px;">— ${l.cost.toLocaleString()} บาท</span></div>
+        ${l.note ? `<div class="detail" style="font-family:'Sarabun'; margin-top:2px;">${escapeHtml(l.note)}</div>` : ''}
+        ${l.receiptImage ? `<img src="${l.receiptImage}" style="height:44px;border-radius:4px;border:1px solid var(--steel);margin-top:6px;cursor:pointer;" onclick="openImageLightbox('${l.receiptImage}')">` : ''}
+      </div>
+    </div>` : `
     <div class="task-card" style="align-items:flex-start;">
       <div class="task-main">
         <div class="cat">${l.date}${l.km!=null ? ' · ไมล์ ' + l.km.toLocaleString() + ' กม.' : ''}</div>
@@ -6349,6 +6364,7 @@ async function loadRepairJobs(){
   repairJobsLoading = false;
   if(error){ repairJobsError = error.message || String(error); repairJobs = []; }
   else repairJobs = data || [];
+  try{ rjSyncAllToMaint(); }catch(e){ console.error('sync repair->maint', e); }
   if(currentView === 'repairjobs') drawRepairJobs();
 }
 function renderRepairJobsView(){
@@ -6417,17 +6433,78 @@ function rjCard(j){
     </div>
   </div>`;
 }
+// นำงานซ่อมจาก LINE ที่มีราคา เข้าไปอยู่ใน "บันทึกซ่อมบำรุงอื่นๆ" ของรถคันนั้น (db.maintenanceLogs)
+// id = 'rj_' + id งาน จึงไม่ซ้ำแม้โหลดหลายรอบ / ถ้าผู้ใช้ลบบันทึกนั้นเองจะไม่ถูกสร้างกลับ (db.settings.repairLogSkip)
+// ค่าใช้จ่ายรายเดือนนับจาก maintenanceLogs จึงรวมงานซ่อมเหล่านี้ให้อัตโนมัติ (ไม่ซ้ำ)
+function rjFindVehicle(j){
+  if(!db || !Array.isArray(db.vehicles)) return null;
+  let v = j.vehicle_id ? db.vehicles.find(x=>x.id===j.vehicle_id) : null;
+  if(!v && j.plate){
+    const n = t => String(t||'').replace(/[\s\-.]/g,'').toLowerCase();
+    v = db.vehicles.find(x=>n(x.name)===n(j.plate)) || null;
+  }
+  return v;
+}
+function rjSyncAllToMaint(){
+  if(!db || !Array.isArray(db.maintenanceLogs)) return;
+  db.settings = db.settings || {};
+  const skip = new Set(db.settings.repairLogSkip || []);
+  let changed = false;
+  repairJobs.forEach(j=>{
+    const id = 'rj_' + j.id;
+    const idx = db.maintenanceLogs.findIndex(l=>l.id===id);
+    const cost = j.cost != null ? Number(j.cost) : null;
+    const v = rjFindVehicle(j);
+    if(!(cost > 0) || !v){
+      if(idx>-1 && db.maintenanceLogs[idx].source==='line'){ db.maintenanceLogs.splice(idx,1); changed = true; }
+      return;
+    }
+    const date = j.repair_date || (j.created_at||'').slice(0,10) || todayStr();
+    const note = ['จากงานซ่อม LINE #'+j.job_no, j.garage ? 'อู่ '+j.garage : '', j.reported_name ? 'แจ้งโดย '+j.reported_name : ''].filter(Boolean).join(' · ');
+    const entry = {id, vehicleId:v.id, title:j.title||'งานซ่อม', date, km:null, note, cost, source:'line', repairJobId:j.id};
+    if(idx>-1){
+      const old = db.maintenanceLogs[idx];
+      if(old.source!=='line') return; // ผู้ใช้แก้เองแล้ว ไม่ทับ
+      if(old.vehicleId!==entry.vehicleId||old.title!==entry.title||old.date!==entry.date||old.cost!==entry.cost||old.note!==entry.note){
+        db.maintenanceLogs[idx] = entry; changed = true;
+      }
+    }else if(!skip.has(id)){
+      db.maintenanceLogs.push(entry); changed = true;
+    }
+  });
+  if(changed){ saveDB(); if(currentView==='dashboard') render(); }
+}
+// สั่งให้บอทส่งข้อความ "ซ่อมเสร็จ" เข้า LINE (บอทเป็นคนส่ง เพราะ token อยู่ฝั่งเซิร์ฟเวอร์)
+async function rjNotifyDone(id){
+  try{
+    const r = await fetch(`${SUPABASE_URL}/functions/v1/line-webhook`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`},
+      body: JSON.stringify({ action:'notify_done', job_id:id })
+    });
+    const t = await r.json().catch(()=>({}));
+    return t;
+  }catch(e){ return { ok:false, error:String(e) }; }
+}
 async function rjSetStatus(id, status){
   const patch = status === 'done' ? { status, closed_at: new Date().toISOString() } : { status, closed_at: null };
   const { error } = await supabaseClient.from('repair_jobs').update(patch).eq('id', id);
   if(error){ alert('บันทึกไม่สำเร็จ: ' + error.message); return; }
+  let msg = '';
+  if(status === 'done'){
+    const res = await rjNotifyDone(id);
+    msg = res && res.sent ? 'ส่งแจ้งเข้า LINE แล้ว ✅' : (res && res.reason ? 'ปิดงานแล้ว แต่ยังไม่ได้แจ้ง LINE: ' + res.reason : 'ปิดงานแล้ว แต่ส่งแจ้ง LINE ไม่สำเร็จ');
+  }
   await loadRepairJobs();
+  if(msg) alert(msg);
 }
 async function rjDelete(id){
   const j = repairJobs.find(x=>x.id===id); if(!j) return;
   if(!confirm(`ลบงานซ่อม #${j.job_no} ${j.plate||''} ${j.title||''} ?`)) return;
   const { error } = await supabaseClient.from('repair_jobs').delete().eq('id', id);
   if(error){ alert('ลบไม่สำเร็จ: ' + error.message); return; }
+  const mi = db.maintenanceLogs.findIndex(l=>l.id==='rj_'+id && l.source==='line');
+  if(mi>-1){ db.maintenanceLogs.splice(mi,1); saveDB(); }
   await loadRepairJobs();
 }
 function rjEdit(id){
@@ -8452,7 +8529,7 @@ currentVehicleId = db.vehicles.length ? db.vehicles[0].id : null;
     else console.error('โหลดไลบรารี Supabase ไม่สำเร็จ — ใช้งานแบบออฟไลน์ด้วยข้อมูลในเครื่อง');
   }catch(err){ console.error('สร้างการเชื่อมต่อ Supabase ไม่สำเร็จ', err); }
 
-  initApp();
+  initApp().then(()=>{ setTimeout(()=>{ try{ loadRepairJobs(); }catch(e){} }, 3000); });
 </script>
 
 <!-- Service worker registration — required (along with manifest.json) for
