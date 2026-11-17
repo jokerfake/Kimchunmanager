@@ -6210,11 +6210,18 @@ function openFleetSummary(){
     <div class="rp-page">${html}</div>`;
   document.body.appendChild(ov);
   document.body.classList.add('report-open');
+  // กันล้นหน้า: ตั้งขอบกระดาษ 0 (ซ่อนหัว/ท้ายกระดาษของเบราว์เซอร์ด้วย) แล้วเว้นขอบด้วย padding ในแผ่นแทน — ใช้เฉพาะตอนเปิดหน้าสรุปนี้
+  if(!document.getElementById('sumPrintPage')){
+    const st = document.createElement('style'); st.id = 'sumPrintPage';
+    st.textContent = '@page{size:A4 portrait;margin:0} @page sumpage{size:A4 portrait;margin:0} @media print{ html,body{margin:0!important;padding:0!important;background:#fff!important} .sum-sheet{width:210mm!important;height:296mm!important;padding:7mm!important;margin:0!important;border:0!important;box-sizing:border-box!important;overflow:hidden!important;break-inside:avoid;page-break-inside:avoid} }';
+    document.head.appendChild(st);
+  }
 }
 
 function closeInspectionReport(){
   const ov = document.getElementById('reportOverlay');
   if(ov) ov.remove();
+  const ps = document.getElementById('sumPrintPage'); if(ps) ps.remove();
   document.body.classList.remove('report-open');
 }
 
