@@ -15,7 +15,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kimchun Truck Manager</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0A63C9">
+<meta name="theme-color" content="#111111">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -957,6 +957,166 @@ body{background:var(--ink)}
 .tire-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px}
 .tire-pages{display:flex;gap:4px;flex-wrap:wrap}.tire-pages button{min-width:32px;height:32px;border-radius:8px;border:1px solid var(--steel);background:#fff;font:inherit;cursor:pointer}.tire-pages button.on{background:var(--accent);border-color:var(--accent);color:#fff}
 @media (max-width:700px){.tire-row{flex-wrap:wrap;gap:8px}.tr-plate,.tr-date,.tr-bar{width:auto}.tr-bar{flex-basis:100%}.tr-go{width:100%;margin-left:0}.tire-search{flex-basis:100%}}
+
+  /* =====================================================================
+     BENTO GRID × NEO-BRUTALISM  (override layer — ไม่แตะตรรกะของแอป)
+     เปลี่ยนสีหลักผ่านธีมเดิมได้ตามปกติ (accent ยังมาจาก data-theme)
+     ===================================================================== */
+  :root{
+    --nb-line:#111111; --nb-bg:#FFF3C4; --nb-shadow:5px 5px 0 var(--nb-line);
+    --nb-shadow-sm:3px 3px 0 var(--nb-line);
+    --ink:var(--nb-bg); --panel:#FFFFFF; --panel-2:#FFFBEA;
+    --steel:var(--nb-line); --steel-soft:#FFE9A8; --paper:#111111; --muted:#4A4A4A;
+    --overdue:#E5191F; --overdue-bg:#FFB3B3; --soon-bg:#FFD84D; --soon-text:#111;
+    --ok:#0A7D3E; --ok-bg:#9BF0B5; --accent-soft:#C9DAFF;
+    --radius:0; --shadow-sm:var(--nb-shadow-sm); --shadow-md:var(--nb-shadow);
+    --glow-1:transparent; --glow-2:transparent;
+    --sidebar-bg:#111111; --sidebar-bg-2:#111111; --sidebar-text:#E8E8E8;
+  }
+  [data-theme="dark"]{
+    --nb-line:#F2F2F2; --nb-bg:#16161A; --panel:#222228; --panel-2:#2B2B33;
+    --steel-soft:#33333D; --paper:#F5F5F5; --muted:#B5B5C0; --accent-soft:#2A3A66;
+    --overdue-bg:#5A1F22; --soon-bg:#5E4A06; --ok-bg:#0F4A2C; --soon-text:#FFD84D;
+    --sidebar-bg:#0B0B0E; --sidebar-bg-2:#0B0B0E;
+  }
+  body{ background-color:var(--nb-bg);
+    background-image:radial-gradient(var(--nb-line) 1px, transparent 1.2px); background-size:22px 22px;
+    background-attachment:fixed; }
+  body::before{ content:''; position:fixed; inset:0; background:var(--nb-bg); opacity:.93; z-index:-1; pointer-events:none; }
+  h1,h2,h3,.display{ font-weight:800; letter-spacing:-.2px; }
+
+  /* ปุ่ม / ฟอร์ม */
+  .btn, .btn.ghost, .btn.danger{
+    border:3px solid var(--nb-line); border-radius:0; box-shadow:var(--nb-shadow-sm);
+    font-weight:800; text-transform:none; transition:transform .08s, box-shadow .08s;
+  }
+  .btn{ color:#111; background:var(--accent); }
+  .btn.ghost{ background:#fff; color:#111; }
+  .btn.danger{ background:var(--overdue); color:#fff; }
+  .btn:hover{ filter:none; transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--nb-line); }
+  .btn:active{ transform:translate(3px,3px); box-shadow:0 0 0 var(--nb-line); }
+  select, input, textarea, .field input, .field select, .field textarea, .filter-bar select, .filter-bar input{
+    border:3px solid var(--nb-line) !important; border-radius:0 !important; background:#fff; color:#111; font-weight:500;
+  }
+  [data-theme="dark"] select, [data-theme="dark"] input, [data-theme="dark"] textarea{ background:var(--panel-2); color:var(--paper); }
+  select:focus, input:focus, textarea:focus{ outline:none; box-shadow:var(--nb-shadow-sm); background:#FFFCE0; }
+  [data-theme="dark"] select:focus,[data-theme="dark"] input:focus,[data-theme="dark"] textarea:focus{ background:var(--panel); }
+
+  /* Sidebar */
+  .sidebar{ border-right:4px solid var(--nb-line); box-shadow:none; background:#111; }
+  [data-theme="dark"] .sidebar{ border-right-color:#F2F2F2; }
+  .sidebar .sidebar-brand{ border-bottom:3px solid #fff; }
+  .sidebar .sidebar-brand .brand-badge, .brand-badge{
+    border:3px solid #111; border-radius:0; background:var(--accent); color:#111; box-shadow:3px 3px 0 #fff; transform:rotate(-4deg);
+  }
+  .brand-badge{ box-shadow:var(--nb-shadow-sm); }
+  .sidebar .tab-btn{ border:3px solid transparent; border-radius:0; color:#fff; font-weight:600; }
+  .sidebar .tab-btn:hover{ background:#2a2a2a; color:#fff; transform:translateX(4px); transition:transform .1s; }
+  .sidebar .tab-btn.active{
+    background:var(--accent); color:#111; border:3px solid #fff; box-shadow:4px 4px 0 #fff; font-weight:800;
+  }
+  .sidebar-footer{ border-top:3px solid #fff; }
+  .user-badge{ border:2px solid #fff; border-radius:0; background:#1d1d1d; }
+  .user-badge .avatar{ border-radius:0; border:2px solid #111; background:var(--soon-bg); color:#111; }
+  .role-pill{ border:2px solid var(--nb-line); border-radius:0; color:#111; }
+  .role-pill.admin{ background:var(--accent); color:#111; } .role-pill.staff{ background:#fff; }
+
+  /* Topbar */
+  .topbar{ background:#fff; border-bottom:4px solid var(--nb-line); box-shadow:none; }
+  [data-theme="dark"] .topbar{ background:var(--panel); }
+
+  /* ===== BENTO: summary tiles ===== */
+  .summary{ gap:16px; grid-auto-flow:dense; }
+  .summary:not(.cols-3) > .sign:first-child{ grid-column:span 2; }
+  .summary > .sign:nth-child(3n){ border-radius:0 28px 0 0; }
+  .summary > .sign:nth-child(3n+1){ border-radius:28px 0 0 0; }
+  .sign{
+    border:3px solid var(--nb-line); border-radius:0; box-shadow:var(--nb-shadow); background:#fff;
+    padding:18px; transition:transform .1s, box-shadow .1s;
+  }
+  .sign:hover{ transform:translate(-3px,-3px) rotate(-.4deg); box-shadow:8px 8px 0 var(--nb-line); }
+  .sign::before{ width:48px; height:48px; border-radius:0; border:3px solid var(--nb-line); background:var(--soon-bg); }
+  .sign .num{ font-size:34px; font-weight:700; letter-spacing:-1px; }
+  .sign .lbl{ color:#111; font-weight:700; font-size:13px; }
+  .sign.overdue{ background:var(--overdue-bg); } .sign.overdue .num{ color:#111; }
+  .sign.soon{ background:var(--soon-bg); } .sign.soon .num{ color:#111; }
+  .sign.ok{ background:var(--ok-bg); } .sign.ok .num{ color:#111; }
+  .sign.info{ background:var(--accent-soft); } .sign.info .num{ color:#111; font-size:22px; }
+  .sign.overdue::before,.sign.soon::before,.sign.ok::before,.sign.info::before{ background:#fff; }
+  [data-theme="dark"] .sign, [data-theme="dark"] .sign .lbl, [data-theme="dark"] .sign .num{ color:var(--paper) !important; }
+  [data-theme="dark"] .sign{ background:var(--panel); }
+  [data-theme="dark"] .sign.overdue{ background:var(--overdue-bg); } [data-theme="dark"] .sign.soon{ background:var(--soon-bg); }
+  [data-theme="dark"] .sign.ok{ background:var(--ok-bg); } [data-theme="dark"] .sign.info{ background:var(--accent-soft); }
+
+  /* Hero = ช่อง bento ใหญ่ */
+  .hero-photo-wrap{
+    background:var(--accent); border:4px solid var(--nb-line); border-radius:0 40px 0 0; box-shadow:8px 8px 0 var(--nb-line);
+    padding:14px; position:relative;
+  }
+  .hero-photo-wrap::after{ content:'★'; position:absolute; right:18px; bottom:10px; font-size:64px; color:#111; opacity:.12; pointer-events:none; }
+  .hero-label{ color:#111 !important; font-weight:800; }
+  .hero-value{ color:#111 !important; text-shadow:3px 3px 0 #fff; }
+  .hero-value span{ color:#111 !important; }
+  .hero-mini{ background:#fff !important; border:3px solid #111 !important; border-radius:0 !important; box-shadow:4px 4px 0 #111; backdrop-filter:none !important; }
+  .hero-mini-num, .hero-mini.overdue .hero-mini-num, .hero-mini.soon .hero-mini-num,
+  .hero-mini.ok .hero-mini-num, .hero-mini.info .hero-mini-num{ color:#111 !important; }
+  .hero-mini-lbl{ color:#111 !important; font-weight:700; }
+  .hero-mini.overdue{ background:var(--overdue-bg) !important; } .hero-mini.soon{ background:var(--soon-bg) !important; } .hero-mini.ok{ background:var(--ok-bg) !important; }
+
+  /* ===== BENTO: กล่องเนื้อหา ===== */
+  .columns{ gap:20px; }
+  .panel-block, .chk-group, .insp-round-card, .history-item, .veh-hero-card, .login-card, .modal{
+    border:3px solid var(--nb-line); border-radius:0; box-shadow:var(--nb-shadow); background:var(--panel);
+  }
+  .columns > .panel-block:nth-child(odd){ border-radius:0 24px 0 0; }
+  .columns > .panel-block:nth-child(even){ border-radius:24px 0 0 0; background:var(--panel-2); }
+  .panel-block h2{ font-size:20px; border-bottom:3px solid var(--nb-line); padding-bottom:8px; margin-bottom:10px; }
+  .insp-main .insp-groups{ gap:16px; }
+  .modal{ box-shadow:10px 10px 0 var(--nb-line); }
+  .overlay{ background:rgba(17,17,17,.7); }
+  .login-card{ box-shadow:10px 10px 0 var(--nb-line); }
+
+  /* Task / PM cards */
+  .task-card, .pm-card{ border:3px solid var(--nb-line); border-radius:0; box-shadow:var(--nb-shadow-sm); background:#fff; transition:transform .1s; }
+  [data-theme="dark"] .task-card,[data-theme="dark"] .pm-card{ background:var(--panel-2); }
+  .task-card:hover, .pm-card:hover{ transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--nb-line); }
+  .task-card.overdue{ border-left:12px solid var(--overdue); }
+  .task-card.soon{ border-left:12px solid var(--soon); }
+  .task-card.ok{ border-left:12px solid var(--ok); }
+  .pm-card.overdue{ background:var(--overdue-bg); border-color:var(--nb-line); }
+  .pm-card.soon{ background:var(--soon-bg); border-color:var(--nb-line); }
+  .pm-card.ok{ background:var(--ok-bg); border-color:var(--nb-line); }
+  .pm-card, .pm-card .name{ color:#111; } .pm-card .detail{ color:#222; }
+  .pm-progress-track{ background:#fff; border:2px solid var(--nb-line); border-radius:0; height:12px; }
+  .pm-progress-fill{ border-radius:0; }
+  .status-pill, .pm-cat-pill, .fleet-badge{ border:2px solid var(--nb-line) !important; border-radius:0 !important; font-weight:800; color:#111 !important; }
+  .status-pill.overdue{ background:var(--overdue); color:#fff !important; }
+  .status-pill.soon{ background:var(--soon-bg); } .status-pill.ok{ background:var(--ok-bg); }
+  .fleet-badge.ready{ background:var(--ok-bg); } .fleet-badge.active{ background:var(--accent-soft); } .fleet-badge.repair{ background:var(--overdue-bg); }
+
+  /* Checklist toggles / รูป / dropdown */
+  .chk-toggle button, .insp-round-toggle button{ border:3px solid var(--nb-line); border-radius:0; background:#fff; color:#111; font-weight:800; }
+  .insp-round-toggle button.active{ background:var(--accent); color:#111; }
+  .chk-toggle button.pass.active{ background:var(--ok-bg); color:#111; border-color:var(--nb-line); }
+  .chk-toggle button.fail.active{ background:var(--overdue); color:#fff; border-color:var(--nb-line); }
+  .photo-tile{ border:3px solid var(--nb-line); border-radius:0; }
+  .search-select-list{ border:3px solid var(--nb-line); border-radius:0; box-shadow:var(--nb-shadow-sm); }
+  .search-select-opt{ border-radius:0; } .search-select-opt:hover,.search-select-opt.hi{ background:var(--soon-bg); color:#111; }
+  .oil-banner{ border:4px solid var(--nb-line); border-radius:0; box-shadow:var(--nb-shadow); }
+  .veh-hero-photo img, .veh-hero-photo .ph-placeholder{ border:3px solid var(--nb-line); border-radius:0; }
+  .distance-preview{ border:3px dashed var(--nb-line); border-radius:0; }
+  table{ border-collapse:collapse; } th{ background:var(--soon-bg); color:#111; border:2px solid var(--nb-line); }
+  td{ border:2px solid var(--nb-line); }
+  ::selection{ background:var(--accent); color:#111; }
+  ::-webkit-scrollbar{ width:14px; height:14px; } ::-webkit-scrollbar-thumb{ background:var(--nb-line); border:3px solid var(--nb-bg); }
+  ::-webkit-scrollbar-track{ background:var(--nb-bg); }
+
+  @media (max-width:880px){
+    .summary:not(.cols-3) > .sign:first-child{ grid-column:span 2; }
+    .hero-photo-wrap{ border-radius:0 24px 0 0; box-shadow:5px 5px 0 var(--nb-line); }
+    .sign .num{ font-size:26px; }
+  }
+  @media print{ *{ box-shadow:none !important; } body{ background:#fff !important; } }
 </style>
 </head>
 <body>
