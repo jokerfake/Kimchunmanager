@@ -1244,6 +1244,12 @@ body{background:var(--ink)}
     #reportOverlay .rp-page{ background:none; }
   }
 </style>
+<style id="veh-cover">
+/* รูปรถที่อัปโหลด = รูปปกเต็มแบนเนอร์ (แบบปกเฟซบุ๊ก) ถ้ายังไม่อัปโหลดใช้รูปรถ 5 คันเดิม */
+.veh-hero-card.has-photo{ background:#CCE6F5 var(--hero-img) center center / cover no-repeat !important; min-height:340px; }
+.veh-hero-card.has-photo .veh-hero-info{ background:rgba(255,255,255,.93); border:3px solid var(--nb-line,#111); padding:8px 12px; flex:0 1 auto; }
+@media (max-width:700px){ .veh-hero-card.has-photo{ background-size:cover !important; background-position:center !important; min-height:260px; } }
+</style>
 </head>
 <body>
 
@@ -4410,12 +4416,18 @@ async function handleVehiclePhotoUpload(event, vehicleId){
   if(!v) return;
   input.disabled = true;
   try{
-    v.photoUrl = await uploadImageToStorage(file, 640, 0.75);
+    v.photoUrl = await uploadImageToStorage(file, 1600, 0.8); // ใช้เป็นรูปปก จึงเก็บขนาดใหญ่ขึ้น
     saveDB();
   }catch(e){
     alert('ไม่สามารถอัปโหลดรูปรถได้ กรุณาลองใหม่');
   }
   render();
+}
+
+function removeVehiclePhoto(vehicleId){
+  const v = db.vehicles.find(v=>v.id===vehicleId); if(!v || !v.photoUrl) return;
+  if(!confirm('ลบรูปปกของรถคันนี้ แล้วกลับไปใช้รูปรถ 5 คันเริ่มต้น?')) return;
+  v.photoUrl = null; saveDB(); render();
 }
 
 async function submitLogModal(){
@@ -5657,9 +5669,10 @@ function render(){
         </div>
       </div>
       <div class="veh-hero-actions">
-        <label class="btn ghost small" style="cursor:pointer;" title="อัปโหลดรูปรถ (ถ้ายังไม่อัปโหลดจะใช้รูปรถบรรทุกเริ่มต้น)">📷 อัปโหลดรูปรถ
+        <label class="btn ghost small" style="cursor:pointer;" title="อัปโหลดรูปรถ (ถ้ายังไม่อัปโหลดจะใช้รูปรถบรรทุกเริ่มต้น)">📷 ${v.photoUrl ? 'เปลี่ยนรูปปก' : 'อัปโหลดรูปรถ (ใช้เป็นรูปปก)'}
           <input type="file" accept="image/*" style="display:none;" onchange="handleVehiclePhotoUpload(event,'${v.id}')">
         </label>
+        ${v.photoUrl ? `<button class="btn ghost small" onclick="removeVehiclePhoto('${v.id}')">🗑️ ลบรูปปก</button>` : ''}
         <button class="btn ghost small" onclick="openVehicleModal(currentVehicleId)">✏️ แก้ไขข้อมูลรถ</button>
       </div>
     </div>
