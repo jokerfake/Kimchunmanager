@@ -958,45 +958,6 @@ body{background:var(--ink)}
 .tire-pages{display:flex;gap:4px;flex-wrap:wrap}.tire-pages button{min-width:32px;height:32px;border-radius:8px;border:1px solid var(--steel);background:#fff;font:inherit;cursor:pointer}.tire-pages button.on{background:var(--accent);border-color:var(--accent);color:#fff}
 @media (max-width:700px){.tire-row{flex-wrap:wrap;gap:8px}.tr-plate,.tr-date,.tr-bar{width:auto}.tr-bar{flex-basis:100%}.tr-go{width:100%;margin-left:0}.tire-search{flex-basis:100%}}
 </style>
-<style id="neo-bento-theme">
-/* ===== Neo-Brutalist Bento theme (สีสด ขอบดำ เงาแข็ง) ===== */
-:root{ --neo-ink:#0B0F19; --neo-yellow:#FCD500; --neo-orange:#FF5722; --neo-green:#00C853; --neo-navy:#0A3F8F; --neo-shadow:4px 4px 0 #0B0F19; }
-body{ background-color:#EDF4FB !important; background-image:linear-gradient(to right,rgba(10,63,143,.06) 1px,transparent 1px),linear-gradient(to bottom,rgba(10,63,143,.06) 1px,transparent 1px) !important; background-size:28px 28px !important; color:var(--neo-ink); }
-.sidebar{ border-right:2px solid var(--neo-ink) !important; background:var(--neo-navy) !important; }
-.tab-btn{ border:2px solid transparent !important; border-radius:10px !important; }
-.tab-btn.active{ background:var(--neo-yellow) !important; color:var(--neo-ink) !important; border:2px solid var(--neo-ink) !important; box-shadow:3px 3px 0 var(--neo-ink) !important; font-weight:800 !important; }
-.main-topbar{ background:#fff !important; border-bottom:2px solid var(--neo-ink) !important; }
-.panel-block,.sign,.veh-hero-card,.task-card,.modal,.veh-picker-panel{ border:2px solid var(--neo-ink) !important; border-radius:12px !important; box-shadow:var(--neo-shadow) !important; background:#fff; transition:transform .15s ease, box-shadow .15s ease; }
-.panel-block:hover,.sign:hover,.veh-hero-card:hover,.task-card:hover{ transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--neo-ink) !important; }
-.modal:hover{ transform:none; }
-.tire-row{ border:2px solid var(--neo-ink); border-radius:10px; box-shadow:3px 3px 0 var(--neo-ink); background:#fff; margin-bottom:10px; padding:12px; }
-.btn{ border:2px solid var(--neo-ink) !important; border-radius:10px !important; box-shadow:3px 3px 0 var(--neo-ink) !important; filter:none !important; transition:transform .1s ease, box-shadow .1s ease !important; }
-.btn:hover{ transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--neo-ink) !important; }
-.btn:active{ transform:translate(2px,2px); box-shadow:1px 1px 0 var(--neo-ink) !important; }
-.btn.ghost{ background:#fff !important; color:var(--neo-ink) !important; }
-input,select,textarea{ border:2px solid var(--neo-ink) !important; border-radius:8px !important; }
-/* การ์ดสรุป 3 สถานะ */
-.sign.overdue{ background:var(--neo-orange) !important; color:#fff !important; }
-.sign.soon{ background:var(--neo-yellow) !important; color:var(--neo-ink) !important; }
-.sign.ok{ background:var(--neo-green) !important; color:#fff !important; }
-.sign.overdue .num,.sign.overdue .lbl,.sign.ok .num,.sign.ok .lbl{ color:#fff !important; }
-.sign.soon .num,.sign.soon .lbl{ color:var(--neo-ink) !important; }
-.sign.overdue::before,.sign.soon::before,.sign.ok::before{ background:#fff !important; border:2px solid var(--neo-ink); }
-/* ===== AI Copilot bar ===== */
-#aiBar{ margin:14px 24px 0; border:2px solid var(--neo-ink); border-radius:12px; box-shadow:var(--neo-shadow); background:#fff; overflow:hidden; }
-#aiBar .ai-head{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; background:var(--neo-yellow); border-bottom:2px solid var(--neo-ink); padding:8px 14px; font-family:'Kanit'; font-weight:800; letter-spacing:.5px; }
-#aiBar .ai-head .sp{ flex:1; }
-#aiBar .ai-body{ padding:12px 14px; }
-#aiBar .ai-row{ display:flex; gap:8px; flex-wrap:wrap; }
-#aiBar input{ flex:1; min-width:200px; padding:8px 10px; }
-#aiBar .chip{ border:2px solid var(--neo-ink); background:#fff; border-radius:99px; padding:4px 12px; font-weight:700; font-size:13px; cursor:pointer; box-shadow:2px 2px 0 var(--neo-ink); }
-#aiBar .chip:hover{ background:var(--neo-yellow); }
-#aiAnswer{ margin-top:10px; font-size:14px; line-height:1.6; max-height:260px; overflow:auto; }
-#aiAnswer .ai-t{ font-family:'Kanit'; font-weight:800; margin-bottom:4px; }
-#aiAnswer li{ margin-left:18px; list-style:disc; }
-#aiBarOpen{ display:none; margin:14px 24px 0; }
-@media (max-width:700px){ #aiBar,#aiBarOpen{ margin:10px 12px 0; } }
-</style>
 </head>
 <body>
 
@@ -1058,28 +1019,6 @@ input,select,textarea{ border:2px solid var(--neo-ink) !important; border-radius
         <input type="text" id="summarySearchInput" placeholder="🔍 ค้นหาทะเบียน/คนขับ" oninput="onSummarySearchInput(this.value)">
       </div>
     </div>
-
-    <div id="aiBar">
-      <div class="ai-head">✨ KIMCHUN AI COPILOT <span class="sp"></span>
-        <button class="btn ghost small" type="button" onclick="aiToggleCollapse()" id="aiCollapseBtn">ย่อ</button>
-        <button class="btn ghost small" type="button" onclick="aiSetEnabled(false)">[ ปิดใช้งาน AI Bar ]</button>
-      </div>
-      <div class="ai-body" id="aiBody">
-        <div class="ai-row" style="margin-bottom:8px;">
-          <button class="chip" type="button" onclick="aiAsk('น้ำมันเครื่อง')">🛢️ รถเสี่ยงเกินรอบ</button>
-          <button class="chip" type="button" onclick="aiAsk('เอกสาร')">🪪 เอกสารใกล้หมดอายุ</button>
-          <button class="chip" type="button" onclick="aiAsk('สรุป')">📊 สรุปทั้งฟลีท</button>
-          <button class="chip" type="button" onclick="aiAsk('ซ่อม')">🔧 งานซ่อมค้าง</button>
-          <button class="chip" type="button" onclick="aiAsk('ค่าใช้จ่าย')">💰 ค่าใช้จ่ายเดือนนี้</button>
-        </div>
-        <div class="ai-row">
-          <input type="text" id="aiInput" placeholder="พิมพ์ถาม เช่น น้ำมันเครื่อง / เอกสาร / ซ่อม / ทะเบียนรถ" onkeydown="if(event.key==='Enter')aiAsk()">
-          <button class="btn small" type="button" onclick="aiAsk()">ถาม</button>
-        </div>
-        <div id="aiAnswer"></div>
-      </div>
-    </div>
-    <button class="btn small" id="aiBarOpen" type="button" onclick="aiSetEnabled(true)">✨ เปิด AI Bar</button>
 
     <div class="wrap" id="app">
       <div class="empty-state"><div class="display">กำลังโหลดข้อมูล...</div></div>
@@ -6608,64 +6547,6 @@ function rjEdit(id){
     ov.remove(); await loadRepairJobs();
   };
 }
-
-
-/* ---------------- AI Copilot bar (วิเคราะห์จากข้อมูลจริงใน db — ใช้กฎคำค้น ไม่ได้เรียกโมเดล AI ภายนอก) ---------------- */
-function aiLS(k,v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v); }catch(e){} return null; }
-function aiApplyState(){
-  const on = aiLS('kimchun.aiBar') !== 'off', col = aiLS('kimchun.aiCollapsed') === '1';
-  const bar = document.getElementById('aiBar'), op = document.getElementById('aiBarOpen');
-  if(!bar) return;
-  bar.style.display = on ? '' : 'none'; op.style.display = on ? 'none' : 'inline-block';
-  document.getElementById('aiBody').style.display = col ? 'none' : '';
-  document.getElementById('aiCollapseBtn').textContent = col ? 'ขยาย' : 'ย่อ';
-}
-function aiSetEnabled(on){ aiLS('kimchun.aiBar', on ? 'on' : 'off'); aiApplyState(); }
-function aiToggleCollapse(){ aiLS('kimchun.aiCollapsed', aiLS('kimchun.aiCollapsed')==='1' ? '0' : '1'); aiApplyState(); }
-function aiShow(title, lines){
-  document.getElementById('aiAnswer').innerHTML = `<div class="ai-t">${escapeHtml(title)}</div>` + (lines.length ? '<ul>'+lines.map(l=>`<li>${escapeHtml(l)}</li>`).join('')+'</ul>' : '<div>ไม่พบรายการ ✅</div>');
-}
-function aiAsk(q){
-  const inp = document.getElementById('aiInput');
-  q = String(q != null ? q : inp.value).trim(); if(!q) return;
-  if(q !== inp.value) inp.value = q;
-  const t = q.toLowerCase();
-  const vs = db.vehicles || [];
-  if(t.includes('น้ำมัน') && !t.includes('ค่า')){
-    const out = [];
-    vs.forEach(v=>{ db.tasks.filter(k=>k.vehicleId===v.id && k.name.includes('น้ำมันเครื่อง')).forEach(k=>{
-      const st = taskStatus(k, v); if(st.status==='ok') return;
-      out.push(`${v.name}: ${st.status==='overdue'?'เกินรอบแล้ว':'ใกล้ถึงรอบ'}${st.kmLeft!=null?` (เหลือ ${st.kmLeft.toLocaleString()} กม.)`:''}`); }); });
-    return aiShow('รถเสี่ยงเกินรอบน้ำมันเครื่อง ('+out.length+' คัน)', out);
-  }
-  if(/เอกสาร|ใบขับขี่|หมดอายุ|บุคลากร/.test(t)){
-    const out = [];
-    (db.personDocs||[]).forEach(d=>{ const st = personDocStatus(d); if(st==='ok') return;
-      const p = (db.people||[]).find(x=>x.id===d.personId)||{};
-      const days = daysBetween(todayStr(), d.expiryDate);
-      out.push(`${p.name||'ไม่ทราบชื่อ'} — ${d.docType||'เอกสาร'}: ${days<=0?'หมดอายุแล้ว':'อีก '+days+' วัน'}`); });
-    return aiShow('เอกสารใกล้หมดอายุ/หมดอายุ ('+out.length+' รายการ)', out);
-  }
-  if(t.includes('ซ่อม')){
-    const open = (typeof repairJobs!=='undefined' ? repairJobs : []).filter(j=>(j.status||'repairing')==='repairing');
-    return aiShow('งานซ่อมจาก LINE ที่ยังค้าง ('+open.length+' งาน)', open.map(j=>`#${j.job_no} ${j.plate||''} — ${j.title||''}${j.cost!=null?` (฿${Number(j.cost).toLocaleString()})`:''}`));
-  }
-  if(/ค่าใช้จ่าย|ราคา|ค่าซ่อม/.test(t)){
-    const mk = todayStr().slice(0,7); let sum = 0; const out = [];
-    vs.forEach(v=>{ const r = getMonthlyCostRows(v.id).rows.find(x=>x.monthKey===mk); if(r && r.total){ sum += r.total; out.push(`${v.name}: ${r.total.toLocaleString()} บาท`); } });
-    return aiShow('ค่าใช้จ่ายเดือนนี้ รวม '+sum.toLocaleString()+' บาท', out);
-  }
-  const hit = vs.filter(v=>String(v.name).toLowerCase().replace(/[\s-]/g,'').includes(t.replace(/[\s-]/g,'')));
-  if(hit.length && hit.length<=3){
-    return aiShow('ข้อมูลรถ', hit.map(v=>{ const ts = db.tasks.filter(k=>k.vehicleId===v.id).map(k=>taskStatus(k,v).status);
-      return `${v.name}: ${FLEET_STATUS[v.status||'ready'].label} · ไมล์ ${Number(v.currentKm||0).toLocaleString()} กม. · เกินกำหนด ${ts.filter(x=>x==='overdue').length} / ใกล้ถึง ${ts.filter(x=>x==='soon').length}`; }));
-  }
-  const cnt = {ready:0,active:0,repair:0}; let od = 0, so = 0;
-  vs.forEach(v=>{ cnt[v.status||'ready']++; db.tasks.filter(k=>k.vehicleId===v.id).forEach(k=>{ const s2 = taskStatus(k,v).status; if(s2==='overdue') od++; else if(s2==='soon') so++; }); });
-  aiShow('สรุปสถานะฟลีท '+vs.length+' คัน', [`พร้อมใช้งาน ${cnt.ready} · กำลังวิ่งงาน ${cnt.active} · จอดซ่อม ${cnt.repair}`, `รายการบำรุงรักษา เกินกำหนด ${od} · ใกล้ถึงกำหนด ${so}`, 'ลองพิมพ์: น้ำมันเครื่อง / เอกสาร / ซ่อม / ค่าใช้จ่าย / เลขทะเบียน']);
-}
-document.addEventListener('DOMContentLoaded', aiApplyState);
-setTimeout(aiApplyState, 0);
 
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
