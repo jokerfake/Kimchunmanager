@@ -978,6 +978,7 @@ body{background:var(--ink)}
       <button class="tab-btn" data-view="personnel" onclick="setView('personnel')"><span class="ic">🪪</span> บุคลากร &amp; เอกสาร</button>
       <button class="tab-btn" data-view="tires" onclick="setView('tires')"><span class="ic">🛞</span> จัดการยาง</button>
       <button class="tab-btn" data-view="dailyphotos" onclick="setView('dailyphotos')"><span class="ic">📷</span> บันทึกรูปรถประจำวัน</button>
+      <button class="tab-btn" data-view="repairjobs" onclick="setView('repairjobs')"><span class="ic">🔧</span> งานซ่อมจาก LINE</button>
     </div>
 
     <div class="sidebar-footer">
@@ -5285,6 +5286,10 @@ function render(){
     renderDailyPhotosView();
     return;
   }
+  if(currentView === 'repairjobs'){
+    renderRepairJobsView();
+    return;
+  }
 
   const app = document.getElementById('app');
   if(!currentVehicleId || !db.vehicles.find(v=>v.id===currentVehicleId)){
@@ -6326,6 +6331,140 @@ function renderLogRowsTable(type, list){
           </tr>`).join('')}
       </tbody>
     </table>`;
+}
+
+/* ---------------- งานซ่อมจาก LINE (repair_jobs) ----------------
+   บอท LINE (Edge Function line-webhook) เขียนงานซ่อมลงตาราง repair_jobs
+   หน้านี้อ่านตารางนั้นโดยตรงผ่าน supabaseClient */
+let repairJobs = [];
+let repairJobsLoading = false;
+let repairJobsError = '';
+let repairJobsFilter = 'repairing'; // repairing | done | all
+let repairJobsSearch = '';
+
+async function loadRepairJobs(){
+  if(typeof supabaseClient === 'undefined' || !supabaseClient){ repairJobsError = 'ยังไม่ได้เชื่อมต่อ Supabase'; return; }
+  repairJobsLoading = true; repairJobsError = '';
+  const { data, error } = await supabaseClient.from('repair_jobs').select('*').order('created_at', { ascending:false }).limit(500);
+  repairJobsLoading = false;
+  if(error){ repairJobsError = error.message || String(error); repairJobs = []; }
+  else repairJobs = data || [];
+  if(currentView === 'repairjobs') drawRepairJobs();
+}
+function renderRepairJobsView(){
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="panel-block" style="margin-top:20px;">
+      <h2>🔧 งานซ่อมจาก LINE</h2>
+      <div class="hint">งานที่คนขับแจ้งผ่านบอท LINE (ข้อความ + รูป) จะมาอยู่ที่นี่ แก้ไข ปิดงาน หรือลบได้</div>
+      <div class="filter-bar">
+        <select id="rjFilter" onchange="repairJobsFilter=this.value; drawRepairJobs()">
+          <option value="repairing">กำลังซ่อม</option><option value="done">ซ่อมเสร็จแล้ว</option><option value="all">ทั้งหมด</option>
+        </select>
+        <input type="search" id="rjSearch" placeholder="ค้นหาทะเบียน / รายการซ่อม / อู่" oninput="repairJobsSearch=this.value; drawRepairJobs()" style="min-width:240px;">
+        <button class="btn ghost small" onclick="loadRepairJobs(); drawRepairJobs()">🔄 โหลดใหม่</button>
+      </div>
+    </div>
+    <div id="rjList"></div>`;
+  document.getElementById('rjFilter').value = repairJobsFilter;
+  document.getElementById('rjSearch').value = repairJobsSearch;
+  drawRepairJobs();
+  loadRepairJobs();
+}
+function drawRepairJobs(){
+  const box = document.getElementById('rjList');
+  if(!box) return;
+  if(repairJobsLoading && !repairJobs.length){ box.innerHTML = '<div class="hint" style="margin:16px 4px;">กำลังโหลด...</div>'; return; }
+  if(repairJobsError){
+    box.innerHTML = `<div class="panel-block" style="border:1px solid #ef4444;"><b>โหลดงานซ่อมไม่สำเร็จ</b><div class="hint">${escapeHtml(repairJobsError)}</div>
+      <div class="hint">ถ้าเป็นเรื่องสิทธิ์ (permission / RLS) ให้รัน SQL ตามที่ผมแนะนำใน Supabase SQL Editor</div></div>`;
+    return;
+  }
+  const q = repairJobsSearch.trim().toLowerCase();
+  const list = repairJobs.filter(j=>{
+    if(repairJobsFilter !== 'all' && (j.status||'repairing') !== repairJobsFilter) return false;
+    if(!q) return true;
+    return `${j.plate||''} ${j.vehicle_no||''} ${j.title||''} ${j.garage||''} ${j.reported_name||''}`.toLowerCase().includes(q);
+  });
+  if(!list.length){ box.innerHTML = '<div class="empty-state"><div class="display">ไม่มีงานซ่อมในรายการนี้</div></div>'; return; }
+  box.innerHTML = list.map(rjCard).join('');
+}
+function rjPhotos(j){
+  let ph = j.photos;
+  if(typeof ph === 'string'){ try{ ph = JSON.parse(ph); }catch(e){ ph = []; } }
+  return Array.isArray(ph) ? ph.filter(Boolean) : [];
+}
+function rjCard(j){
+  const done = j.status === 'done';
+  const photos = rjPhotos(j);
+  const badge = done
+    ? '<span style="background:#dcfce7;color:#166534;padding:2px 10px;border-radius:99px;font-size:12px;">ซ่อมเสร็จแล้ว</span>'
+    : '<span style="background:#fef3c7;color:#92400e;padding:2px 10px;border-radius:99px;font-size:12px;">กำลังซ่อม</span>';
+  const cost = j.cost != null ? '฿' + Number(j.cost).toLocaleString('en-US') : '—';
+  const d = x => x ? formatThaiDateShort(x) : '—';
+  return `<div class="panel-block" style="margin-top:14px;">
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
+      <div><b style="font-family:'Kanit';font-size:16px;">#${j.job_no} · ${escapeHtml(j.plate||'-')}${j.vehicle_no?` (เบอร์ ${escapeHtml(j.vehicle_no)})`:''}</b> ${badge}</div>
+      <div class="hint">แจ้งโดย ${escapeHtml(j.reported_name||'ไม่ทราบชื่อ')} · ${j.created_at ? new Date(j.created_at).toLocaleString('th-TH') : ''}</div>
+    </div>
+    <div style="margin:8px 0;font-size:15px;">🔧 ${escapeHtml(j.title||'-')}</div>
+    <div class="hint">อู่: ${escapeHtml(j.garage||'-')} · เข้าซ่อม: ${d(j.repair_date)} · นัดเสร็จ: ${d(j.due_date)} · ราคา: ${cost}${j.closed_at?` · ปิดงาน: ${new Date(j.closed_at).toLocaleDateString('th-TH')}`:''}</div>
+    ${photos.length ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">${photos.map((u,i)=>`<img src="${escapeHtml(u)}" loading="lazy" onclick="window.open(this.src,'_blank')" style="width:96px;height:96px;object-fit:cover;border-radius:8px;cursor:pointer;border:1px solid var(--border,#ddd);">`).join('')}</div>` : '<div class="hint" style="margin-top:8px;">ไม่มีรูป</div>'}
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+      ${done ? `<button class="btn ghost small" onclick="rjSetStatus('${j.id}','repairing')">เปิดงานอีกครั้ง</button>` : `<button class="btn small" onclick="rjSetStatus('${j.id}','done')">✅ ซ่อมเสร็จแล้ว</button>`}
+      <button class="btn ghost small" onclick="rjEdit('${j.id}')">แก้ไข</button>
+      ${isAdmin || can('deleteRecords') ? `<button class="btn danger small" onclick="rjDelete('${j.id}')">ลบ</button>` : ''}
+    </div>
+  </div>`;
+}
+async function rjSetStatus(id, status){
+  const patch = status === 'done' ? { status, closed_at: new Date().toISOString() } : { status, closed_at: null };
+  const { error } = await supabaseClient.from('repair_jobs').update(patch).eq('id', id);
+  if(error){ alert('บันทึกไม่สำเร็จ: ' + error.message); return; }
+  await loadRepairJobs();
+}
+async function rjDelete(id){
+  const j = repairJobs.find(x=>x.id===id); if(!j) return;
+  if(!confirm(`ลบงานซ่อม #${j.job_no} ${j.plate||''} ${j.title||''} ?`)) return;
+  const { error } = await supabaseClient.from('repair_jobs').delete().eq('id', id);
+  if(error){ alert('ลบไม่สำเร็จ: ' + error.message); return; }
+  await loadRepairJobs();
+}
+function rjEdit(id){
+  const j = repairJobs.find(x=>x.id===id); if(!j) return;
+  const f = (lbl, key, type='text', val=j[key]) => `<label style="display:block;margin-top:8px;font-size:13px;">${lbl}<input data-k="${key}" type="${type}" value="${escapeHtml(val ?? '')}" style="width:100%;padding:8px;margin-top:3px;box-sizing:border-box;"></label>`;
+  const photos = rjPhotos(j);
+  const ov = document.createElement('div');
+  ov.id = 'rjEditOv';
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  ov.innerHTML = `<div style="background:var(--card,#fff);color:inherit;border-radius:14px;padding:18px;max-width:480px;width:100%;max-height:90vh;overflow:auto;">
+    <h3 style="margin:0 0 4px;">แก้ไขงานซ่อม #${j.job_no}</h3>
+    ${f('ทะเบียน','plate')}${f('เบอร์รถ','vehicle_no')}${f('รายการซ่อม','title')}${f('อู่','garage')}
+    ${f('วันที่เข้าซ่อม','repair_date','date')}${f('อู่นัดซ่อมเสร็จ','due_date','date')}${f('ราคา (บาท)','cost','number')}
+    <div style="margin-top:10px;font-size:13px;">รูป (กดรูปเพื่อลบออก)</div>
+    <div id="rjEditPhotos" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">
+      <button class="btn ghost" id="rjEditCancel">ยกเลิก</button><button class="btn" id="rjEditSave">บันทึก</button>
+    </div></div>`;
+  document.body.appendChild(ov);
+  let keep = photos.slice();
+  const drawPh = () => { ov.querySelector('#rjEditPhotos').innerHTML = keep.length ? keep.map((u,i)=>`<img src="${escapeHtml(u)}" data-i="${i}" style="width:64px;height:64px;object-fit:cover;border-radius:6px;cursor:pointer;" title="กดเพื่อลบ">`).join('') : '<span class="hint">ไม่มีรูป</span>'; };
+  drawPh();
+  ov.querySelector('#rjEditPhotos').onclick = e => { const i = e.target.dataset && e.target.dataset.i; if(i!=null && confirm('เอารูปนี้ออกจากงานซ่อม?')){ keep.splice(+i,1); drawPh(); } };
+  ov.querySelector('#rjEditCancel').onclick = () => ov.remove();
+  ov.querySelector('#rjEditSave').onclick = async () => {
+    const patch = {};
+    ov.querySelectorAll('input[data-k]').forEach(el=>{
+      const k = el.dataset.k; let v = el.value.trim();
+      if(v === '') v = null; else if(k === 'cost') v = Number(v);
+      patch[k] = v;
+    });
+    if(!patch.title){ alert('กรุณาใส่รายการซ่อม'); return; }
+    patch.photos = keep;
+    const { error } = await supabaseClient.from('repair_jobs').update(patch).eq('id', id);
+    if(error){ alert('บันทึกไม่สำเร็จ: ' + error.message); return; }
+    ov.remove(); await loadRepairJobs();
+  };
 }
 
 function escapeHtml(s){
