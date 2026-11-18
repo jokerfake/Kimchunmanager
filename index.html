@@ -1250,6 +1250,23 @@ body{background:var(--ink)}
 .veh-hero-card.has-photo .veh-hero-info{ background:rgba(255,255,255,.93); border:3px solid var(--nb-line,#111); padding:8px 12px; flex:0 1 auto; }
 @media (max-width:700px){ .veh-hero-card.has-photo{ background-size:cover !important; background-position:center !important; min-height:260px; } }
 </style>
+<style id="fleet-month-summary">
+.fs-card{ border:3px solid #111; break-inside:avoid; background:#fff; }
+.fs-hd{ background:#FFE0EE; border-bottom:3px solid #111; padding:2mm 3mm; font-family:'Kanit'; font-weight:800; font-size:12pt; display:flex; justify-content:space-between; align-items:center; }
+.fs-tiles{ display:grid; grid-template-columns:repeat(4,1fr); border-bottom:2px solid #111; }
+.fs-tile{ padding:1.5mm 3mm; border-right:2px solid #111; text-align:center; font-size:9.5pt; }
+.fs-tile:last-child{ border-right:0; }
+.fs-tile b{ display:block; font-family:'Kanit'; font-weight:800; font-size:17pt; line-height:1.15; }
+.fs-tile.on{ background:#00C853; color:#fff; } .fs-tile.rp{ background:#FF5722; color:#fff; } .fs-tile.ac{ background:#FCD500; }
+.fs-tbl{ width:100%; border-collapse:collapse; font-size:10pt; }
+.fs-tbl td,.fs-tbl th{ padding:1mm 3mm; border-bottom:1px dotted #888; text-align:left; font-weight:400; }
+.fs-tbl td:last-child,.fs-tbl th:last-child{ text-align:right; font-family:'JetBrains Mono',monospace; }
+.fs-tbl tr.tot td,.fs-tbl tr.tot th{ font-weight:800; border-top:2px solid #111; border-bottom:0; background:#FFF6B8; }
+.fs-note{ padding:1.5mm 3mm; font-size:9.5pt; border-top:2px solid #111; }
+.fs-grand{ display:grid; grid-template-columns:repeat(5,1fr); border:3px solid #111; background:#EAF3FF; }
+.fs-grand div{ padding:2mm 3mm; border-right:2px solid #111; text-align:center; font-size:9.5pt; } .fs-grand div:last-child{ border-right:0; }
+.fs-grand b{ display:block; font-family:'Kanit'; font-weight:800; font-size:14pt; }
+</style>
 </head>
 <body>
 
@@ -1308,6 +1325,7 @@ body{background:var(--ink)}
       <button class="btn ghost small" id="deleteVehicleBtn" style="display:none;" onclick="deleteVehicle()">ลบรถคันนี้</button>
       <button class="btn small" onclick="doPrint()">🖨️ ปริ้นรายงาน</button>
       <button class="btn ghost small" onclick="openFleetSummary()">📄 สรุป 2 คัน/แผ่น</button>
+      <button class="btn ghost small" onclick="openFleetGroupSummary()">🏢 สรุปรายฟลีท/เดือน</button>
       <div id="summarySearchWrap" style="display:none; margin-left:auto;">
         <input type="text" id="summarySearchInput" placeholder="🔍 ค้นหาทะเบียน/คนขับ" oninput="onSummarySearchInput(this.value)">
       </div>
@@ -6230,6 +6248,89 @@ function openFleetSummary(){
     document.head.appendChild(st);
   }
 }
+
+
+/* ---------------- สรุปรายเดือนระดับฟลีท (กลุ่มรถ/สาขา) ----------------
+   ออนไลน์ = พร้อมใช้งาน + กำลังวิ่งงาน ; จอดซ่อม แยกต่างหาก ; ค่าใช้จ่ายรวมจากน้ำมันเครื่อง/ยาง/ซ่อมบำรุงอื่นๆ(รวมงานซ่อมจาก LINE)/น้ำมันเชื้อเพลิง */
+function fsMonths(mk, n){
+  const [y,m] = mk.split('-').map(Number), out = [];
+  for(let i=n-1;i>=0;i--){ const d = new Date(y, m-1-i, 1); out.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')); }
+  return out;
+}
+function fsData(mk){
+  const groups = [...(db.fleetGroups||[]).map(g=>({id:g.id, name:g.name})), {id:'', name:'ไม่ระบุฟลีท'}];
+  const months = fsMonths(mk, 6);
+  const rowsOf = {}; db.vehicles.forEach(v=>{ rowsOf[v.id] = getMonthlyCostRows(v.id).rows; });
+  return groups.map(g=>{
+    const vs = db.vehicles.filter(v=>(v.fleetGroupId||'')===g.id);
+    if(!vs.length) return null;
+    const cnt = {ready:0, active:0, repair:0}; vs.forEach(v=>{ cnt[v.status||'ready']++; });
+    const sum = k => vs.reduce((a,v)=>{ const r = rowsOf[v.id].find(x=>x.monthKey===mk); return a + (r ? (r[k]||0) : 0); }, 0);
+    const cost = {oil:sum('oilCost'), tire:sum('tireCost'), maint:sum('maintCost'), fuel:sum('fuelCost')};
+    cost.repair = cost.oil + cost.tire + cost.maint; cost.total = cost.repair + cost.fuel;
+    const trend = months.map(m=> vs.reduce((a,v)=>{ const r = rowsOf[v.id].find(x=>x.monthKey===m); return a + (r ? r.total : 0); }, 0));
+    return {g, vs, cnt, online:cnt.ready+cnt.active, cost, trend, repairNames: vs.filter(v=>(v.status||'ready')==='repair').map(v=>v.name)};
+  }).filter(Boolean);
+}
+function fsBuild(mk){
+  const esc = escapeHtml, B = n => baht(n||0);
+  const data = fsData(mk), months = fsMonths(mk, 6);
+  const T = {veh:0, on:0, rp:0, repair:0, total:0}; data.forEach(d=>{ T.veh+=d.vs.length; T.on+=d.online; T.rp+=d.cnt.repair; T.repair+=d.cost.repair; T.total+=d.cost.total; });
+  const printDate = new Date().toLocaleDateString('th-TH', {year:'numeric', month:'long', day:'numeric'});
+  const card = d => `<div class="fs-card">
+      <div class="fs-hd"><span>🏢 ${esc(d.g.name)}</span><span style="font-size:10pt;">${d.vs.length} คัน</span></div>
+      <div class="fs-tiles">
+        <div class="fs-tile on"><b>${d.online}</b>ออนไลน์</div>
+        <div class="fs-tile"><b>${d.cnt.ready}</b>พร้อมใช้งาน</div>
+        <div class="fs-tile ac"><b>${d.cnt.active}</b>กำลังวิ่งงาน</div>
+        <div class="fs-tile rp"><b>${d.cnt.repair}</b>จอดซ่อม</div>
+      </div>
+      <table class="fs-tbl">
+        <tr><td>ซ่อมบำรุงอื่นๆ</td><td>${B(d.cost.maint)} บาท</td></tr>
+        <tr><td>เปลี่ยนยาง</td><td>${B(d.cost.tire)} บาท</td></tr>
+        <tr><td>น้ำมันเครื่อง</td><td>${B(d.cost.oil)} บาท</td></tr>
+        <tr class="tot"><td>รวมค่าซ่อมบำรุง</td><td>${B(d.cost.repair)} บาท</td></tr>
+        <tr><td>น้ำมันเชื้อเพลิง</td><td>${B(d.cost.fuel)} บาท</td></tr>
+        <tr class="tot"><td>รวมค่าใช้จ่ายทั้งหมด</td><td>${B(d.cost.total)} บาท</td></tr>
+      </table>
+      <div class="fs-note">จอดซ่อมอยู่: ${d.repairNames.length ? esc(d.repairNames.join(', ')) : '— ไม่มี —'}</div>
+    </div>`;
+  const chunks = []; const rest = data.slice();
+  chunks.push(rest.splice(0,3)); while(rest.length) chunks.push(rest.splice(0,4));
+  const total = chunks.length + 1;
+  const head = i => `<div class="sum-head"><span>สรุปรายเดือนระดับฟลีท — Kimchun Truck Manager</span><span>${esc(monthLabelTH(mk))} · หน้า ${i}/${total} · พิมพ์ ${printDate}</span></div>`;
+  const grand = `<div class="fs-grand">
+      <div><b>${data.length}</b>ฟลีท</div><div><b>${T.veh}</b>รถทั้งหมด</div>
+      <div><b>${T.on}</b>ออนไลน์</div><div><b>${T.rp}</b>จอดซ่อม</div><div><b>${B(T.total)}</b>ค่าใช้จ่ายรวม (บาท)</div></div>
+    <div style="font-size:9pt;color:#444;">ออนไลน์ = พร้อมใช้งาน + กำลังวิ่งงาน · ค่าซ่อมบำรุงรวมเดือนนี้ ${B(T.repair)} บาท (ไม่รวมน้ำมันเชื้อเพลิง)</div>`;
+  const sheets = chunks.map((c,i)=>`<section class="sum-sheet">${head(i+1)}${i===0?grand:''}${c.map(card).join('')}</section>`);
+  const trend = `<section class="sum-sheet">${head(total)}
+    <div class="fs-card"><div class="fs-hd"><span>📈 ค่าใช้จ่ายรวมรายเดือนแต่ละฟลีท (6 เดือนล่าสุด)</span></div>
+      <table class="fs-tbl" style="font-size:9pt;">
+        <tr><th>ฟลีท</th>${months.map(m=>`<th style="text-align:right;font-family:inherit;">${esc(monthLabelTH(m))}</th>`).join('')}</tr>
+        ${data.map(d=>`<tr><td>${esc(d.g.name)}</td>${d.trend.map(x=>`<td style="text-align:right;">${B(x)}</td>`).join('')}</tr>`).join('')}
+        <tr class="tot"><td>รวมทุกฟลีท</td>${months.map((m,i)=>`<td style="text-align:right;">${B(data.reduce((a,d)=>a+d.trend[i],0))}</td>`).join('')}</tr>
+      </table></div></section>`;
+  return sheets.join('') + trend;
+}
+function openFleetGroupSummary(){
+  if(!db.vehicles.length){ alert('ยังไม่มีรถในระบบ'); return; }
+  closeInspectionReport();
+  const mk = todayStr().slice(0,7);
+  const ov = document.createElement('div'); ov.id = 'reportOverlay';
+  ov.innerHTML = `<div class="rp-toolbar">
+      <label style="color:#fff;display:flex;align-items:center;gap:6px;font-weight:700;">เดือน <input type="month" id="fsMonth" value="${mk}" onchange="fsRefresh()" style="padding:6px;"></label>
+      <button class="btn" onclick="printInspectionReport()">🖨️ พิมพ์ / บันทึกเป็น PDF</button>
+      <button class="btn ghost" onclick="closeInspectionReport()">ปิด</button></div>
+    <div class="rp-page" id="fsPage">${fsBuild(mk)}</div>`;
+  document.body.appendChild(ov); document.body.classList.add('report-open');
+  if(!document.getElementById('sumPrintPage')){
+    const st = document.createElement('style'); st.id = 'sumPrintPage';
+    st.textContent = '@page{size:A4 portrait;margin:0} @page sumpage{size:A4 portrait;margin:0} @media print{ html,body{margin:0!important;padding:0!important;background:#fff!important} .sum-sheet{width:210mm!important;height:296mm!important;padding:7mm!important;margin:0!important;border:0!important;box-sizing:border-box!important;overflow:hidden!important;break-inside:avoid;page-break-inside:avoid} }';
+    document.head.appendChild(st);
+  }
+}
+function fsRefresh(){ const m = document.getElementById('fsMonth').value; if(m) document.getElementById('fsPage').innerHTML = fsBuild(m); }
 
 function closeInspectionReport(){
   const ov = document.getElementById('reportOverlay');
