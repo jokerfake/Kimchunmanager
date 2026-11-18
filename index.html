@@ -1267,6 +1267,21 @@ body{background:var(--ink)}
 .fs-grand div{ padding:2mm 3mm; border-right:2px solid #111; text-align:center; font-size:9.5pt; } .fs-grand div:last-child{ border-right:0; }
 .fs-grand b{ display:block; font-family:'Kanit'; font-weight:800; font-size:14pt; }
 </style>
+<style id="report-menu">
+.rpt-menu{ position:relative; margin-left:auto; }
+.rpt-pop{ display:none; position:absolute; right:0; top:calc(100% + 6px); z-index:260; min-width:270px; background:#fff; color:#111; border:2px solid #111; box-shadow:4px 4px 0 #111; }
+.rpt-pop.open{ display:block; }
+.rpt-pop button{ display:block; width:100%; text-align:left; background:#fff; border:0; border-bottom:1px solid #ddd; padding:10px 14px; cursor:pointer; font-family:inherit; color:#111; }
+.rpt-pop button:last-child{ border-bottom:0; }
+.rpt-pop button:hover{ background:#FFF6B8; }
+.rpt-pop small{ display:block; color:#555; font-size:12px; margin-top:2px; }
+#reportOverlay .rp-toolbar.fs-filter{ display:block; background:#fff; color:#111; border:2px solid #111; padding:10px 12px; font-size:13px; }
+.fs-filter .fl-row{ display:flex; gap:6px 12px; flex-wrap:wrap; align-items:center; margin-bottom:6px; }
+.fs-filter label.ck{ display:inline-flex; align-items:center; gap:4px; border:2px solid #111; padding:2px 8px; background:#fff; cursor:pointer; font-weight:700; }
+.fs-filter label.ck.on{ background:#FCD500; }
+.fs-filter .vlist{ max-height:130px; overflow:auto; border:1px solid #bbb; padding:6px; display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:2px 10px; }
+.fs-filter input[type=text]{ padding:5px 8px; border:2px solid #111; min-width:200px; }
+</style>
 </head>
 <body>
 
@@ -1323,11 +1338,16 @@ body{background:var(--ink)}
       <button class="btn ghost small" id="addVehicleBtn" style="display:none;" onclick="openVehicleModal()">+ เพิ่มรถ</button>
       <button class="btn ghost small" id="editVehicleBtn" style="display:none;" onclick="openVehicleModal(currentVehicleId)">แก้ไขชื่อรถ</button>
       <button class="btn ghost small" id="deleteVehicleBtn" style="display:none;" onclick="deleteVehicle()">ลบรถคันนี้</button>
-      <button class="btn small" onclick="doPrint()">🖨️ ปริ้นรายงาน</button>
-      <button class="btn ghost small" onclick="openFleetSummary()">📄 สรุป 2 คัน/แผ่น</button>
-      <button class="btn ghost small" onclick="openFleetGroupSummary()">🏢 สรุปรายฟลีท/เดือน</button>
       <div id="summarySearchWrap" style="display:none; margin-left:auto;">
         <input type="text" id="summarySearchInput" placeholder="🔍 ค้นหาทะเบียน/คนขับ" oninput="onSummarySearchInput(this.value)">
+      </div>
+      <div class="rpt-menu" id="rptMenu">
+        <button class="btn small" type="button" onclick="toggleRptMenu(event)">📊 รายงาน ▾</button>
+        <div class="rpt-pop" id="rptPop">
+          <button type="button" onclick="closeRptMenu(); doPrint()"><b>🖨️ ปริ้นรายงานรถคันนี้</b><small>รายงานเต็มของรถที่เลือกอยู่</small></button>
+          <button type="button" onclick="closeRptMenu(); openFleetSummary()"><b>📄 รายงานสรุปรถ</b><small>เลือกฟลีท/ทะเบียนได้ · พิมพ์ 2 คัน/แผ่น</small></button>
+          <button type="button" onclick="closeRptMenu(); openFleetGroupSummary()"><b>🏢 รายงานรายฟลีท</b><small>สถานะรถ + ค่าซ่อมต่อเดือนแต่ละฟลีท</small></button>
+        </div>
       </div>
     </div>
 
@@ -6218,19 +6238,12 @@ function fleetSummaryVehicleHtml(v, idx){
   </div>`;
 }
 
+let sumSel = new Set(), sumQ = '';
+function sumFleetGroups(){ const g = (db.fleetGroups||[]).map(x=>({id:x.id,name:x.name})); if(db.vehicles.some(v=>!v.fleetGroupId)) g.push({id:'',name:'ไม่ระบุฟลีท'}); return g; }
 function openFleetSummary(){
   if(!db.vehicles.length){ alert('ยังไม่มีรถในระบบ'); return; }
   closeInspectionReport();
-  const vs = db.vehicles.slice();
-  const pages = [];
-  for(let i=0;i<vs.length;i+=2) pages.push(vs.slice(i,i+2));
-  const printDate = new Date().toLocaleDateString('th-TH', {year:'numeric', month:'long', day:'numeric'});
-  const html = pages.map((p,i)=>`
-    <section class="sum-sheet">
-      <div class="sum-head"><span style="font-size:12pt;font-weight:800;">สรุปข้อมูลรถ — Kimchun Truck Manager</span><span>หน้า ${i+1}/${pages.length} · พิมพ์ ${printDate}</span></div>
-      ${p.map((v,j)=>fleetSummaryVehicleHtml(v, j)).join('')}
-      ${p.length<2 ? '<div class="sum-veh sum-empty"></div>' : ''}
-    </section>`).join('');
+  sumSel = new Set(db.vehicles.map(v=>v.id)); sumQ = '';
   const ov = document.createElement('div');
   ov.id = 'reportOverlay';
   ov.innerHTML = `
@@ -6238,9 +6251,11 @@ function openFleetSummary(){
       <button class="btn" onclick="printInspectionReport()">🖨️ พิมพ์ / บันทึกเป็น PDF (2 คัน/แผ่น)</button>
       <button class="btn ghost" onclick="closeInspectionReport()">ปิด</button>
     </div>
-    <div class="rp-page">${html}</div>`;
+    <div class="rp-toolbar fs-filter" id="sumFilter"></div>
+    <div class="rp-page" id="sumPages"></div>`;
   document.body.appendChild(ov);
   document.body.classList.add('report-open');
+  sumRender();
   // กันล้นหน้า: ตั้งขอบกระดาษ 0 (ซ่อนหัว/ท้ายกระดาษของเบราว์เซอร์ด้วย) แล้วเว้นขอบด้วย padding ในแผ่นแทน — ใช้เฉพาะตอนเปิดหน้าสรุปนี้
   if(!document.getElementById('sumPrintPage')){
     const st = document.createElement('style'); st.id = 'sumPrintPage';
@@ -6248,7 +6263,40 @@ function openFleetSummary(){
     document.head.appendChild(st);
   }
 }
+function sumRender(){
+  const esc = escapeHtml, groups = sumFleetGroups();
+  const q = sumQ.trim().toLowerCase();
+  const list = db.vehicles.filter(v=>!q || String(v.name).toLowerCase().includes(q));
+  const chips = groups.map(g=>{ const vs = db.vehicles.filter(v=>(v.fleetGroupId||'')===g.id); const on = vs.length && vs.every(v=>sumSel.has(v.id));
+    return `<label class="ck ${on?'on':''}"><input type="checkbox" ${on?'checked':''} onchange="sumToggleFleet('${g.id}',this.checked)"> 🏢 ${esc(g.name)} (${vs.length})</label>`; }).join('');
+  const el = document.getElementById('sumFilter');
+  const keep = document.activeElement && document.activeElement.id === 'sumQ';
+  el.innerHTML = `
+    <div class="fl-row"><b>ฟลีท:</b> ${chips}</div>
+    <div class="fl-row"><b>ทะเบียน:</b> <input type="text" id="sumQ" placeholder="🔍 ค้นหาทะเบียน" value="${esc(sumQ)}" oninput="sumQ=this.value; sumRender()">
+      <button class="btn ghost small" type="button" onclick="sumAll(true)">เลือกทั้งหมด</button>
+      <button class="btn ghost small" type="button" onclick="sumAll(false)">ล้าง</button>
+      <span id="sumCount"></span></div>
+    <div class="vlist">${list.map(v=>`<label><input type="checkbox" ${sumSel.has(v.id)?'checked':''} onchange="sumToggleVeh('${v.id}',this.checked)"> ${esc(v.name)}</label>`).join('') || '<span style="color:#777;">ไม่พบทะเบียนที่ค้นหา</span>'}</div>`;
+  if(keep){ const i = document.getElementById('sumQ'); i.focus(); i.setSelectionRange(i.value.length,i.value.length); }
+  const vs = db.vehicles.filter(v=>sumSel.has(v.id));
+  const pages = []; for(let i=0;i<vs.length;i+=2) pages.push(vs.slice(i,i+2));
+  document.getElementById('sumCount').textContent = `เลือก ${vs.length} คัน · ${pages.length} แผ่น`;
+  const printDate = new Date().toLocaleDateString('th-TH', {year:'numeric', month:'long', day:'numeric'});
+  document.getElementById('sumPages').innerHTML = pages.length ? pages.map((p,i)=>`
+    <section class="sum-sheet">
+      <div class="sum-head"><span style="font-size:12pt;font-weight:800;">สรุปข้อมูลรถ — Kimchun Truck Manager</span><span>หน้า ${i+1}/${pages.length} · พิมพ์ ${printDate}</span></div>
+      ${p.map((v,j)=>fleetSummaryVehicleHtml(v, j)).join('')}
+      ${p.length<2 ? '<div class="sum-veh sum-empty"></div>' : ''}
+    </section>`).join('') : '<div style="padding:40px;text-align:center;color:#777;">ยังไม่ได้เลือกรถ</div>';
+}
+function sumToggleVeh(id,on){ on ? sumSel.add(id) : sumSel.delete(id); sumRender(); }
+function sumToggleFleet(gid,on){ db.vehicles.filter(v=>(v.fleetGroupId||'')===gid).forEach(v=> on ? sumSel.add(v.id) : sumSel.delete(v.id)); sumRender(); }
+function sumAll(on){ const q = sumQ.trim().toLowerCase(); db.vehicles.filter(v=>!q || String(v.name).toLowerCase().includes(q)).forEach(v=> on ? sumSel.add(v.id) : sumSel.delete(v.id)); sumRender(); }
 
+function toggleRptMenu(e){ e.stopPropagation(); document.getElementById('rptPop').classList.toggle('open'); }
+function closeRptMenu(){ const p = document.getElementById('rptPop'); if(p) p.classList.remove('open'); }
+document.addEventListener('click', e=>{ if(!e.target.closest('#rptMenu')) closeRptMenu(); });
 
 /* ---------------- สรุปรายเดือนระดับฟลีท (กลุ่มรถ/สาขา) ----------------
    ออนไลน์ = พร้อมใช้งาน + กำลังวิ่งงาน ; จอดซ่อม แยกต่างหาก ; ค่าใช้จ่ายรวมจากน้ำมันเครื่อง/ยาง/ซ่อมบำรุงอื่นๆ(รวมงานซ่อมจาก LINE)/น้ำมันเชื้อเพลิง */
@@ -6257,8 +6305,8 @@ function fsMonths(mk, n){
   for(let i=n-1;i>=0;i--){ const d = new Date(y, m-1-i, 1); out.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')); }
   return out;
 }
-function fsData(mk){
-  const groups = [...(db.fleetGroups||[]).map(g=>({id:g.id, name:g.name})), {id:'', name:'ไม่ระบุฟลีท'}];
+function fsData(mk, sel){
+  const groups = [...(db.fleetGroups||[]).map(g=>({id:g.id, name:g.name})), {id:'', name:'ไม่ระบุฟลีท'}].filter(g=>!sel || sel.has(g.id));
   const months = fsMonths(mk, 6);
   const rowsOf = {}; db.vehicles.forEach(v=>{ rowsOf[v.id] = getMonthlyCostRows(v.id).rows; });
   return groups.map(g=>{
@@ -6272,9 +6320,10 @@ function fsData(mk){
     return {g, vs, cnt, online:cnt.ready+cnt.active, cost, trend, repairNames: vs.filter(v=>(v.status||'ready')==='repair').map(v=>v.name)};
   }).filter(Boolean);
 }
-function fsBuild(mk){
+function fsBuild(mk, sel){
   const esc = escapeHtml, B = n => baht(n||0);
-  const data = fsData(mk), months = fsMonths(mk, 6);
+  const data = fsData(mk, sel), months = fsMonths(mk, 6);
+  if(!data.length) return '<div style="padding:40px;text-align:center;color:#777;">ยังไม่ได้เลือกฟลีท</div>';
   const T = {veh:0, on:0, rp:0, repair:0, total:0}; data.forEach(d=>{ T.veh+=d.vs.length; T.on+=d.online; T.rp+=d.cnt.repair; T.repair+=d.cost.repair; T.total+=d.cost.total; });
   const printDate = new Date().toLocaleDateString('th-TH', {year:'numeric', month:'long', day:'numeric'});
   const card = d => `<div class="fs-card">
@@ -6322,6 +6371,7 @@ function openFleetGroupSummary(){
       <label style="color:#fff;display:flex;align-items:center;gap:6px;font-weight:700;">เดือน <input type="month" id="fsMonth" value="${mk}" onchange="fsRefresh()" style="padding:6px;"></label>
       <button class="btn" onclick="printInspectionReport()">🖨️ พิมพ์ / บันทึกเป็น PDF</button>
       <button class="btn ghost" onclick="closeInspectionReport()">ปิด</button></div>
+    <div class="rp-toolbar fs-filter"><div class="fl-row"><b>ฟลีท:</b> ${[...(db.fleetGroups||[]).map(g=>({id:g.id,name:g.name})), {id:'',name:'ไม่ระบุฟลีท'}].filter(g=>db.vehicles.some(v=>(v.fleetGroupId||'')===g.id)).map(g=>`<label class="ck on"><input type="checkbox" class="fsGrp" value="${g.id}" checked onchange="fsRefresh()"> 🏢 ${escapeHtml(g.name)}</label>`).join('')}</div></div>
     <div class="rp-page" id="fsPage">${fsBuild(mk)}</div>`;
   document.body.appendChild(ov); document.body.classList.add('report-open');
   if(!document.getElementById('sumPrintPage')){
@@ -6330,7 +6380,13 @@ function openFleetGroupSummary(){
     document.head.appendChild(st);
   }
 }
-function fsRefresh(){ const m = document.getElementById('fsMonth').value; if(m) document.getElementById('fsPage').innerHTML = fsBuild(m); }
+function fsRefresh(){
+  const m = document.getElementById('fsMonth').value; if(!m) return;
+  const boxes = [...document.querySelectorAll('.fsGrp')];
+  boxes.forEach(b=> b.parentElement.classList.toggle('on', b.checked));
+  const sel = new Set(boxes.filter(b=>b.checked).map(b=>b.value));
+  document.getElementById('fsPage').innerHTML = fsBuild(m, sel);
+}
 
 function closeInspectionReport(){
   const ov = document.getElementById('reportOverlay');
