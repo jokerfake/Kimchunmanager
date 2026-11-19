@@ -2631,7 +2631,7 @@ function renderPersonDocRow(personId, d){
 }
 
 const DEFAULT_TASK_TEMPLATE = [
-  {category:'เครื่องยนต์', name:'เปลี่ยนน้ำมันเครื่อง', intervalKm:20000, intervalDays:180},
+  {key:'engine_oil', category:'เครื่องยนต์', name:'เปลี่ยนน้ำมันเครื่อง', intervalKm:20000, intervalDays:180},
   {category:'เครื่องยนต์', name:'เปลี่ยนไส้กรองน้ำมันเครื่อง', intervalKm:10000, intervalDays:null},
   {category:'เครื่องยนต์', name:'เปลี่ยนไส้กรองอากาศ', intervalKm:20000, intervalDays:null},
   {category:'เครื่องยนต์', name:'เปลี่ยนไส้กรองดีเซล/เชื้อเพลิง', intervalKm:25000, intervalDays:null},
@@ -3089,7 +3089,7 @@ const ACTIVITY_CATEGORY_MAP = {
   'เพิ่มรถ':'vehicles', 'แก้ไขรถ':'vehicles', 'ลบรถ':'vehicles',
   'เพิ่มกลุ่มรถ':'vehicles', 'แก้ไขชื่อกลุ่มรถ':'vehicles', 'ย้ายกลุ่มรถ':'vehicles', 'ลบกลุ่มรถ':'vehicles',
   'เพิ่มบันทึกเลขไมล์':'daily', 'แก้ไขบันทึกเลขไมล์':'daily', 'ลบบันทึกเลขไมล์':'daily',
-  'เพิ่มบันทึกเปลี่ยนน้ำมันเครื่อง':'daily', 'แก้ไขบันทึกเปลี่ยนน้ำมันเครื่อง':'daily',
+  'เพิ่มบันทึกเปลี่ยนน้ำมันเครื่อง':'daily', 'แก้ไขบันทึกเปลี่ยนน้ำมันเครื่อง':'daily', 'ลบบันทึกเปลี่ยนน้ำมันเครื่อง':'daily',
   'เพิ่มบันทึกตรวจสภาพ':'daily', 'แก้ไขบันทึกตรวจสภาพ':'daily', 'ลบบันทึกตรวจสภาพ':'daily',
   'อัพโหลดรูปรถประจำวัน':'daily', 'ลบรูปรถประจำวัน':'daily',
   'เพิ่มบันทึกซ่อมบำรุง':'maintenance', 'แก้ไขบันทึกซ่อมบำรุง':'maintenance', 'ลบบันทึกซ่อมบำรุง':'maintenance',
@@ -3454,8 +3454,11 @@ function mergeDBThreeWay(local, remote, base){
   merged.kmLogsRemovedIds = Array.from(removedIds).slice(-3000);
   const prevRemoved = db.kmLogsRemovedIds;
   db.kmLogsRemovedIds = merged.kmLogsRemovedIds; // mergeKmLogsForSync อ่านค่านี้จาก db
-  merged.dailyPhotos = mergeDailyPhotosForSync(local.dailyPhotos, remote.dailyPhotos);
-  merged.kmLogs = mergeKmLogsForSync(local.kmLogs, remote.kmLogs);
+  const validVehicleIds = new Set((merged.vehicles || []).map(v=>v.id));
+  merged.dailyPhotos = mergeDailyPhotosForSync(local.dailyPhotos, remote.dailyPhotos)
+    .filter(e=>validVehicleIds.has(e.vehicleId));
+  merged.kmLogs = mergeKmLogsForSync(local.kmLogs, remote.kmLogs)
+    .filter(e=>validVehicleIds.has(e.vehicleId));
   db.kmLogsRemovedIds = prevRemoved;
   ['dailyPhotos','kmLogs','kmLogsRemovedIds'].forEach(k=>{
     if(!sameJSON(local[k]||[], base[k]||[])) stats.localChanged = true;
@@ -4256,7 +4259,8 @@ function _saveVehicleNow(){
 
     DEFAULT_TASK_TEMPLATE.forEach(t=>{
       db.tasks.push({
-        id: uid(), vehicleId: vId, category:t.category, name:t.name,
+        id: uid(), vehicleId: vId, key: t.key || null,
+        category:t.category, name:t.name,
         intervalKm:t.intervalKm, intervalDays:t.intervalDays,
         lastDoneKm: km, lastDoneDate: date, custom:false
       });
@@ -4275,14 +4279,21 @@ function deleteVehicle(){
   if(!currentVehicleId) return;
   const v = db.vehicles.find(v=>v.id===currentVehicleId);
   if(!v) return;
-  if(!confirm(`ลบรถ "${v.name}" และประวัติทั้งหมด?`)) return;
-  db.vehicles = db.vehicles.filter(x=>x.id!==currentVehicleId);
-  db.tasks = db.tasks.filter(x=>x.vehicleId!==currentVehicleId);
-  db.logs = db.logs.filter(x=>x.vehicleId!==currentVehicleId);
-  db.kmLogs.filter(x=>x.vehicleId===currentVehicleId).forEach(x=>markKmLogRemoved(x.id));
-  db.kmLogs = db.kmLogs.filter(x=>x.vehicleId!==currentVehicleId);
-  db.oilLogs = db.oilLogs.filter(x=>x.vehicleId!==currentVehicleId);
-  db.maintenanceLogs = db.maintenanceLogs.filter(x=>x.vehicleId!==currentVehicleId);
+  if(!confirm(`ลบรถ "${v.name}" และประวัติทั้งหมด (รวมประวัติยาง ชิปเมนต์ และรูปรถประจำวัน)?`)) return;
+  const targetId = currentVehicleId;
+  db.vehicles = db.vehicles.filter(x=>x.id!==targetId);
+  db.tasks = db.tasks.filter(x=>x.vehicleId!==targetId);
+  db.logs = db.logs.filter(x=>x.vehicleId!==targetId);
+  db.kmLogs.filter(x=>x.vehicleId===targetId).forEach(x=>markKmLogRemoved(x.id));
+  db.kmLogs = db.kmLogs.filter(x=>x.vehicleId!==targetId);
+  db.oilLogs = db.oilLogs.filter(x=>x.vehicleId!==targetId);
+  db.maintenanceLogs = db.maintenanceLogs.filter(x=>x.vehicleId!==targetId);
+  db.tireLogs = (db.tireLogs || []).filter(x=>x.vehicleId!==targetId);
+  db.shipments = (db.shipments || []).filter(x=>x.vehicleId!==targetId);
+  db.dailyPhotos = (db.dailyPhotos || []).filter(x=>x.vehicleId!==targetId);
+  (db.people || []).forEach(p=>{
+    if(p.assignedVehicleId === targetId) p.assignedVehicleId = null;
+  });
   logActivity('ลบรถ', v.name);
   saveDB();
   currentVehicleId = db.vehicles.length ? db.vehicles[0].id : null;
@@ -4811,7 +4822,11 @@ function deleteLogEntry(type, logId){
     db.oilLogs = db.oilLogs.filter(l=>l.id!==logId);
     resyncOilTask(vehicleId);
   }
-  logActivity('ลบบันทึกเลขไมล์', type==='km' ? 'บันทึกเลขไมล์' : 'บันทึกเปลี่ยนน้ำมันเครื่อง');
+  const vName = (db.vehicles.find(v=>v.id===vehicleId)||{}).name || vehicleId;
+  logActivity(
+    type==='km' ? 'ลบบันทึกเลขไมล์' : 'ลบบันทึกเปลี่ยนน้ำมันเครื่อง',
+    `${vName} — ${Number(entry.km||0).toLocaleString()} กม. (${entry.date})`
+  );
   saveDB();
   render();
 }
@@ -4823,8 +4838,15 @@ function resyncVehicleCurrentKm(vehicleId){
   if(latest) v.currentKm = latest.km;
 }
 
+function isEngineOilTask(t){
+  if(!t) return false;
+  if(t.key) return t.key === 'engine_oil';
+  const name = (t.name || '').trim();
+  return name.includes('น้ำมันเครื่อง') && !name.includes('ไส้กรอง') && !name.includes('กรอง');
+}
+
 function resyncOilTask(vehicleId){
-  const oilTask = db.tasks.find(t=>t.vehicleId===vehicleId && t.name.includes('น้ำมันเครื่อง'));
+  const oilTask = db.tasks.find(t=>t.vehicleId===vehicleId && isEngineOilTask(t));
   if(!oilTask) return;
   const latest = db.oilLogs.filter(l=>l.vehicleId===vehicleId).sort((a,b)=>a.date.localeCompare(b.date)).pop();
   if(latest){ oilTask.lastDoneKm = latest.km; oilTask.lastDoneDate = latest.date; }
@@ -4872,10 +4894,13 @@ function markDone(taskId){
   const t = db.tasks.find(t=>t.id===taskId);
   const v = db.vehicles.find(v=>v.id===currentVehicleId);
   if(!t || !v) return;
+  const today = todayStr();
   t.lastDoneKm = v.currentKm;
-  t.lastDoneDate = todayStr();
-  if(t.name.includes('น้ำมันเครื่อง')){
-    db.oilLogs.push({id:uid(), vehicleId:v.id, date:todayStr(), km:v.currentKm});
+  t.lastDoneDate = today;
+  if(isEngineOilTask(t)){
+    db.oilLogs = db.oilLogs.filter(l=>!(l.vehicleId===v.id && l.date===today));
+    db.oilLogs.push({id:uid(), vehicleId:v.id, date:today, km:v.currentKm});
+    logActivity('เพิ่มบันทึกเปลี่ยนน้ำมันเครื่อง', `${v.name} (${today})`);
   }
   saveDB();
   render();
@@ -4944,11 +4969,15 @@ function taskStatus(t, v){
   let worst = 'ok';
   let kmLeft = null, daysLeft = null;
   if(t.intervalKm){
-    kmLeft = t.intervalKm - (v.currentKm - t.lastDoneKm);
+    const series = odoSeries(v.id);
+    const effCurrentKm = odoEffectiveAt(series, '9999-12-31', v.currentKm || 0);
+    const effLastDoneKm = odoEffectiveAt(series, t.lastDoneDate || '0000-01-01', t.lastDoneKm || 0);
+    const drivenKm = Math.max(0, effCurrentKm - effLastDoneKm);
+    kmLeft = t.intervalKm - drivenKm;
     if(kmLeft <= 0) worst = 'overdue';
     else if(kmLeft <= db.settings.warningKm && worst!=='overdue') worst = 'soon';
   }
-  if(t.intervalDays){
+  if(t.intervalDays && t.lastDoneDate){
     daysLeft = t.intervalDays - daysBetween(t.lastDoneDate, todayStr());
     if(daysLeft <= 0) worst = 'overdue';
     else if(daysLeft <= db.settings.warningDays && worst!=='overdue') worst = 'soon';
@@ -4963,7 +4992,7 @@ const SHOW_OIL_ALERT_BANNER = false;
 function oilChangeAlert(v, tasks){
   // Match the engine-oil task specifically (default template name, or any custom
   // task the user named containing "น้ำมันเครื่อง" — excludes brake fluid etc.)
-  const oilTasks = tasks.filter(t => t.name.includes('น้ำมันเครื่อง'));
+  const oilTasks = tasks.filter(isEngineOilTask);
   if(!oilTasks.length) return null;
 
   let worst = null;
@@ -5007,15 +5036,24 @@ function buildOilAlertMessage(){
   return `🔔 แจ้งเตือนเปลี่ยนน้ำมันเครื่อง\n\n${lines.join('\n')}`;
 }
 
+function getLineAlertUrl(){
+  if(LINE_ALERT_FUNCTION_URL) return LINE_ALERT_FUNCTION_URL;
+  if(typeof SUPABASE_URL !== 'undefined' && SUPABASE_URL){
+    return SUPABASE_URL.replace(/\/$/, '') + '/functions/v1/send-line-alert';
+  }
+  return '';
+}
+
 async function sendOilAlertNow(){
-  if(!LINE_ALERT_FUNCTION_URL || !LINE_ALERT_SECRET){ alert('ยังไม่ได้ตั้งค่า LINE ของระบบนี้'); return; }
+  const alertUrl = getLineAlertUrl();
+  if(!alertUrl || !LINE_ALERT_SECRET){ alert('ยังไม่ได้ตั้งค่า LINE ของระบบนี้'); return; }
   const message = buildOilAlertMessage();
   if(!message){
     alert('ตอนนี้ไม่มีรถคันไหนใกล้ถึงหรือเกินกำหนดเปลี่ยนน้ำมันเครื่องครับ');
     return;
   }
   try{
-    const res = await fetch(LINE_ALERT_FUNCTION_URL, {
+    const res = await fetch(alertUrl, {
       method:'POST',
       headers:{
         'Content-Type':'application/json',
@@ -5121,7 +5159,7 @@ function odoCurrentKm(v){
 
 function buildMonthlySummary(vehicleId){
   const tasks = db.tasks.filter(t=>t.vehicleId===vehicleId);
-  const oilTask = tasks.find(t=>t.name.includes('น้ำมันเครื่อง'));
+  const oilTask = tasks.find(isEngineOilTask);
   const interval = (oilTask && oilTask.intervalKm) || 20000;
 
   const readings = odoSeries(vehicleId); // เลขสะสมจริง (รองรับไมล์ตีกลับเกินล้าน)
@@ -5844,8 +5882,8 @@ function render(){
     `<option value="${v.id}" ${v.id===currentVehicleId?'selected':''}>${escapeHtml(v.name)}</option>`
   ).join('');
   renderVehPicker();
-  document.getElementById('deleteVehicleBtn').style.display = db.vehicles.length ? 'inline-block' : 'none';
-  document.getElementById('editVehicleBtn').style.display = db.vehicles.length ? 'inline-block' : 'none';
+  document.getElementById('deleteVehicleBtn').style.display = (db.vehicles.length && can('vehicles') && can('deleteRecords')) ? 'inline-block' : 'none';
+  document.getElementById('editVehicleBtn').style.display = (db.vehicles.length && can('vehicles')) ? 'inline-block' : 'none';
 
   if(currentView === 'summary'){
     renderSummaryView();
@@ -6418,9 +6456,12 @@ function fleetSummaryVehicleHtml(v, idx){
   // 3) น้ำมันเครื่อง
   const oils = db.oilLogs.filter(l=>l.vehicleId===v.id).sort(byDateDesc);
   const lastOil = oils[0];
-  const oilTask = tasks.find(t=>t.name.includes('น้ำมันเครื่อง'));
+  const oilTask = tasks.find(isEngineOilTask);
   let os = null; try{ if(oilTask) os = taskStatus(oilTask, v); }catch(e){}
-  const oilSince = (lastOil && lastOil.km!=null && v.currentKm!=null) ? v.currentKm - lastOil.km : null;
+  const odoSer = odoSeries(v.id);
+  const effCurKm = v.currentKm!=null ? odoEffectiveAt(odoSer, '9999-12-31', v.currentKm) : null;
+  const effLastOilKm = (lastOil && lastOil.km!=null) ? odoEffectiveAt(odoSer, lastOil.date || '0000-01-01', lastOil.km) : null;
+  const oilSince = (effLastOilKm!=null && effCurKm!=null) ? Math.max(0, effCurKm - effLastOilKm) : null;
   const oilLeft = os ? [os.kmLeft!=null ? (os.kmLeft<=0?'เกิน '+num(Math.abs(os.kmLeft))+' กม.':'เหลือ '+num(os.kmLeft)+' กม.') : null,
                         os.daysLeft!=null ? (os.daysLeft<=0?'เกิน '+Math.abs(os.daysLeft)+' วัน':'เหลือ '+os.daysLeft+' วัน') : null].filter(Boolean).join(' · ') : '';
   const oilHtml = `
@@ -7043,7 +7084,7 @@ function renderVehicleSummaryTable(v){
   const statusLabel = {overdue:'ต้องเปลี่ยนน้ำมันเครื่อง', soon:'ใกล้ถึงรอบ', ok:'ปกติ'};
   const kmCount = db.kmLogs.filter(l=>l.vehicleId===v.id).length;
   const oilCount = db.oilLogs.filter(l=>l.vehicleId===v.id).length;
-  const oilTask = db.tasks.find(t=>t.vehicleId===v.id && t.name.includes('น้ำมันเครื่อง'));
+  const oilTask = db.tasks.find(t=>t.vehicleId===v.id && isEngineOilTask(t));
   return `
     <div class="panel-block" style="margin-top:16px;">
       <h2>${escapeHtml(v.name)} ${fleetBadge(v)}${v.driver ? ` <span style="font-size:12.5px; color:var(--muted); font-weight:400; font-family:'Sarabun';">คนขับ: ${escapeHtml(v.driver)}</span>` : ''} ${fleetStatusSelect(v)}${lastInspectionLabel(v.id) ? ` <span style="font-size:12px; color:var(--muted); font-weight:400; font-family:'Sarabun';">🔍 ${lastInspectionLabel(v.id)}</span>` : ''}</h2>
@@ -9313,7 +9354,7 @@ async function initApp(){
   // Only bump tasks still on the old default and not user-customized.
   let migrated = false;
   db.tasks.forEach(t=>{
-    if(!t.custom && t.name.includes('น้ำมันเครื่อง') && t.intervalKm===10000){
+    if(!t.custom && isEngineOilTask(t) && t.intervalKm===10000){
       t.intervalKm = 20000;
       migrated = true;
     }
