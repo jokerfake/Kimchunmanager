@@ -1503,6 +1503,87 @@ html[data-style] #reportOverlay input, html[data-style] #reportOverlay select{ b
 .style-swatch.active{ outline:3px solid var(--accent); }
 .style-swatch .sw-dot{ width:34px; height:22px; border-radius:6px; border:1px solid rgba(0,0,0,.25); }
 </style>
+<style id="repair-branch-styles">
+/* ===== ระบบสาขา + แจ้งเตือนรถกำลังซ่อม + สรุปรายเดือนรายสาขา ===== */
+.nav-alert-badge{
+  margin-left:auto; background:var(--overdue); color:#fff;
+  font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;
+  padding:2px 7px; border-radius:999px; line-height:1.25; flex-shrink:0;
+}
+.rj-alert-bar{
+  background:var(--overdue-bg); border:1.5px solid var(--overdue);
+  border-radius:var(--radius); padding:13px 16px; margin-top:16px;
+  display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+}
+.rj-alert-bar .rj-alert-title{ font-family:'Kanit'; font-weight:700; font-size:15px; color:var(--overdue); display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.rj-alert-bar .rj-alert-sub{ font-size:12.5px; color:var(--muted); margin-top:3px; }
+.rj-alert-chips{ display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+.rj-alert-chip{
+  font-size:12px; padding:4px 10px; border-radius:999px; cursor:pointer;
+  border:1px solid var(--overdue); background:var(--panel); color:var(--paper);
+  font-family:'Sarabun'; font-weight:600; transition:all .15s;
+}
+.rj-alert-chip:hover{ background:var(--overdue); color:#fff; }
+.rj-veh-alert{
+  background:var(--overdue-bg); border:1.5px solid var(--overdue);
+  border-radius:var(--radius); padding:14px 16px; margin-top:16px;
+}
+.rj-veh-alert-head{
+  display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  font-family:'Kanit'; font-weight:700; font-size:15px; color:var(--overdue); margin-bottom:8px;
+}
+.rj-veh-alert-item{
+  background:var(--panel); border:1px solid var(--steel); border-radius:10px;
+  padding:10px 12px; margin-top:8px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+}
+.rj-subtabs{ display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+.rj-subtab{
+  font-family:'Kanit'; font-size:13.5px; font-weight:600; cursor:pointer;
+  padding:8px 15px; border-radius:999px; border:1.5px solid var(--steel);
+  background:var(--panel-2); color:var(--paper); display:inline-flex; align-items:center; gap:7px;
+  transition:all .15s;
+}
+.rj-subtab:hover{ border-color:var(--accent); }
+.rj-subtab.active{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+.rj-subtab .cnt{
+  font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;
+  padding:1px 7px; border-radius:999px; background:rgba(0,0,0,0.08); color:inherit;
+}
+.rj-subtab.active .cnt{ background:rgba(255,255,255,0.22); color:#fff; }
+.rj-day-pill{
+  display:inline-flex; align-items:center; gap:4px; font-family:'Kanit'; font-size:12px; font-weight:700;
+  padding:3px 10px; border-radius:999px; white-space:nowrap;
+}
+.rj-day-pill.normal{ background:var(--accent-soft); color:var(--accent-2); }
+.rj-day-pill.warn{ background:var(--soon-bg); color:var(--soon-text); }
+.rj-day-pill.danger{ background:var(--overdue-bg); color:var(--overdue); }
+.rj-branch-pill{
+  display:inline-flex; align-items:center; gap:4px; font-family:'Kanit'; font-size:12px; font-weight:600;
+  padding:2px 9px; border-radius:999px; background:var(--panel-2); border:1px solid var(--steel); color:var(--paper);
+}
+.rj-branch-grid{
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(275px, 1fr)); gap:12px; margin-top:12px;
+}
+.rj-branch-card{
+  background:var(--panel-2); border:1px solid var(--steel); border-radius:12px; padding:14px;
+  cursor:pointer; transition:border-color .15s, transform .15s;
+}
+.rj-branch-card:hover{ border-color:var(--accent); transform:translateY(-1px); }
+.rj-branch-card.selected{ border-color:var(--accent); box-shadow:0 0 0 2px var(--accent-soft); }
+.rj-branch-card-hd{ display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px; font-family:'Kanit'; font-weight:700; font-size:15px; }
+.rj-branch-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; text-align:center; margin-bottom:8px; }
+.rj-branch-stat{ background:var(--panel); border:1px solid var(--steel-soft); border-radius:8px; padding:6px 4px; }
+.rj-branch-stat b{ display:block; font-family:'JetBrains Mono',monospace; font-size:16px; }
+.rj-branch-stat span{ font-size:11px; color:var(--muted); }
+.rj-section-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+.rj-photo-grid{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+.rj-photo-grid img{ width:84px; height:84px; object-fit:cover; border-radius:8px; cursor:pointer; border:1px solid var(--steel); }
+html[data-style="neon"] .rj-alert-bar,
+html[data-style="neon"] .rj-veh-alert{ background:#2A0D1B !important; border-color:#FF2E6E !important; }
+html[data-style="neon"] .rj-branch-card,
+html[data-style="neon"] .rj-veh-alert-item{ background:#111827 !important; border-color:rgba(34,227,255,.45) !important; }
+html[data-style="neon"] .rj-subtab.active{ background:#FF2E93 !important; border-color:#FF2E93 !important; color:#fff !important; }
+</style>
 </head>
 <body>
 
@@ -1523,7 +1604,7 @@ html[data-style] #reportOverlay input, html[data-style] #reportOverlay select{ b
       <button class="tab-btn" data-view="personnel" onclick="setView('personnel')"><span class="ic">🪪</span> บุคลากร &amp; เอกสาร</button>
       <button class="tab-btn" data-view="tires" onclick="setView('tires')"><span class="ic">🛞</span> จัดการยาง</button>
       <button class="tab-btn" data-view="dailyphotos" onclick="setView('dailyphotos')"><span class="ic">📷</span> บันทึกรูปรถประจำวัน</button>
-      <button class="tab-btn" data-view="repairjobs" onclick="setView('repairjobs')"><span class="ic">🔧</span> งานซ่อมจาก LINE</button>
+      <button class="tab-btn" data-view="repairjobs" onclick="setView('repairjobs')"><span class="ic">🔧</span> งานซ่อม &amp; แจ้งเตือน <span id="repairNavBadge" class="nav-alert-badge" style="display:none;">0</span></button>
     </div>
 
     <div class="sidebar-footer">
@@ -1566,8 +1647,9 @@ html[data-style] #reportOverlay input, html[data-style] #reportOverlay select{ b
         <button class="btn small" type="button" onclick="toggleRptMenu(event)">📊 รายงาน ▾</button>
         <div class="rpt-pop" id="rptPop">
           <button type="button" onclick="closeRptMenu(); doPrint()"><b>🖨️ ปริ้นรายงานรถคันนี้</b><small>รายงานเต็มของรถที่เลือกอยู่</small></button>
-          <button type="button" onclick="closeRptMenu(); openFleetSummary()"><b>📄 รายงานสรุปรถ</b><small>เลือกฟลีท/ทะเบียนได้ · พิมพ์ 2 คัน/แผ่น</small></button>
-          <button type="button" onclick="closeRptMenu(); openFleetGroupSummary()"><b>🏢 รายงานรายฟลีท</b><small>สถานะรถ + ค่าซ่อมต่อเดือนแต่ละฟลีท</small></button>
+          <button type="button" onclick="closeRptMenu(); openFleetSummary()"><b>📄 รายงานสรุปรถ</b><small>เลือกสาขา/ทะเบียนได้ · พิมพ์ 2 คัน/แผ่น</small></button>
+          <button type="button" onclick="closeRptMenu(); openFleetGroupSummary()"><b>🏢 รายงานรายสาขา / ฟลีท</b><small>สถานะรถ + งานซ่อม + ค่าใช้จ่ายแต่ละสาขา</small></button>
+          <button type="button" onclick="closeRptMenu(); openRepairMonthlyReport()"><b>🔧 สรุปงานซ่อมประจำเดือน / สาขา</b><small>4.1 ซ่อมแล้ว · 4.2 ยังไม่เสร็จ · 4.3 ค่าใช้จ่ายสาขา</small></button>
         </div>
       </div>
     </div>
@@ -1582,9 +1664,15 @@ html[data-style] #reportOverlay input, html[data-style] #reportOverlay select{ b
 <div class="overlay" id="vehicleOverlay">
   <div class="modal">
     <h3 id="vehicleModalTitle">เพิ่มรถบรรทุก</h3>
-    <div class="field">
-      <label>ชื่อ/ทะเบียนรถ</label>
-      <input id="newVehicleName" placeholder="เช่น 70-1234 อีซูซุ FTR">
+    <div class="two-col">
+      <div class="field">
+        <label>ชื่อ/ทะเบียนรถ</label>
+        <input id="newVehicleName" placeholder="เช่น ผท 9902">
+      </div>
+      <div class="field">
+        <label>เบอร์รถ (ถ้ามี)</label>
+        <input id="newVehicleNo" placeholder="เช่น 302">
+      </div>
     </div>
     <div class="field">
       <label>ชื่อคนขับ (ถ้ามี)</label>
@@ -1594,7 +1682,7 @@ html[data-style] #reportOverlay input, html[data-style] #reportOverlay select{ b
       <label>คนขับที่ผูกบัญชี LINE ไว้ (ส่งรูปอัตโนมัติทุกสัปดาห์)</label>
       <div id="vehicleLineDriversList" class="hint" style="margin:0 0 6px;"></div>
       <button type="button" class="btn ghost small" id="vehicleLineDriversClearBtn" onclick="clearVehicleLineDrivers()">ล้างการผูกบัญชี LINE ทั้งหมด</button>
-      <div class="hint" style="margin-top:6px;">คนขับผูกบัญชีเองได้ โดยพิมพ์ "ลงทะเบียน" ตามด้วยเลขทะเบียนคันนี้ ในกลุ่ม LINE ครั้งเดียว เช่น "ลงทะเบียน 70-1234"</div>
+      <div class="hint" style="margin-top:6px;">คนขับผูกบัญชีและสาขาเองได้ โดยพิมพ์ในกลุ่ม LINE ครั้งเดียว เช่น<br><code>ลงทะเบียน ผท 9902 เบอร์ 302</code> / <code>สาขา ศรีเมืองใหม่</code></div>
     </div>
     <div class="field">
       <label>สถานะรถ</label>
@@ -1605,7 +1693,7 @@ html[data-style] #reportOverlay input, html[data-style] #reportOverlay select{ b
       </select>
     </div>
     <div class="field">
-      <label>กลุ่มรถ (Fleet)</label>
+      <label>สาขา / กลุ่มรถ (Branch / Fleet)</label>
       <select id="newVehicleFleetGroup" onchange="handleVehicleFleetGroupSelect(this)"></select>
     </div>
     <div id="vehicleKmDateWrap">
@@ -1739,20 +1827,20 @@ html[data-style] #reportOverlay input, html[data-style] #reportOverlay select{ b
 <!-- Shared hidden file input used for Excel/CSV bulk import (any vehicle, km or oil) -->
 <input type="file" id="globalImportFile" accept=".xlsx,.xls,.csv" style="display:none;" onchange="handleImportFile(event)">
 
-<!-- Fleet Group Management Modal -->
+<!-- Fleet Group / Branch Management Modal -->
 <div class="overlay" id="fleetGroupOverlay">
   <div class="modal" style="max-width:600px;">
-    <h3>จัดการกลุ่มรถ (Fleet)</h3>
+    <h3>จัดการสาขา / กลุ่มรถ (Branch / Fleet)</h3>
     <div id="fleetGroupList"></div>
     <div class="field" style="margin-top:14px;">
-      <label>เพิ่มกลุ่มใหม่</label>
+      <label>เพิ่มสาขา / กลุ่มใหม่</label>
       <div style="display:flex; gap:8px;">
-        <input id="newFleetGroupName" placeholder="เช่น สายเหนือ, รถบรรทุกหนัก" style="flex:1;" onkeydown="if(event.key==='Enter') addFleetGroup();">
+        <input id="newFleetGroupName" placeholder="เช่น ศรีเมืองใหม่, สาขาเมือง, สายเหนือ" style="flex:1;" onkeydown="if(event.key==='Enter') addFleetGroup();">
         <button class="btn small" onclick="addFleetGroup()">เพิ่ม</button>
       </div>
     </div>
     <div class="field" style="margin-top:18px;">
-      <label>กำหนดกลุ่มให้รถแต่ละคัน (เลือกได้ทีละหลายคัน)</label>
+      <label>กำหนดสาขา/กลุ่มให้รถแต่ละคัน (เลือกได้ทีละหลายคัน)</label>
       <div class="fg-assign-tools">
         <input id="fgAssignSearch" placeholder="🔍 กรองทะเบียน/คนขับ" oninput="renderFleetAssignList()">
         <select id="fgAssignTarget"></select>
@@ -1832,8 +1920,11 @@ html[data-style] #reportOverlay input, html[data-style] #reportOverlay select{ b
     </div>
     <div class="field">
       <label>แจ้งเตือนเข้า LINE</label>
-      <div><button class="btn ghost small" onclick="sendOilAlertNow()">🔔 ส่งแจ้งเตือนเปลี่ยนน้ำมันเครื่องเข้า LINE ตอนนี้</button></div>
-      <div class="hint" style="margin-top:4px;">รวบรวมรถทุกคันที่ใกล้ถึงหรือเกินกำหนดเปลี่ยนน้ำมันเครื่อง แล้วส่งข้อความสรุปเข้ากลุ่ม/แชท LINE ที่ตั้งค่าไว้</div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn ghost small" onclick="sendOilAlertNow()">🔔 ส่งแจ้งเตือนเปลี่ยนน้ำมันเครื่องเข้า LINE</button>
+        <button class="btn ghost small" onclick="sendRepairingAlertToLine()">🔧 ส่งแจ้งเตือนรถกำลังซ่อมเข้า LINE ตอนนี้</button>
+      </div>
+      <div class="hint" style="margin-top:4px;">รวบรวมรถที่ใกล้ถึงกำหนดเปลี่ยนน้ำมันเครื่อง หรือรถที่กำลังจอดซ่อม (พร้อมจำนวนวัน) ส่งเข้ากลุ่ม/แชท LINE</div>
     </div>
 
     <div class="chk-group-title" style="margin-top:20px;">ผู้ใช้งานและระบบ</div>
@@ -1990,17 +2081,36 @@ html[data-style] #reportOverlay input, html[data-style] #reportOverlay select{ b
     </div>
     <div class="two-col">
       <div class="field">
-        <label>วันที่</label>
+        <label>วันที่เข้าซ่อม / วันที่ทำรายการ</label>
         <input id="maintLogDate" type="date">
       </div>
+      <div class="field">
+        <label>สถานะการซ่อม</label>
+        <select id="maintLogStatus">
+          <option value="done">ซ่อมเสร็จแล้ว</option>
+          <option value="repairing">กำลังซ่อม (ยังซ่อมไม่เสร็จ)</option>
+        </select>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="field">
+        <label>อู่ / ร้านซ่อม — ไม่บังคับ</label>
+        <input id="maintLogGarage" placeholder="เช่น อู่มารวยการช่าง">
+      </div>
+      <div class="field">
+        <label>วันนัดซ่อมเสร็จ — ไม่บังคับ</label>
+        <input id="maintLogDueDate" type="date">
+      </div>
+    </div>
+    <div class="two-col">
       <div class="field">
         <label>ค่าใช้จ่าย (บาท) — ไม่บังคับ</label>
         <input id="maintLogCost" type="number" min="0" step="1" placeholder="เช่น 3500">
       </div>
-    </div>
-    <div class="field">
-      <label>เลขไมล์ (กม.) — ไม่บังคับ</label>
-      <input id="maintLogKm" type="number" placeholder="เช่น 466541">
+      <div class="field">
+        <label>เลขไมล์ (กม.) — ไม่บังคับ</label>
+        <input id="maintLogKm" type="number" placeholder="เช่น 466541">
+      </div>
     </div>
     <div class="field">
       <label>รายละเอียด/หมายเหตุ — ไม่บังคับ</label>
@@ -2014,6 +2124,120 @@ html[data-style] #reportOverlay input, html[data-style] #reportOverlay select{ b
     <div class="modal-actions">
       <button class="btn ghost" onclick="closeModal('maintLogOverlay')">ยกเลิก</button>
       <button class="btn" id="maintLogSubmitBtn" onclick="submitMaintenanceLogModal()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add / Edit Repair Job Modal (งานซ่อม / กำลังซ่อม / ซ่อมเสร็จ) -->
+<div class="overlay" id="repairJobOverlay">
+  <div class="modal" style="max-width:520px;">
+    <h3 id="rjFormModalTitle">แจ้งซ่อม / บันทึกงานซ่อม</h3>
+    <div class="field">
+      <label>เลือกรถในระบบ (ถ้ามี)</label>
+      <select id="rjFormVehicleId" onchange="onRjFormVehicleChange()"></select>
+    </div>
+    <div class="two-col">
+      <div class="field">
+        <label>ทะเบียนรถ</label>
+        <input id="rjFormPlate" placeholder="เช่น ผท 9902">
+      </div>
+      <div class="field">
+        <label>เบอร์รถ — ไม่บังคับ</label>
+        <input id="rjFormVehicleNo" placeholder="เช่น 302">
+      </div>
+    </div>
+    <div class="field">
+      <label>สาขา</label>
+      <select id="rjFormBranch" onchange="handleRjFormBranchSelect(this)"></select>
+    </div>
+    <div class="field">
+      <label>รายการซ่อม / อาการเสีย</label>
+      <input id="rjFormTitle" list="maintLogTitleSuggestions" placeholder="เช่น ซ่อมหม้อน้ำ, เปลี่ยนผ้าเบรก, ระบบไฟ">
+    </div>
+    <div class="two-col">
+      <div class="field">
+        <label>อู่ / ร้านซ่อม — ไม่บังคับ</label>
+        <input id="rjFormGarage" placeholder="เช่น อู่มารวยการช่าง">
+      </div>
+      <div class="field">
+        <label>ผู้แจ้งซ่อม — ไม่บังคับ</label>
+        <input id="rjFormReportedName" placeholder="เช่น สมชาย">
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="field">
+        <label>วันที่เข้าซ่อม</label>
+        <input id="rjFormRepairDate" type="date">
+      </div>
+      <div class="field">
+        <label>วันนัดซ่อมเสร็จ — ไม่บังคับ</label>
+        <input id="rjFormDueDate" type="date">
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="field">
+        <label>สถานะงานซ่อม</label>
+        <select id="rjFormStatus" onchange="onRjFormStatusChange()">
+          <option value="repairing">กำลังซ่อม (ยังซ่อมไม่เสร็จ)</option>
+          <option value="done">ซ่อมเสร็จแล้ว</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>ค่าใช้จ่าย (บาท) — ยังไม่ทราบเว้นว่างไว้ได้</label>
+        <input id="rjFormCost" type="number" min="0" step="1" placeholder="เช่น 7850">
+      </div>
+    </div>
+    <div class="field" id="rjFormClosedDateWrap" style="display:none;">
+      <label>วันที่ซ่อมเสร็จ</label>
+      <input id="rjFormClosedDate" type="date">
+    </div>
+    <div class="field" id="rjFormSyncVehStatusWrap">
+      <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+        <input type="checkbox" id="rjFormSyncVehStatus" style="width:auto;" checked>
+        <span>ตั้งสถานะรถคันนี้เป็น "จอดซ่อม" อัตโนมัติ (เมื่อซ่อมอยู่)</span>
+      </label>
+    </div>
+    <div class="field">
+      <label>รูปภาพประกอบงานซ่อม / ใบเสนอราคา / ใบเสร็จ</label>
+      <div class="photo-tile-grid" id="rjFormPhotosGrid"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal('repairJobOverlay')">ยกเลิก</button>
+      <button class="btn" id="rjFormSubmitBtn" onclick="saveRepairJobModal()">บันทึกข้อมูล</button>
+    </div>
+  </div>
+</div>
+
+<!-- Quick-Close Repair Modal (ปิดงานซ่อม + ใส่ราคา + แจ้ง LINE) -->
+<div class="overlay" id="rjCloseOverlay">
+  <div class="modal" style="max-width:440px;">
+    <h3>✅ ปิดงานซ่อม (ซ่อมเสร็จแล้ว)</h3>
+    <div id="rjCloseInfo" class="hint" style="background:var(--panel-2); border:1px solid var(--steel); border-radius:10px; padding:10px 12px; margin-bottom:14px;"></div>
+    <div class="two-col">
+      <div class="field">
+        <label>วันที่ซ่อมเสร็จ</label>
+        <input id="rjCloseDate" type="date">
+      </div>
+      <div class="field">
+        <label>ค่าใช้จ่ายจริง (บาท) — ไม่บังคับ</label>
+        <input id="rjCloseCost" type="number" min="0" step="1" placeholder="เช่น 7850">
+      </div>
+    </div>
+    <div class="field" id="rjCloseReadyVehWrap">
+      <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+        <input type="checkbox" id="rjCloseReadyVeh" style="width:auto;" checked>
+        <span>เปลี่ยนสถานะรถกลับเป็น "พร้อมใช้งาน"</span>
+      </label>
+    </div>
+    <div class="field" id="rjCloseNotifyLineWrap">
+      <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+        <input type="checkbox" id="rjCloseNotifyLine" style="width:auto;" checked>
+        <span>ส่งแจ้งเตือน "ซ่อมเสร็จแล้ว" เข้ากลุ่ม LINE</span>
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal('rjCloseOverlay')">ยกเลิก</button>
+      <button class="btn" id="rjCloseSubmitBtn" onclick="submitRjCloseModal()">ยืนยัน ซ่อมเสร็จแล้ว</button>
     </div>
   </div>
 </div>
@@ -4050,6 +4274,45 @@ function handleRestoreBackupFile(event){
   reader.readAsText(file);
 }
 
+/* ---------------- Branch & Vehicle helpers ---------------- */
+function cleanBranchLabel(s){
+  return String(s||'').replace(/^สาขา(?:\s+|[:：=]\s*)/,'').replace(/\s+/g,' ').trim();
+}
+function normalizeBranchName(s){
+  return cleanBranchLabel(s).toLowerCase();
+}
+function findBranchGroupByName(name){
+  const target = normalizeBranchName(name);
+  if(!target) return null;
+  return (db.fleetGroups||[]).find(g=>normalizeBranchName(g.name)===target) || null;
+}
+function ensureBranchGroup(name){
+  const clean = cleanBranchLabel(name);
+  if(!clean) return null;
+  let g = findBranchGroupByName(clean);
+  if(!g){
+    g = {id:uid(), name:clean};
+    db.fleetGroups = db.fleetGroups || [];
+    db.fleetGroups.push(g);
+    saveDB();
+  }
+  return g;
+}
+function vehicleBranchName(v){
+  if(!v || !v.fleetGroupId) return '';
+  const g = (db.fleetGroups||[]).find(g=>g.id===v.fleetGroupId);
+  return g ? cleanBranchLabel(g.name) : '';
+}
+function vehicleDisplayTitle(v){
+  if(!v) return '—';
+  const base = v.name || '—';
+  const vno = (v.vehicleNo || '').trim();
+  if(!vno) return base;
+  const escapedNo = vno.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  if(new RegExp('เบอร์\\s*'+escapedNo+'(\\D|$)').test(base)) return base;
+  return `${base} (เบอร์ ${vno})`;
+}
+
 /* ---------------- Vehicle CRUD ---------------- */
 let editingVehicleId = null;
 
@@ -4057,6 +4320,7 @@ function openVehicleModal(vehicleId=null){
   if(!can('vehicles')){ alert('คุณไม่มีสิทธิ์จัดการรถ/ทะเบียน'); return; }
   editingVehicleId = vehicleId;
   const nameField = document.getElementById('newVehicleName');
+  const vnoField = document.getElementById('newVehicleNo');
   const driverField = document.getElementById('newVehicleDriver');
   const statusField = document.getElementById('newVehicleStatus');
   const groupField = document.getElementById('newVehicleFleetGroup');
@@ -4072,16 +4336,18 @@ function openVehicleModal(vehicleId=null){
   if(vehicleId){
     const v = db.vehicles.find(v=>v.id===vehicleId);
     nameField.value = v ? v.name : '';
+    if(vnoField) vnoField.value = (v && v.vehicleNo) || '';
     driverField.value = (v && v.driver) || '';
     statusField.value = (v && v.status) || 'ready';
     groupField.value = (v && v.fleetGroupId) || '';
     kmDateWrap.style.display = 'none';
-    title.textContent = 'แก้ไขชื่อ/ทะเบียนรถ';
+    title.textContent = 'แก้ไขข้อมูลรถ / สาขา';
     submitBtn.textContent = 'บันทึกการแก้ไข';
     renderVehicleLineDrivers(v);
     lineDriversWrap.style.display = '';
   }else{
     nameField.value = '';
+    if(vnoField) vnoField.value = '';
     driverField.value = '';
     statusField.value = 'ready';
     groupField.value = '';
@@ -4127,20 +4393,18 @@ function clearVehicleLineDrivers(){
 function closeModal(id){ document.getElementById(id).classList.remove('show'); }
 
 function populateFleetGroupSelect(selectEl){
-  selectEl.innerHTML = '<option value="">— ไม่ระบุกลุ่ม —</option>'
+  selectEl.innerHTML = '<option value="">— ไม่ระบุสาขา/กลุ่ม —</option>'
     + db.fleetGroups.map(g=>`<option value="${g.id}">${escapeHtml(g.name)}</option>`).join('')
-    + '<option value="__new__">+ เพิ่มกลุ่มใหม่...</option>';
+    + '<option value="__new__">+ เพิ่มสาขา/กลุ่มใหม่...</option>';
 }
 
 function handleVehicleFleetGroupSelect(selectEl){
   if(selectEl.value !== '__new__') return;
-  const name = prompt('ชื่อกลุ่มรถใหม่ (เช่น สายเหนือ, รถบรรทุกหนัก):');
+  const name = prompt('ชื่อสาขา / กลุ่มรถใหม่ (เช่น ศรีเมืองใหม่, สายเหนือ):');
   if(name && name.trim()){
-    const g = {id:uid(), name:name.trim()};
-    db.fleetGroups.push(g);
-    saveDB();
+    const g = ensureBranchGroup(name);
     populateFleetGroupSelect(selectEl);
-    selectEl.value = g.id;
+    selectEl.value = g ? g.id : '';
   }else{
     selectEl.value = '';
   }
@@ -4236,6 +4500,8 @@ async function saveVehicle(){
 
 function _saveVehicleNow(){
   const name = document.getElementById('newVehicleName').value.trim();
+  const vnoEl = document.getElementById('newVehicleNo');
+  const vehicleNo = vnoEl ? vnoEl.value.trim() : '';
   const driver = document.getElementById('newVehicleDriver').value.trim();
   const status = document.getElementById('newVehicleStatus').value;
   const fleetGroupId = document.getElementById('newVehicleFleetGroup').value || null;
@@ -4243,7 +4509,7 @@ function _saveVehicleNow(){
 
   if(editingVehicleId){
     const v = db.vehicles.find(v=>v.id===editingVehicleId);
-    if(v){ v.name = name; v.driver = driver; v.status = status; v.fleetGroupId = fleetGroupId; }
+    if(v){ v.name = name; v.vehicleNo = vehicleNo; v.driver = driver; v.status = status; v.fleetGroupId = fleetGroupId; }
     logActivity('แก้ไขรถ', name);
     saveDB();
     editingVehicleId = null;
@@ -4255,7 +4521,9 @@ function _saveVehicleNow(){
   const km = parseInt(document.getElementById('newVehicleKm').value) || 0;
   const date = fixBEYear(document.getElementById('newVehicleDate').value) || todayStr();
   const vId = uid();
- db.vehicles.push({id:vId, name, driver, status, fleetGroupId, currentKm:km});
+  const vObj = {id:vId, name, driver, status, fleetGroupId, currentKm:km};
+  if(vehicleNo) vObj.vehicleNo = vehicleNo;
+  db.vehicles.push(vObj);
 
     DEFAULT_TASK_TEMPLATE.forEach(t=>{
       db.tasks.push({
@@ -4489,7 +4757,7 @@ function getSearchFilteredVehicles(){
     }
     if(!q) return true;
     const groupName = v.fleetGroupId ? ((db.fleetGroups.find(g=>g.id===v.fleetGroupId)||{}).name || '') : '';
-    const haystack = `${v.name} ${v.driver||''} ${FLEET_STATUS[v.status||'ready'].label} ${groupName}`.toLowerCase();
+    const haystack = `${v.name} ${v.vehicleNo||''} ${v.driver||''} ${FLEET_STATUS[v.status||'ready'].label} ${groupName}`.toLowerCase();
     return haystack.includes(q);
   });
 }
@@ -5705,9 +5973,9 @@ let vpActiveIdx = 0;
 try{ vpFleet = localStorage.getItem('kimchunTruck.vpFleet') || 'all'; }catch(err){}
 
 function vpGroupName(gid){
-  if(!gid) return 'ไม่ระบุกลุ่ม';
+  if(!gid) return 'ไม่ระบุสาขา';
   const g = db.fleetGroups.find(g=>g.id===gid);
-  return g ? g.name : 'ไม่ระบุกลุ่ม';
+  return g ? g.name : 'ไม่ระบุสาขา';
 }
 function vpFilteredVehicles(){
   const q = vpQuery.trim().toLowerCase();
@@ -5715,7 +5983,7 @@ function vpFilteredVehicles(){
     if(vpFleet !== 'all' && (v.fleetGroupId || 'none') !== vpFleet) return false;
     if(vpStatus !== 'all' && (v.status || 'ready') !== vpStatus) return false;
     if(!q) return true;
-    return `${v.name} ${v.driver||''} ${vpGroupName(v.fleetGroupId)}`.toLowerCase().includes(q);
+    return `${v.name} ${v.vehicleNo||''} ${v.driver||''} ${vpGroupName(v.fleetGroupId)}`.toLowerCase().includes(q);
   });
 }
 function renderVehPicker(){
@@ -5729,7 +5997,7 @@ function renderVehPicker(){
     btn.innerHTML = `
       <span class="vp-dot ${st}"></span>
       <span class="vp-btn-main">
-        <span class="vp-btn-name">${escapeHtml(cur.name)}</span>
+        <span class="vp-btn-name">${escapeHtml(vehicleDisplayTitle(cur))}</span>
         <span class="vp-btn-sub">${cur.driver ? escapeHtml(cur.driver) + ' · ' : ''}${escapeHtml(vpGroupName(cur.fleetGroupId))}</span>
       </span>
       <span class="vp-btn-count">${db.vehicles.length} คัน</span>
@@ -5740,12 +6008,12 @@ function renderVehPicker(){
   if(document.getElementById('vehPicker').classList.contains('open')) renderVehPickerPanel();
 }
 function renderVehPickerPanel(){
-  // Fleet chips
+  // Fleet / branch chips
   const hasUngrouped = db.vehicles.some(v=>!v.fleetGroupId);
   const fleets = [
-    {id:'all', name:'ทุกฟลีท', n: db.vehicles.length},
+    {id:'all', name:'ทุกสาขา', n: db.vehicles.length},
     ...db.fleetGroups.map(g=>({id:g.id, name:g.name, n: db.vehicles.filter(v=>v.fleetGroupId===g.id).length})),
-    ...(hasUngrouped && db.fleetGroups.length ? [{id:'none', name:'ไม่ระบุกลุ่ม', n: db.vehicles.filter(v=>!v.fleetGroupId).length}] : [])
+    ...(hasUngrouped && db.fleetGroups.length ? [{id:'none', name:'ไม่ระบุสาขา', n: db.vehicles.filter(v=>!v.fleetGroupId).length}] : [])
   ];
   if(!fleets.some(f=>f.id===vpFleet)) vpFleet = 'all';
   document.getElementById('vpFleetChips').innerHTML = fleets.map(f=>
@@ -5778,7 +6046,7 @@ function renderVehPickerPanel(){
       return `<div class="vp-item ${v.id===currentVehicleId?'current':''} ${i===vpActiveIdx?'hi':''}" role="option" data-idx="${i}" onclick="pickVehicle('${v.id}')" onmouseenter="vpActiveIdx=${i}">
         <span class="vp-dot ${st}" title="${FLEET_STATUS[st].label}"></span>
         <span class="vp-item-main">
-          <span class="vp-item-name">${escapeHtml(v.name)}</span>
+          <span class="vp-item-name">${escapeHtml(vehicleDisplayTitle(v))}</span>
           <span class="vp-item-sub">${v.driver ? escapeHtml(v.driver) : '<i>ไม่ระบุคนขับ</i>'}</span>
         </span>
         <span class="vp-item-meta">${insp ? escapeHtml(insp) : '<span class="vp-warn">ยังไม่เคยตรวจ</span>'}</span>
@@ -5877,6 +6145,7 @@ function bulkAssignFleetGroup(){
 
 /* ---------------- Rendering ---------------- */
 function render(){
+  if(typeof updateRepairNavBadge === 'function') updateRepairNavBadge();
   const select = document.getElementById('vehicleSelect');
   select.innerHTML = db.vehicles.map(v=>
     `<option value="${v.id}" ${v.id===currentVehicleId?'selected':''}>${escapeHtml(v.name)}</option>`
@@ -5960,9 +6229,11 @@ function render(){
 
   app.innerHTML = `
     <div class="print-only" style="margin-top:20px;">
-      <h2 style="margin:0;">รายงานแผนบำรุงรักษา — ${escapeHtml(v.name)}${v.driver ? ' (คนขับ: ' + escapeHtml(v.driver) + ')' : ''} [${FLEET_STATUS[v.status||'ready'].label}]</h2>
+      <h2 style="margin:0;">รายงานแผนบำรุงรักษา — ${escapeHtml(vehicleDisplayTitle(v))}${v.driver ? ' (คนขับ: ' + escapeHtml(v.driver) + ')' : ''} [${FLEET_STATUS[v.status||'ready'].label}]</h2>
       <div style="color:var(--muted); font-size:13px; margin-top:2px;">เลขไมล์ ณ วันที่พิมพ์: ${v.currentKm!=null ? v.currentKm.toLocaleString() : '-'} กม. &nbsp;|&nbsp; วันที่พิมพ์: ${printDate}</div>
     </div>
+
+    ${typeof renderGlobalRepairAlertBanner==='function' ? renderGlobalRepairAlertBanner() : ''}
 
     <div class="veh-hero-card ${v.photoUrl ? 'has-photo' : ''}" ${v.photoUrl ? `style="--hero-img:url('${v.photoUrl}')"` : ''}>
       <div class="veh-hero-photo" id="vehHeroPhotoWrap">
@@ -5973,11 +6244,11 @@ function render(){
         </label>
       </div>
       <div class="veh-hero-info">
-        <div class="veh-hero-name">${escapeHtml(v.name)} ${fleetBadge(v)}</div>
+        <div class="veh-hero-name">${escapeHtml(v.name)}${v.vehicleNo ? ` <span class="rj-branch-pill">เบอร์ ${escapeHtml(v.vehicleNo)}</span>` : ''} ${fleetBadge(v)}</div>
         <div class="veh-hero-meta">
           ${v.driver ? `<span>คนขับ: <strong>${escapeHtml(v.driver)}</strong></span>` : ''}
           <span>จำนวนล้อ: <strong>${wheelCountOf(v)} ล้อ</strong></span>
-          ${v.fleetGroupId ? `<span>กลุ่มรถ: <strong>${escapeHtml((db.fleetGroups.find(g=>g.id===v.fleetGroupId)||{}).name || '—')}</strong></span>` : ''}
+          <span>สาขา: <strong>${escapeHtml(vehicleBranchName(v) || 'ไม่ระบุสาขา')}</strong></span>
           ${fleetStatusSelect(v)}
         </div>
       </div>
@@ -5997,6 +6268,8 @@ function render(){
       </div>
     </div>
     <div class="hint" style="margin:8px 2px 0;">อัปเดตไมล์ทุกครั้งที่เข้าดู เพื่อให้สถานะแม่นยำ</div>
+
+    ${typeof renderVehicleActiveRepairBanner==='function' ? renderVehicleActiveRepairBanner(v) : ''}
 
     ${assignedPersonAlert ? `
     <div class="oil-banner ${assignedPersonAlert.status}">
@@ -6153,12 +6426,18 @@ function openMaintenanceLogModal(vehicleId, logId=null){
   maintLogTargetVehicleId = vehicleId;
   document.getElementById('maintLogReceipt').value = '';
   const preview = document.getElementById('maintLogReceiptPreview');
+  const statusEl = document.getElementById('maintLogStatus');
+  const garageEl = document.getElementById('maintLogGarage');
+  const dueEl = document.getElementById('maintLogDueDate');
 
   if(logId){
     const entry = db.maintenanceLogs.find(l=>l.id===logId);
     document.getElementById('maintLogModalTitle').textContent = 'แก้ไขบันทึกซ่อมบำรุง';
     document.getElementById('maintLogTitle').value = entry ? entry.title : '';
     document.getElementById('maintLogDate').value = entry ? entry.date : todayStr();
+    if(statusEl) statusEl.value = (entry && entry.status) || 'done';
+    if(garageEl) garageEl.value = (entry && entry.garage) || '';
+    if(dueEl) dueEl.value = (entry && entry.dueDate) || '';
     document.getElementById('maintLogKm').value = (entry && entry.km!=null) ? entry.km : '';
     document.getElementById('maintLogCost').value = (entry && entry.cost!=null) ? entry.cost : '';
     document.getElementById('maintLogNote').value = entry ? (entry.note||'') : '';
@@ -6169,6 +6448,9 @@ function openMaintenanceLogModal(vehicleId, logId=null){
     document.getElementById('maintLogModalTitle').textContent = 'เพิ่มบันทึกซ่อมบำรุง';
     document.getElementById('maintLogTitle').value = '';
     document.getElementById('maintLogDate').value = todayStr();
+    if(statusEl) statusEl.value = 'done';
+    if(garageEl) garageEl.value = '';
+    if(dueEl) dueEl.value = '';
     const v = db.vehicles.find(v=>v.id===vehicleId);
     document.getElementById('maintLogKm').value = v ? v.currentKm : '';
     document.getElementById('maintLogCost').value = '';
@@ -6184,6 +6466,12 @@ async function submitMaintenanceLogModal(){
     : maintLogTargetVehicleId;
   const title = document.getElementById('maintLogTitle').value.trim();
   const date = fixBEYear(document.getElementById('maintLogDate').value);
+  const statusEl = document.getElementById('maintLogStatus');
+  const garageEl = document.getElementById('maintLogGarage');
+  const dueEl = document.getElementById('maintLogDueDate');
+  const status = statusEl ? statusEl.value : 'done';
+  const garage = garageEl ? garageEl.value.trim() : '';
+  const dueDate = dueEl && dueEl.value ? fixBEYear(dueEl.value) : null;
   const kmRaw = document.getElementById('maintLogKm').value;
   const km = kmRaw === '' ? null : parseInt(kmRaw);
   const costRaw = document.getElementById('maintLogCost').value;
@@ -6215,14 +6503,30 @@ async function submitMaintenanceLogModal(){
     const idx = db.maintenanceLogs.findIndex(l=>l.id===maintLogEditId);
     if(idx>-1){ prevLine = db.maintenanceLogs[idx]; db.maintenanceLogs.splice(idx,1); }
   }
-  const entry = {id: maintLogEditId || uid(), vehicleId, title, date, km, note};
+  const v = db.vehicles.find(x=>x.id===vehicleId);
+  const entry = {
+    id: maintLogEditId || uid(),
+    vehicleId, title, date, km, note,
+    status: status || 'done',
+    garage: garage || '',
+    dueDate: dueDate || null,
+    branch: (prevLine && prevLine.branch) || (v ? vehicleBranchName(v) : '')
+  };
+  if(entry.status === 'done'){
+    entry.closedDate = (prevLine && prevLine.status==='done' && prevLine.closedDate) ? prevLine.closedDate : (wasEditing ? todayStr() : date);
+  }
   if(prevLine && prevLine.lineImages && prevLine.lineImages.length) entry.lineImages = prevLine.lineImages; // คงรูปจาก LINE ไว้
   if(prevLine && prevLine.repairJobId) entry.repairJobId = prevLine.repairJobId;
+  if(prevLine && prevLine.source && prevLine.source!=='line') entry.source = prevLine.source;
   if(cost!=null && !isNaN(cost)) entry.cost = cost;
   if(receiptImage) entry.receiptImage = receiptImage;
   db.maintenanceLogs.push(entry);
 
-  const vName = (db.vehicles.find(v=>v.id===vehicleId)||{}).name || vehicleId;
+  if(!wasEditing && entry.status==='repairing' && v && v.status!=='repair'){
+    v.status = 'repair';
+  }
+
+  const vName = (v && v.name) || vehicleId;
   logActivity(wasEditing ? 'แก้ไขบันทึกซ่อมบำรุง' : 'เพิ่มบันทึกซ่อมบำรุง', `${vName} — ${title}`);
 
   saveDB();
@@ -6251,9 +6555,15 @@ function renderMaintenanceLogPanel(){
     ...db.oilLogs.filter(l=>l.vehicleId===currentVehicleId && l.cost!=null).map(l=>({id:'oil_'+l.id, ro:true, kind:'🛢️ เปลี่ยนน้ำมันเครื่อง', title:'เปลี่ยนน้ำมันเครื่อง', date:l.date, km:l.km, cost:Number(l.cost), note:l.note||'', receiptImage:l.receiptImage})),
     ...(db.tireLogs||[]).filter(l=>l.vehicleId===currentVehicleId && l.cost!=null && l.date && !(typeof isTireRelocationLog==='function' && isTireRelocationLog(l))).map(l=>({id:'tire_'+l.id, ro:true, kind:'🛞 เปลี่ยนยาง', title:'เปลี่ยนยาง'+(l.count?` ${l.count} เส้น`:''), date:l.date, km:l.km, cost:Number(l.cost), note:l.note||'', receiptImage:l.receiptImage}))
   ];
-  const list = [...own, ...extra].sort((a,b)=> String(b.date).localeCompare(String(a.date)));
+  const list = [...own, ...extra].sort((a,b)=>{
+    const aRep = (a.status==='repairing') ? 1 : 0;
+    const bRep = (b.status==='repairing') ? 1 : 0;
+    if(aRep !== bRep) return bRep - aRep;
+    return String(b.date).localeCompare(String(a.date));
+  });
   if(!list.length){ panel.innerHTML = '<div class="hint">ยังไม่มีบันทึก — กด "+ เพิ่มบันทึก" ด้านบน</div>'; return; }
-  panel.innerHTML = list.map(l=> l.ro ? `
+  panel.innerHTML = list.map(l=> {
+    if(l.ro) return `
     <div class="task-card" style="align-items:flex-start;">
       <div class="task-main">
         <div class="cat">${l.date}${l.km!=null ? ' · ไมล์ ' + Number(l.km).toLocaleString() + ' กม.' : ''} · <span style="opacity:.8;">${l.kind} (แก้ที่เมนูเดิม)</span></div>
@@ -6261,23 +6571,40 @@ function renderMaintenanceLogPanel(){
         ${l.note ? `<div class="detail" style="font-family:'Sarabun'; margin-top:2px;">${escapeHtml(l.note)}</div>` : ''}
         ${l.receiptImage ? `<img src="${l.receiptImage}" style="height:44px;border-radius:4px;border:1px solid var(--steel);margin-top:6px;cursor:pointer;" onclick="openImageLightbox('${l.receiptImage}')">` : ''}
       </div>
-    </div>` : `
-    <div class="task-card" style="align-items:flex-start;">
+    </div>`;
+    const isRepairing = (l.status || 'done') === 'repairing';
+    const days = typeof rjDaysElapsed==='function' ? rjDaysElapsed(l.date) : 0;
+    const dayCls = days>=7 ? 'danger' : (days>=3 ? 'warn' : 'normal');
+    const itemKey = l.repairJobId ? ('rj:'+l.repairJobId) : ('ml:'+l.id);
+    const editFn = l.repairJobId ? `openRepairJobModal('${l.repairJobId}')` : `openMaintenanceLogModal('${currentVehicleId}','${l.id}')`;
+    return `
+    <div class="task-card ${isRepairing?'overdue':''}" style="align-items:flex-start;">
       <div class="task-main">
-        <div class="cat">${l.date}${l.km!=null ? ' · ไมล์ ' + l.km.toLocaleString() + ' กม.' : ''}</div>
-        <div class="name">${escapeHtml(l.title)}${l.cost!=null ? ` <span style="color:var(--accent); font-family:'JetBrains Mono'; font-weight:700; font-size:13px;">— ${l.cost.toLocaleString()} บาท</span>` : ''}</div>
+        <div class="cat">
+          ${formatThaiDateShort(l.date)}${l.km!=null ? ' · ไมล์ ' + Number(l.km).toLocaleString() + ' กม.' : ''}
+          ${l.garage ? ' · อู่ ' + escapeHtml(l.garage) : ''}
+          ${l.dueDate ? ' · นัดเสร็จ ' + formatThaiDateShort(l.dueDate) : ''}
+        </div>
+        <div class="name">
+          ${escapeHtml(l.title)}
+          ${l.cost!=null ? ` <span style="color:var(--accent); font-family:'JetBrains Mono'; font-weight:700; font-size:13px;">— ${Number(l.cost).toLocaleString()} บาท</span>` : ''}
+          ${isRepairing
+            ? ` <span class="rj-day-pill ${dayCls}">🔧 กำลังซ่อม · ${days===0?'เข้าวันนี้':'ซ่อมมาแล้ว '+days+' วัน'}</span>`
+            : ` <span class="status-pill ok">✓ ซ่อมเสร็จแล้ว${l.closedDate?' ('+formatThaiDateShort(l.closedDate)+')':''}</span>`}
+        </div>
         ${l.note ? `<div class="detail" style="font-family:'Sarabun'; margin-top:2px;">${escapeHtml(l.note)}</div>` : ''}
         ${l.receiptImage ? `<img src="${l.receiptImage}" style="height:44px;border-radius:4px;border:1px solid var(--steel);margin-top:6px;cursor:pointer;" onclick="openImageLightbox('${l.receiptImage}')" title="คลิกเพื่อดูขนาดเต็ม">` : ''}
         ${(l.lineImages||[]).length ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">${l.lineImages.map(u=>`<img src="${escapeHtml(u)}" loading="lazy" style="height:56px;width:56px;object-fit:cover;border-radius:4px;border:1px solid var(--steel);cursor:pointer;" onclick="openImageLightbox('${escapeHtml(u)}')" title="รูปจากงานซ่อม LINE — คลิกเพื่อดูขนาดเต็ม">`).join('')}</div>` : ''}
       </div>
       <div class="task-actions">
-        <div style="display:flex; gap:6px;">
-          <button class="btn ghost small" onclick="openMaintenanceLogModal('${currentVehicleId}','${l.id}')">แก้ไข</button>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;">
+          ${isRepairing ? `<button class="btn small" onclick="openRjCloseModal('${itemKey}')">✅ ซ่อมเสร็จแล้ว</button>` : ''}
+          <button class="btn ghost small" onclick="${editFn}">แก้ไข</button>
           ${can('deleteRecords') ? `<button class="btn ghost small" onclick="deleteMaintenanceLogEntry('${l.id}')">ลบ</button>` : ''}
         </div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 function renderChecklistDetail(log){
@@ -6583,7 +6910,7 @@ function toggleRptMenu(e){ e.stopPropagation(); document.getElementById('rptPop'
 function closeRptMenu(){ const p = document.getElementById('rptPop'); if(p) p.classList.remove('open'); }
 document.addEventListener('click', e=>{ if(!e.target.closest('#rptMenu')) closeRptMenu(); });
 
-/* ---------------- สรุปรายเดือนระดับฟลีท (กลุ่มรถ/สาขา) ----------------
+/* ---------------- สรุปรายเดือนระดับสาขา / ฟลีท (กลุ่มรถ/สาขา) ----------------
    ออนไลน์ = พร้อมใช้งาน + กำลังวิ่งงาน ; จอดซ่อม แยกต่างหาก ; ค่าใช้จ่ายรวมจากน้ำมันเครื่อง/ยาง/ซ่อมบำรุงอื่นๆ(รวมงานซ่อมจาก LINE)/น้ำมันเชื้อเพลิง */
 function fsMonths(mk, n){
   const [y,m] = mk.split('-').map(Number), out = [];
@@ -6591,28 +6918,43 @@ function fsMonths(mk, n){
   return out;
 }
 function fsData(mk, sel){
-  const groups = [...(db.fleetGroups||[]).map(g=>({id:g.id, name:g.name})), {id:'', name:'ไม่ระบุฟลีท'}].filter(g=>!sel || sel.has(g.id));
+  const groups = [...(db.fleetGroups||[]).map(g=>({id:g.id, name:g.name})), {id:'', name:'ไม่ระบุสาขา'}].filter(g=>!sel || sel.has(g.id));
   const months = fsMonths(mk, 6);
   const rowsOf = {}; db.vehicles.forEach(v=>{ rowsOf[v.id] = getMonthlyCostRows(v.id).rows; });
+  const rpt = typeof computeMonthlyBranchReport === 'function' ? computeMonthlyBranchReport(mk, 'all') : null;
   return groups.map(g=>{
     const vs = db.vehicles.filter(v=>(v.fleetGroupId||'')===g.id);
     if(!vs.length) return null;
     const cnt = {ready:0, active:0, repair:0}; vs.forEach(v=>{ cnt[v.status||'ready']++; });
     const sum = k => vs.reduce((a,v)=>{ const r = rowsOf[v.id].find(x=>x.monthKey===mk); return a + (r ? (r[k]||0) : 0); }, 0);
     const cost = {oil:sum('oilCost'), tire:sum('tireCost'), maint:sum('maintCost'), fuel:sum('fuelCost')};
+    const bKey = g.id || '__none__';
+    const bRow = rpt ? rpt.branchRows.find(b=>b.branchKey===bKey) : null;
+    if(bRow && bRow.repairCost > cost.maint) cost.maint = bRow.repairCost;
     cost.repair = cost.oil + cost.tire + cost.maint; cost.total = cost.repair + cost.fuel;
     const trend = months.map(m=> vs.reduce((a,v)=>{ const r = rowsOf[v.id].find(x=>x.monthKey===m); return a + (r ? r.total : 0); }, 0));
-    return {g, vs, cnt, online:cnt.ready+cnt.active, cost, trend, repairNames: vs.filter(v=>(v.status||'ready')==='repair').map(v=>v.name)};
+    const activeRepairs = rpt ? rpt.repairingList.filter(r=>r.branchKey===bKey) : [];
+    const repairTextList = activeRepairs.length
+      ? activeRepairs.map(r=>`${r.plate} (${r.daysRepairing} วัน)`)
+      : vs.filter(v=>(v.status||'ready')==='repair').map(v=>v.name);
+    return {
+      g, vs, cnt, online:cnt.ready+cnt.active, cost, trend,
+      repairNames: repairTextList,
+      repairedVehicles: bRow ? bRow.repairedVehicleCount : 0,
+      doneVehicles: bRow ? bRow.doneVehicleCount : 0,
+      repairingVehicles: bRow ? bRow.repairingVehicleCount : cnt.repair
+    };
   }).filter(Boolean);
 }
 function fsBuild(mk, sel){
   const esc = escapeHtml, B = n => baht(n||0);
   const data = fsData(mk, sel), months = fsMonths(mk, 6);
-  if(!data.length) return '<div style="padding:40px;text-align:center;color:#777;">ยังไม่ได้เลือกฟลีท</div>';
-  const T = {veh:0, on:0, rp:0, repair:0, total:0}; data.forEach(d=>{ T.veh+=d.vs.length; T.on+=d.online; T.rp+=d.cnt.repair; T.repair+=d.cost.repair; T.total+=d.cost.total; });
+  if(!data.length) return '<div style="padding:40px;text-align:center;color:#777;">ยังไม่ได้เลือกสาขา/ฟลีท</div>';
+  const T = {veh:0, on:0, rp:0, repair:0, total:0, repMonth:0, doneMonth:0};
+  data.forEach(d=>{ T.veh+=d.vs.length; T.on+=d.online; T.rp+=d.cnt.repair; T.repair+=d.cost.repair; T.total+=d.cost.total; T.repMonth+=d.repairedVehicles; T.doneMonth+=d.doneVehicles; });
   const printDate = new Date().toLocaleDateString('th-TH', {year:'numeric', month:'long', day:'numeric'});
   const card = d => `<div class="fs-card">
-      <div class="fs-hd"><span>🏢 ${esc(d.g.name)}</span><span style="font-size:10pt;">${d.vs.length} คัน</span></div>
+      <div class="fs-hd"><span>🏢 ${esc(d.g.name)}</span><span style="font-size:10pt;">${d.vs.length} คัน · ซ่อมเดือนนี้ ${d.repairedVehicles} คัน (เสร็จ ${d.doneVehicles})</span></div>
       <div class="fs-tiles">
         <div class="fs-tile on"><b>${d.online}</b>ออนไลน์</div>
         <div class="fs-tile"><b>${d.cnt.ready}</b>พร้อมใช้งาน</div>
@@ -6620,30 +6962,30 @@ function fsBuild(mk, sel){
         <div class="fs-tile rp"><b>${d.cnt.repair}</b>จอดซ่อม</div>
       </div>
       <table class="fs-tbl">
-        <tr><td>ซ่อมบำรุงอื่นๆ</td><td>${B(d.cost.maint)} บาท</td></tr>
+        <tr><td>ซ่อมบำรุงอื่นๆ / งานซ่อม</td><td>${B(d.cost.maint)} บาท</td></tr>
         <tr><td>เปลี่ยนยาง</td><td>${B(d.cost.tire)} บาท</td></tr>
         <tr><td>น้ำมันเครื่อง</td><td>${B(d.cost.oil)} บาท</td></tr>
         <tr class="tot"><td>รวมค่าซ่อมบำรุง</td><td>${B(d.cost.repair)} บาท</td></tr>
         <tr><td>น้ำมันเชื้อเพลิง</td><td>${B(d.cost.fuel)} บาท</td></tr>
         <tr class="tot"><td>รวมค่าใช้จ่ายทั้งหมด</td><td>${B(d.cost.total)} บาท</td></tr>
       </table>
-      <div class="fs-note">จอดซ่อมอยู่: ${d.repairNames.length ? esc(d.repairNames.join(', ')) : '— ไม่มี —'}</div>
+      <div class="fs-note">กำลังซ่อมอยู่: ${d.repairNames.length ? esc(d.repairNames.join(', ')) : '— ไม่มี —'}</div>
     </div>`;
   const chunks = []; const rest = data.slice();
   chunks.push(rest.splice(0,3)); while(rest.length) chunks.push(rest.splice(0,4));
   const total = chunks.length + 1;
-  const head = i => `<div class="sum-head"><span>สรุปรายเดือนระดับฟลีท — Kimchun Truck Manager</span><span>${esc(monthLabelTH(mk))} · หน้า ${i}/${total} · พิมพ์ ${printDate}</span></div>`;
+  const head = i => `<div class="sum-head"><span>สรุปรายเดือนระดับสาขา / ฟลีท — Kimchun Truck Manager</span><span>${esc(monthLabelTH(mk))} · หน้า ${i}/${total} · พิมพ์ ${printDate}</span></div>`;
   const grand = `<div class="fs-grand">
-      <div><b>${data.length}</b>ฟลีท</div><div><b>${T.veh}</b>รถทั้งหมด</div>
+      <div><b>${data.length}</b>สาขา/ฟลีท</div><div><b>${T.veh}</b>รถทั้งหมด</div>
       <div><b>${T.on}</b>ออนไลน์</div><div><b>${T.rp}</b>จอดซ่อม</div><div><b>${B(T.total)}</b>ค่าใช้จ่ายรวม (บาท)</div></div>
-    <div style="font-size:9pt;color:#444;">ออนไลน์ = พร้อมใช้งาน + กำลังวิ่งงาน · ค่าซ่อมบำรุงรวมเดือนนี้ ${B(T.repair)} บาท (ไม่รวมน้ำมันเชื้อเพลิง)</div>`;
+    <div style="font-size:9pt;color:#444;">ออนไลน์ = พร้อมใช้งาน + กำลังวิ่งงาน · ซ่อมเดือนนี้ ${T.repMonth} คัน (ซ่อมเสร็จ ${T.doneMonth} คัน) · ค่าซ่อมบำรุงรวมเดือนนี้ ${B(T.repair)} บาท (ไม่รวมน้ำมันเชื้อเพลิง)</div>`;
   const sheets = chunks.map((c,i)=>`<section class="sum-sheet">${head(i+1)}${i===0?grand:''}${c.map(card).join('')}</section>`);
   const trend = `<section class="sum-sheet">${head(total)}
-    <div class="fs-card"><div class="fs-hd"><span>📈 ค่าใช้จ่ายรวมรายเดือนแต่ละฟลีท (6 เดือนล่าสุด)</span></div>
+    <div class="fs-card"><div class="fs-hd"><span>📈 ค่าใช้จ่ายรวมรายเดือนแต่ละสาขา / ฟลีท (6 เดือนล่าสุด)</span></div>
       <table class="fs-tbl" style="font-size:9pt;">
-        <tr><th>ฟลีท</th>${months.map(m=>`<th style="text-align:right;font-family:inherit;">${esc(monthLabelTH(m))}</th>`).join('')}</tr>
+        <tr><th>สาขา / ฟลีท</th>${months.map(m=>`<th style="text-align:right;font-family:inherit;">${esc(monthLabelTH(m))}</th>`).join('')}</tr>
         ${data.map(d=>`<tr><td>${esc(d.g.name)}</td>${d.trend.map(x=>`<td style="text-align:right;">${B(x)}</td>`).join('')}</tr>`).join('')}
-        <tr class="tot"><td>รวมทุกฟลีท</td>${months.map((m,i)=>`<td style="text-align:right;">${B(data.reduce((a,d)=>a+d.trend[i],0))}</td>`).join('')}</tr>
+        <tr class="tot"><td>รวมทุกสาขา</td>${months.map((m,i)=>`<td style="text-align:right;">${B(data.reduce((a,d)=>a+d.trend[i],0))}</td>`).join('')}</tr>
       </table></div></section>`;
   return sheets.join('') + trend;
 }
@@ -6655,8 +6997,9 @@ function openFleetGroupSummary(){
   ov.innerHTML = `<div class="rp-toolbar">
       <label style="color:#fff;display:flex;align-items:center;gap:6px;font-weight:700;">เดือน <input type="month" id="fsMonth" value="${mk}" onchange="fsRefresh()" style="padding:6px;"></label>
       <button class="btn" onclick="printInspectionReport()">🖨️ พิมพ์ / บันทึกเป็น PDF</button>
+      <button class="btn ghost" onclick="exportRepairMonthlyExcel(document.getElementById('fsMonth').value, 'all')">📥 ส่งออก Excel</button>
       <button class="btn ghost" onclick="closeInspectionReport()">ปิด</button></div>
-    <div class="rp-toolbar fs-filter"><div class="fl-row"><b>ฟลีท:</b> ${[...(db.fleetGroups||[]).map(g=>({id:g.id,name:g.name})), {id:'',name:'ไม่ระบุฟลีท'}].filter(g=>db.vehicles.some(v=>(v.fleetGroupId||'')===g.id)).map(g=>`<label class="ck on"><input type="checkbox" class="fsGrp" value="${g.id}" checked onchange="fsRefresh()"> 🏢 ${escapeHtml(g.name)}</label>`).join('')}</div></div>
+    <div class="rp-toolbar fs-filter"><div class="fl-row"><b>สาขา / ฟลีท:</b> ${[...(db.fleetGroups||[]).map(g=>({id:g.id,name:g.name})), {id:'',name:'ไม่ระบุสาขา'}].filter(g=>db.vehicles.some(v=>(v.fleetGroupId||'')===g.id)).map(g=>`<label class="ck on"><input type="checkbox" class="fsGrp" value="${g.id}" checked onchange="fsRefresh()"> 🏢 ${escapeHtml(g.name)}</label>`).join('')}</div></div>
     <div class="rp-page" id="fsPage">${fsBuild(mk)}</div>`;
   document.body.appendChild(ov); document.body.classList.add('report-open');
   if(!document.getElementById('sumPrintPage')){
@@ -6995,7 +7338,7 @@ function renderSummaryView(){
   const fleetTabs = db.fleetGroups.length > 0 ? [
     {id:'all', name:'ทั้งหมด'},
     ...db.fleetGroups.map(g=>({id:g.id, name:g.name})),
-    ...(hasUngrouped ? [{id:'none', name:'ไม่ระบุกลุ่ม'}] : [])
+    ...(hasUngrouped ? [{id:'none', name:'ไม่ระบุสาขา'}] : [])
   ] : [{id:'all', name:'ทั้งหมด'}];
   if(currentSummaryFleetTab!=='all' && !fleetTabs.some(t=>t.id===currentSummaryFleetTab)){
     currentSummaryFleetTab = 'all'; // selected group was deleted — fall back
@@ -7005,8 +7348,8 @@ function renderSummaryView(){
       ${fleetTabs.map(t=>`<button class="fleet-tab-btn ${currentSummaryFleetTab===t.id?'active':''}" onclick="setSummaryFleetTab('${t.id}')">${escapeHtml(t.name)}</button>`).join('')}
     </div>` : '';
 
-  // Group filtered vehicles by fleet group, in group-creation order, with
-  // ungrouped vehicles shown last under "ไม่ระบุกลุ่ม".
+  // Group filtered vehicles by fleet group / branch, in group-creation order, with
+  // ungrouped vehicles shown last under "ไม่ระบุสาขา".
   const groupsMap = {};
   filteredVehicles.forEach(v=>{
     const key = v.fleetGroupId || 'none';
@@ -7015,7 +7358,7 @@ function renderSummaryView(){
   const orderedGroupIds = [...db.fleetGroups.map(g=>g.id), 'none'].filter(gid => groupsMap[gid] && groupsMap[gid].length);
   const groupedVehicleCards = orderedGroupIds.map(gid=>{
     const groupVehicles = groupsMap[gid];
-    const groupName = gid==='none' ? 'ไม่ระบุกลุ่ม' : ((db.fleetGroups.find(g=>g.id===gid)||{}).name || 'ไม่ระบุกลุ่ม');
+    const groupName = gid==='none' ? 'ไม่ระบุสาขา' : ((db.fleetGroups.find(g=>g.id===gid)||{}).name || 'ไม่ระบุสาขา');
     // When a specific fleet tab is already selected, the tab itself names the
     // group — repeating it as a header per vehicle-card block is redundant.
     const header = currentSummaryFleetTab==='all'
@@ -7034,6 +7377,7 @@ function renderSummaryView(){
       <div style="color:var(--muted); font-size:13px; margin-top:2px;">วันที่พิมพ์: ${printDate}</div>
     </div>
     <div class="no-print">${fleetTabsHtml}</div>
+    <div class="no-print">${typeof renderGlobalRepairAlertBanner==='function' ? renderGlobalRepairAlertBanner() : ''}</div>
     <div class="no-print" style="display:flex; justify-content:flex-end; margin-top:12px;"><button class="btn small" onclick="openFleetPdfExport()">📁 ส่งออก PDF ทั้ง fleet</button></div>
     <div class="panel-block chart-panel" style="margin-top:20px;">
       <h2>ระยะทางรายเดือน — คันไหนวิ่งงานเยอะที่สุด</h2>
@@ -7219,200 +7563,1506 @@ function renderLogRowsTable(type, list){
     </table>`;
 }
 
-/* ---------------- งานซ่อมจาก LINE (repair_jobs) ----------------
-   บอท LINE (Edge Function line-webhook) เขียนงานซ่อมลงตาราง repair_jobs
-   หน้านี้อ่านตารางนั้นโดยตรงผ่าน supabaseClient */
+/* ---------------- งานซ่อมจาก LINE & แจ้งเตือนกำลังซ่อม & สรุปสาขารายเดือน ----------------
+   รวมงานซ่อมจากตาราง repair_jobs (บอท LINE + เพิ่มจากเว็บ) และบันทึกซ่อมบำรุงใน db.maintenanceLogs
+   ให้เชื่อมกันโดยไม่นับซ้ำ พร้อมแสดงรายการกำลังซ่อม (ยังซ่อมไม่เสร็จ) และนับจำนวนวันที่ซ่อม */
+const REPAIR_CACHE_KEY = 'kimchunTruck.repairJobsCache';
 let repairJobs = [];
 let repairJobsLoading = false;
 let repairJobsError = '';
-let repairJobsFilter = 'repairing'; // repairing | done | all
+let rjActiveSubTab = 'repairing';      // 'repairing' | 'all' | 'monthly'
+let rjBranchFilter = 'all';            // 'all' | groupId | 'branch:...' | '__none__'
+let rjDurationFilter = 'all';          // 'all' | '3plus' | '7plus' | 'overdue'
+let repairJobsFilter = 'all';          // 'all' | 'repairing' | 'done' (ในแท็บงานซ่อมทั้งหมด)
+let rjMonthFilter = '';                // '' หรือ 'YYYY-MM' (ในแท็บงานซ่อมทั้งหมด)
 let repairJobsSearch = '';
+let rjSummaryMonth = '';               // 'YYYY-MM' (ในแท็บสรุปประจำเดือน/สาขา)
+let rjSummaryBranch = 'all';           // 'all' หรือ branchKey
 
-async function loadRepairJobs(){
-  if(typeof supabaseClient === 'undefined' || !supabaseClient){ repairJobsError = 'ยังไม่ได้เชื่อมต่อ Supabase'; return; }
-  repairJobsLoading = true; repairJobsError = '';
-  const { data, error } = await supabaseClient.rpc('list_repair_jobs', { p_secret: APP_SYNC_SECRET });
-  repairJobsLoading = false;
-  if(error){ repairJobsError = error.message || String(error); repairJobs = []; }
-  else repairJobs = data || [];
-  try{ rjSyncAllToMaint(); }catch(e){ console.error('sync repair->maint', e); }
-  if(currentView === 'repairjobs') drawRepairJobs();
+function loadRepairJobsFromCache(){
+  try{
+    const raw = localStorage.getItem(REPAIR_CACHE_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      if(Array.isArray(parsed)) repairJobs = parsed;
+    }
+  }catch(_){}
 }
-function renderRepairJobsView(){
-  const app = document.getElementById('app');
-  app.innerHTML = `
-    <div class="panel-block" style="margin-top:20px;">
-      <h2>🔧 งานซ่อมจาก LINE</h2>
-      <div class="hint">งานที่คนขับแจ้งผ่านบอท LINE (ข้อความ + รูป) จะมาอยู่ที่นี่ แก้ไข ปิดงาน หรือลบได้</div>
-      <div class="filter-bar">
-        <select id="rjFilter" onchange="repairJobsFilter=this.value; drawRepairJobs()">
-          <option value="repairing">กำลังซ่อม</option><option value="done">ซ่อมเสร็จแล้ว</option><option value="all">ทั้งหมด</option>
-        </select>
-        <input type="search" id="rjSearch" placeholder="ค้นหาทะเบียน / รายการซ่อม / อู่" oninput="repairJobsSearch=this.value; drawRepairJobs()" style="min-width:240px;">
-        <button class="btn ghost small" onclick="loadRepairJobs(); drawRepairJobs()">🔄 โหลดใหม่</button>
-      </div>
-    </div>
-    <div id="rjList"></div>`;
-  document.getElementById('rjFilter').value = repairJobsFilter;
-  document.getElementById('rjSearch').value = repairJobsSearch;
-  drawRepairJobs();
-  loadRepairJobs();
+function saveRepairJobsCache(){
+  try{ localStorage.setItem(REPAIR_CACHE_KEY, JSON.stringify(repairJobs || [])); }catch(_){}
 }
-function drawRepairJobs(){
-  const box = document.getElementById('rjList');
-  if(!box) return;
-  if(repairJobsLoading && !repairJobs.length){ box.innerHTML = '<div class="hint" style="margin:16px 4px;">กำลังโหลด...</div>'; return; }
-  if(repairJobsError){
-    box.innerHTML = `<div class="panel-block" style="border:1px solid #ef4444;"><b>โหลดงานซ่อมไม่สำเร็จ</b><div class="hint">${escapeHtml(repairJobsError)}</div>
-      <div class="hint">ถ้าเป็นเรื่องสิทธิ์ (permission / RLS) ให้รัน SQL ตามที่ผมแนะนำใน Supabase SQL Editor</div></div>`;
-    return;
-  }
-  const q = repairJobsSearch.trim().toLowerCase();
-  const list = repairJobs.filter(j=>{
-    if(repairJobsFilter !== 'all' && (j.status||'repairing') !== repairJobsFilter) return false;
-    if(!q) return true;
-    return `${j.plate||''} ${j.vehicle_no||''} ${j.title||''} ${j.garage||''} ${j.reported_name||''}`.toLowerCase().includes(q);
-  });
-  if(!list.length){ box.innerHTML = '<div class="empty-state"><div class="display">ไม่มีงานซ่อมในรายการนี้</div></div>'; return; }
-  box.innerHTML = list.map(rjCard).join('');
+
+function rjDaysElapsed(startDate, endDate){
+  const s = fixBEYear(String(startDate||'').slice(0,10));
+  const e = fixBEYear(String(endDate || todayStr()).slice(0,10));
+  if(!s || !e) return 0;
+  const t1 = Date.parse(s + 'T00:00:00Z');
+  const t2 = Date.parse(e + 'T00:00:00Z');
+  if(isNaN(t1) || isNaN(t2)) return 0;
+  return Math.max(0, Math.round((t2 - t1) / 86400000));
 }
+
 function rjPhotos(j){
-  let ph = j.photos;
+  let ph = j && j.photos;
   if(typeof ph === 'string'){ try{ ph = JSON.parse(ph); }catch(e){ ph = []; } }
   return Array.isArray(ph) ? ph.filter(Boolean) : [];
 }
-function rjCard(j){
-  const done = j.status === 'done';
-  const photos = rjPhotos(j);
-  const badge = done
-    ? '<span style="background:#dcfce7;color:#166534;padding:2px 10px;border-radius:99px;font-size:12px;">ซ่อมเสร็จแล้ว</span>'
-    : '<span style="background:#fef3c7;color:#92400e;padding:2px 10px;border-radius:99px;font-size:12px;">กำลังซ่อม</span>';
-  const cost = j.cost != null ? '฿' + Number(j.cost).toLocaleString('en-US') : '—';
-  const d = x => x ? formatThaiDateShort(x) : '—';
-  return `<div class="panel-block" style="margin-top:14px;">
-    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
-      <div><b style="font-family:'Kanit';font-size:16px;">#${j.job_no} · ${escapeHtml(j.plate||'-')}${j.vehicle_no?` (เบอร์ ${escapeHtml(j.vehicle_no)})`:''}</b> ${badge}</div>
-      <div class="hint">แจ้งโดย ${escapeHtml(j.reported_name||'ไม่ทราบชื่อ')} · ${j.created_at ? new Date(j.created_at).toLocaleString('th-TH') : ''}</div>
-    </div>
-    <div style="margin:8px 0;font-size:15px;">🔧 ${escapeHtml(j.title||'-')}</div>
-    <div class="hint">อู่: ${escapeHtml(j.garage||'-')} · เข้าซ่อม: ${d(j.repair_date)} · นัดเสร็จ: ${d(j.due_date)} · ราคา: ${cost}${j.closed_at?` · ปิดงาน: ${new Date(j.closed_at).toLocaleDateString('th-TH')}`:''}</div>
-    ${photos.length ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">${photos.map((u,i)=>`<img src="${escapeHtml(u)}" loading="lazy" onclick="window.open(this.src,'_blank')" style="width:96px;height:96px;object-fit:cover;border-radius:8px;cursor:pointer;border:1px solid var(--border,#ddd);">`).join('')}</div>` : '<div class="hint" style="margin-top:8px;">ไม่มีรูป</div>'}
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
-      ${done ? `<button class="btn ghost small" onclick="rjSetStatus('${j.id}','repairing')">เปิดงานอีกครั้ง</button>` : `<button class="btn small" onclick="rjSetStatus('${j.id}','done')">✅ ซ่อมเสร็จแล้ว</button>`}
-      <button class="btn ghost small" onclick="rjEdit('${j.id}')">แก้ไข</button>
-      ${isAdmin || can('deleteRecords') ? `<button class="btn danger small" onclick="rjDelete('${j.id}')">ลบ</button>` : ''}
-    </div>
-  </div>`;
-}
-// นำงานซ่อมจาก LINE ที่มีราคา เข้าไปอยู่ใน "บันทึกซ่อมบำรุงอื่นๆ" ของรถคันนั้น (db.maintenanceLogs)
-// id = 'rj_' + id งาน จึงไม่ซ้ำแม้โหลดหลายรอบ / ถ้าผู้ใช้ลบบันทึกนั้นเองจะไม่ถูกสร้างกลับ (db.settings.repairLogSkip)
-// ค่าใช้จ่ายรายเดือนนับจาก maintenanceLogs จึงรวมงานซ่อมเหล่านี้ให้อัตโนมัติ (ไม่ซ้ำ)
+
 function rjFindVehicle(j){
-  if(!db || !Array.isArray(db.vehicles)) return null;
+  if(!db || !Array.isArray(db.vehicles) || !j) return null;
   let v = j.vehicle_id ? db.vehicles.find(x=>x.id===j.vehicle_id) : null;
   if(!v && j.plate){
-    const n = t => String(t||'').replace(/[\s\-.]/g,'').toLowerCase();
-    v = db.vehicles.find(x=>n(x.name)===n(j.plate)) || null;
+    const p = normalizePlate(j.plate);
+    if(p){
+      let matches = db.vehicles.filter(x=>normalizePlate(x.name)===p);
+      if(!matches.length) matches = db.vehicles.filter(x=>normalizePlate(x.name).endsWith(p) || p.endsWith(normalizePlate(x.name)) || normalizePlate(x.name).includes(p));
+      if(matches.length > 1 && j.vehicle_no){
+        const n = String(j.vehicle_no).replace(/\D/g,'') || String(j.vehicle_no).trim();
+        const byNo = matches.filter(x=> String(x.vehicleNo||'').replace(/\D/g,'')===n || new RegExp('เบอร์\\s*'+n+'(\\D|$)').test(x.name));
+        if(byNo.length) matches = byNo;
+      }
+      if(matches.length) v = matches[0];
+    }
   }
   return v;
 }
+
+function rjResolveBranch(branchText, vehicle){
+  const clean = cleanBranchLabel(branchText || '');
+  if(clean){
+    const g = findBranchGroupByName(clean);
+    if(g) return { key: g.id, name: cleanBranchLabel(g.name) };
+    return { key: 'branch:' + normalizeBranchName(clean), name: clean };
+  }
+  if(vehicle && vehicle.fleetGroupId){
+    const g = (db.fleetGroups||[]).find(x=>x.id===vehicle.fleetGroupId);
+    if(g) return { key: g.id, name: cleanBranchLabel(g.name) };
+  }
+  return { key: '__none__', name: 'ไม่ระบุสาขา' };
+}
+
+function rjBranchName(j){
+  return rjResolveBranch(j && j.branch, rjFindVehicle(j)).name;
+}
+
+function getAllUnifiedRepairs(){
+  const list = [];
+  const seenJobIds = new Set();
+  const today = todayStr();
+
+  (repairJobs || []).forEach(j=>{
+    if(!j || j.id == null) return;
+    seenJobIds.add(String(j.id));
+    const v = rjFindVehicle(j);
+    const br = rjResolveBranch(j.branch, v);
+    const repairDate = fixBEYear((j.repair_date || String(j.created_at||'').slice(0,10) || today).slice(0,10));
+    const closedDate = j.closed_at ? fixBEYear(String(j.closed_at).slice(0,10)) : null;
+    const status = j.status === 'done' ? 'done' : 'repairing';
+    const daysRepairing = status === 'done'
+      ? rjDaysElapsed(repairDate, closedDate || repairDate)
+      : rjDaysElapsed(repairDate, today);
+    const dueDate = j.due_date ? fixBEYear(String(j.due_date).slice(0,10)) : null;
+    const isOverdueDue = status === 'repairing' && !!dueDate && today > dueDate;
+    const plate = j.plate || (v ? v.name : '—');
+    const vehicleNo = j.vehicle_no || (v ? (v.vehicleNo || '') : '');
+    list.push({
+      key: 'rj:' + j.id,
+      source: 'line',
+      repairJobId: j.id,
+      maintId: null,
+      jobNo: j.job_no,
+      vehicleId: v ? v.id : (j.vehicle_id || null),
+      plate,
+      vehicleNo,
+      branchKey: br.key,
+      branchName: br.name,
+      title: j.title || 'งานซ่อม',
+      garage: j.garage || '',
+      repairDate,
+      dueDate,
+      closedDate,
+      status,
+      daysRepairing,
+      isOverdueDue,
+      cost: j.cost != null && j.cost !== '' ? Number(j.cost) : null,
+      note: j.garage ? 'อู่ ' + j.garage : '',
+      reportedName: j.reported_name || '',
+      photos: rjPhotos(j),
+      createdAt: j.created_at || ''
+    });
+  });
+
+  (db.maintenanceLogs || []).forEach(l=>{
+    if(!l) return;
+    if(l.repairJobId && seenJobIds.has(String(l.repairJobId))) return;
+    if(String(l.id).startsWith('rj_') && seenJobIds.has(String(l.id).slice(3))) return;
+    const v = l.vehicleId ? db.vehicles.find(x=>x.id===l.vehicleId) : null;
+    const br = rjResolveBranch(l.branch, v);
+    const repairDate = fixBEYear((l.date || today).slice(0,10));
+    const status = l.status === 'repairing' ? 'repairing' : 'done';
+    const closedDate = status === 'done' ? fixBEYear((l.closedDate || l.date || today).slice(0,10)) : null;
+    const daysRepairing = status === 'done'
+      ? rjDaysElapsed(repairDate, closedDate || repairDate)
+      : rjDaysElapsed(repairDate, today);
+    const dueDate = l.dueDate ? fixBEYear(String(l.dueDate).slice(0,10)) : null;
+    const isOverdueDue = status === 'repairing' && !!dueDate && today > dueDate;
+    const photos = [
+      ...(l.receiptImage ? [l.receiptImage] : []),
+      ...((l.lineImages || []).filter(Boolean))
+    ];
+    list.push({
+      key: 'ml:' + l.id,
+      source: l.source || 'manual',
+      repairJobId: l.repairJobId || null,
+      maintId: l.id,
+      jobNo: null,
+      vehicleId: v ? v.id : (l.vehicleId || null),
+      plate: l.plate || (v ? v.name : '—'),
+      vehicleNo: l.vehicleNo || (v ? (v.vehicleNo || '') : ''),
+      branchKey: br.key,
+      branchName: br.name,
+      title: l.title || 'ซ่อมบำรุง',
+      garage: l.garage || '',
+      repairDate,
+      dueDate,
+      closedDate,
+      status,
+      daysRepairing,
+      isOverdueDue,
+      cost: l.cost != null && l.cost !== '' ? Number(l.cost) : null,
+      note: l.note || '',
+      reportedName: l.reportedName || '',
+      photos,
+      createdAt: l.createdAt || ''
+    });
+  });
+
+  return list.sort((a,b)=>{
+    if(a.status !== b.status) return a.status === 'repairing' ? -1 : 1;
+    if(a.status === 'repairing' && a.daysRepairing !== b.daysRepairing) return b.daysRepairing - a.daysRepairing;
+    return String(b.repairDate).localeCompare(String(a.repairDate));
+  });
+}
+
+function getActiveRepairingList(branchFilter='all'){
+  return getAllUnifiedRepairs()
+    .filter(r=>r.status==='repairing')
+    .filter(r=>branchFilter==='all' || r.branchKey===branchFilter)
+    .sort((a,b)=> b.daysRepairing - a.daysRepairing || String(a.repairDate).localeCompare(String(b.repairDate)));
+}
+
+function updateRepairNavBadge(){
+  const badge = document.getElementById('repairNavBadge');
+  if(!badge) return;
+  const n = getActiveRepairingList().length;
+  badge.textContent = String(n);
+  badge.style.display = n > 0 ? '' : 'none';
+}
+
+function rjDayBadgeHtml(r){
+  if(r.status === 'done'){
+    return `<span class="status-pill ok">✅ ซ่อมเสร็จ (${r.daysRepairing === 0 ? 'เสร็จวันเดียว' : 'ใช้เวลา ' + r.daysRepairing + ' วัน'})</span>`;
+  }
+  const d = r.daysRepairing;
+  const cls = (d >= 7 || r.isOverdueDue) ? 'danger' : (d >= 3 ? 'warn' : 'normal');
+  const txt = d === 0 ? 'เข้าซ่อมวันนี้ (0 วัน)' : `ซ่อมมาแล้ว ${d} วัน`;
+  const dueWarn = r.isOverdueDue ? ` <span class="status-pill overdue">⚠️ เกินนัดเสร็จ ${rjDaysElapsed(r.dueDate, todayStr())} วัน</span>` : '';
+  return `<span class="rj-day-pill ${cls}">⏱️ ${txt}</span>${dueWarn}`;
+}
+
+function rjVehicleDisplay(r){
+  const base = r.plate || '—';
+  const vno = (r.vehicleNo || '').trim();
+  if(!vno) return base;
+  const escNo = vno.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  if(new RegExp('เบอร์\\s*'+escNo+'(\\D|$)').test(base)) return base;
+  return `${base} (เบอร์ ${vno})`;
+}
+
+function openRepairingByBranch(branchKey='all'){
+  rjActiveSubTab = 'repairing';
+  rjBranchFilter = branchKey || 'all';
+  setView('repairjobs');
+}
+
+function renderGlobalRepairAlertBanner(){
+  const list = getActiveRepairingList();
+  if(!list.length) return '';
+  const byBranch = new Map();
+  list.forEach(r=>{
+    if(!byBranch.has(r.branchKey)) byBranch.set(r.branchKey, {key:r.branchKey, name:r.branchName, count:0, maxDays:0});
+    const b = byBranch.get(r.branchKey);
+    b.count++;
+    if(r.daysRepairing > b.maxDays) b.maxDays = r.daysRepairing;
+  });
+  const maxAll = list.reduce((m,r)=>Math.max(m, r.daysRepairing), 0);
+  const chips = Array.from(byBranch.values()).map(b=>
+    `<button type="button" class="rj-alert-chip" onclick="openRepairingByBranch('${escapeHtml(b.key)}')">🏢 ${escapeHtml(b.name)}: ${b.count} คัน/งาน (สูงสุด ${b.maxDays} วัน)</button>`
+  ).join('');
+  return `
+    <div class="rj-alert-bar">
+      <div style="flex:1; min-width:220px;">
+        <div class="rj-alert-title">🚨 แจ้งเตือน: มีรถอยู่ระหว่างการซ่อม ${list.length} รายการ (นานสุด ${maxAll} วัน)</div>
+        <div class="rj-alert-sub">คลิกสาขาเพื่อดูรายละเอียดรถที่ยังซ่อมไม่เสร็จและระยะเวลาที่ซ่อม</div>
+        <div class="rj-alert-chips">${chips}</div>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button type="button" class="btn danger small" onclick="openRepairingByBranch('all')">ดูรถกำลังซ่อมทั้งหมด</button>
+        <button type="button" class="btn ghost small" onclick="sendRepairingAlertToLine()">🔔 แจ้งเข้า LINE</button>
+      </div>
+    </div>`;
+}
+
+function renderVehicleActiveRepairBanner(v){
+  if(!v) return '';
+  const list = getActiveRepairingList().filter(r=> r.vehicleId===v.id || normalizePlate(r.plate)===normalizePlate(v.name));
+  if(!list.length) return '';
+  return `
+    <div class="rj-veh-alert">
+      <div class="rj-veh-alert-head">
+        <span>🔧 รถคันนี้อยู่ระหว่างการซ่อม (${list.length} รายการ — ยังซ่อมไม่เสร็จ)</span>
+        <button type="button" class="btn ghost small" onclick="openRepairJobModal(null, '${v.id}')">+ เพิ่มรายการซ่อม</button>
+      </div>
+      ${list.map(r=>`
+        <div class="rj-veh-alert-item">
+          <div>
+            <div style="font-weight:700; font-size:14.5px;">${escapeHtml(r.title)} ${rjDayBadgeHtml(r)}</div>
+            <div class="hint" style="margin-top:3px;">
+              เข้าซ่อม: ${formatThaiDateShort(r.repairDate)}
+              ${r.garage ? ' · อู่: ' + escapeHtml(r.garage) : ''}
+              ${r.dueDate ? ' · นัดเสร็จ: ' + formatThaiDateShort(r.dueDate) : ''}
+              ${r.cost != null ? ' · ประมาณ/ราคา: ' + baht(r.cost) : ' · ยังไม่ระบุราคา'}
+            </div>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button type="button" class="btn small" onclick="openRjCloseModal('${escapeHtml(r.key)}')">✅ ซ่อมเสร็จแล้ว</button>
+            <button type="button" class="btn ghost small" onclick="openRepairJobModal('${escapeHtml(r.key)}')">แก้ไข</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+async function loadRepairJobs(){
+  if(typeof supabaseClient === 'undefined' || !supabaseClient){
+    repairJobsError = repairJobs.length ? '' : 'ยังไม่ได้เชื่อมต่อ Supabase';
+    try{ rjSyncAllToMaint(); }catch(e){}
+    updateRepairNavBadge();
+    return;
+  }
+  repairJobsLoading = true; repairJobsError = '';
+  let res = await supabaseClient.rpc('list_repair_jobs_v2', { p_secret: APP_SYNC_SECRET });
+  if(res.error && isMissingRpc(res.error)){
+    res = await supabaseClient.rpc('list_repair_jobs', { p_secret: APP_SYNC_SECRET });
+  }
+  repairJobsLoading = false;
+  if(res.error){
+    repairJobsError = res.error.message || String(res.error);
+    if(!repairJobs.length) repairJobs = [];
+  }else{
+    repairJobs = Array.isArray(res.data) ? res.data : [];
+    saveRepairJobsCache();
+  }
+  try{ rjSyncAllToMaint(); }catch(e){ console.error('sync repair->maint', e); }
+  updateRepairNavBadge();
+  const modalOpen = !!document.querySelector('.overlay.show');
+  const ae = document.activeElement;
+  const typing = ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName);
+  if(currentView === 'repairjobs') drawRepairJobs();
+  else if((currentView === 'dashboard' || currentView === 'summary') && !modalOpen && !typing) render();
+}
+
+async function saveRepairJobRpc(id, patch){
+  let res = await supabaseClient.rpc('save_repair_job_v2', { p_secret: APP_SYNC_SECRET, p_id: String(id), p_patch: patch });
+  if(res.error && isMissingRpc(res.error)){
+    const { branch: _b, ...legacyPatch } = patch || {};
+    res = await supabaseClient.rpc('save_repair_job', { p_secret: APP_SYNC_SECRET, p_id: id, p_patch: legacyPatch });
+  }
+  return res;
+}
+
+// นำงานซ่อมจาก LINE / repair_jobs ทั้ง "กำลังซ่อม" และ "ซ่อมเสร็จแล้ว" เข้า db.maintenanceLogs
+// (รวมรายการที่ยังไม่มีราคา เพื่อให้บันทึกข้อมูลรถที่อยู่ระหว่างซ่อมไว้ในประวัติรถคันนั้นเสมอ)
 function rjSyncAllToMaint(){
   if(!db || !Array.isArray(db.maintenanceLogs)) return;
   db.settings = db.settings || {};
   const skip = new Set(db.settings.repairLogSkip || []);
   let changed = false;
-  repairJobs.forEach(j=>{
+  (repairJobs || []).forEach(j=>{
     const id = 'rj_' + j.id;
     const idx = db.maintenanceLogs.findIndex(l=>l.id===id);
-    const cost = j.cost != null ? Number(j.cost) : null;
     const v = rjFindVehicle(j);
-    if(!(cost > 0) || !v){
+    if(!v){
       if(idx>-1 && db.maintenanceLogs[idx].source==='line'){ db.maintenanceLogs.splice(idx,1); changed = true; }
       return;
     }
-    const date = j.repair_date || (j.created_at||'').slice(0,10) || todayStr();
-    const note = ['จากงานซ่อม LINE #'+j.job_no, j.garage ? 'อู่ '+j.garage : '', j.reported_name ? 'แจ้งโดย '+j.reported_name : ''].filter(Boolean).join(' · ');
-    const entry = {id, vehicleId:v.id, title:j.title||'งานซ่อม', date, km:null, note, cost, source:'line', repairJobId:j.id, lineImages:rjPhotos(j)};
+    const cost = (j.cost != null && j.cost !== '') ? Number(j.cost) : null;
+    const date = fixBEYear((j.repair_date || (j.created_at||'').slice(0,10) || todayStr()).slice(0,10));
+    const status = j.status === 'done' ? 'done' : 'repairing';
+    const dueDate = j.due_date ? fixBEYear(String(j.due_date).slice(0,10)) : null;
+    const closedDate = j.closed_at ? fixBEYear(String(j.closed_at).slice(0,10)) : null;
+    const branchName = rjBranchName(j);
+    const note = [j.job_no ? 'จากงานซ่อม LINE #'+j.job_no : 'จากงานซ่อม', j.garage ? 'อู่ '+j.garage : '', j.reported_name ? 'แจ้งโดย '+j.reported_name : ''].filter(Boolean).join(' · ');
+    const entry = {
+      id, vehicleId: v.id, title: j.title || 'งานซ่อม', date, km: null, note,
+      status, garage: j.garage || '', dueDate, closedDate, branch: branchName,
+      source: 'line', repairJobId: j.id, lineImages: rjPhotos(j)
+    };
+    if(cost != null && !isNaN(cost)) entry.cost = cost;
     if(idx>-1){
       const old = db.maintenanceLogs[idx];
-      if(old.source!=='line') return; // ผู้ใช้แก้เองแล้ว ไม่ทับ
-      if(old.vehicleId!==entry.vehicleId||old.title!==entry.title||old.date!==entry.date||old.cost!==entry.cost||old.note!==entry.note||JSON.stringify(old.lineImages||[])!==JSON.stringify(entry.lineImages)){
+      if(old.source!=='line') return;
+      if(old.vehicleId!==entry.vehicleId || old.title!==entry.title || old.date!==entry.date ||
+         (old.cost??null)!==(entry.cost??null) || old.note!==entry.note ||
+         old.status!==entry.status || (old.garage||'')!==entry.garage ||
+         (old.dueDate||null)!==entry.dueDate || (old.closedDate||null)!==entry.closedDate ||
+         (old.branch||'')!==entry.branch ||
+         JSON.stringify(old.lineImages||[])!==JSON.stringify(entry.lineImages)){
         db.maintenanceLogs[idx] = entry; changed = true;
       }
     }else if(!skip.has(id)){
       db.maintenanceLogs.push(entry); changed = true;
     }
   });
-  if(changed){ saveDB(); if(currentView==='dashboard') render(); }
+  if(changed){ saveDB(); }
 }
+
+function monthLastDayISO(mk){
+  const [y,m] = mk.split('-').map(Number);
+  const last = new Date(y, m, 0).getDate();
+  return `${y}-${String(m).padStart(2,'0')}-${String(last).padStart(2,'0')}`;
+}
+
+function computeMonthlyBranchReport(mk, branchFilter='all'){
+  const all = getAllUnifiedRepairs();
+  const monthEnd = monthLastDayISO(mk);
+  const curMk = todayStr().slice(0,7);
+  const isCurrentOrFuture = mk >= curMk;
+
+  // 4.1 รถที่ซ่อมไปแล้ว (ปิดงาน/ซ่อมเสร็จในเดือนที่เลือก)
+  const allDoneInMonth = all.filter(r=> r.status==='done' && monthKey(r.closedDate || r.repairDate)===mk);
+  // 4.2 รถที่ยังซ่อมไม่เสร็จ (กำลังซ่อมอยู่ในเดือนนั้น)
+  const allRepairingInMonth = all.filter(r=>{
+    if(r.repairDate > monthEnd) return false;
+    if(isCurrentOrFuture) return r.status === 'repairing';
+    return r.status === 'repairing' || (r.closedDate && r.closedDate > monthEnd);
+  });
+
+  // รวบรวมรายชื่อสาขาทั้งหมด
+  const branchMeta = new Map();
+  (db.fleetGroups || []).forEach(g=> branchMeta.set(g.id, {key:g.id, name:cleanBranchLabel(g.name)}));
+  const ensureMeta = (key, name) => {
+    if(!branchMeta.has(key)) branchMeta.set(key, {key, name: name || 'ไม่ระบุสาขา'});
+  };
+  if(db.vehicles.some(v=>!v.fleetGroupId)) ensureMeta('__none__', 'ไม่ระบุสาขา');
+  all.forEach(r=> ensureMeta(r.branchKey, r.branchName));
+
+  const vehicleKeyOf = r => r.vehicleId ? ('v:' + r.vehicleId) : ('p:' + normalizePlate(r.plate) + '|' + String(r.vehicleNo||''));
+
+  const branchRows = [];
+  const costItemsByBranch = new Map();
+
+  branchMeta.forEach((bm)=>{
+    const branchVehicles = db.vehicles.filter(v=> (v.fleetGroupId || '__none__') === bm.key);
+    const bDone = allDoneInMonth.filter(r=>r.branchKey===bm.key);
+    const bRep = allRepairingInMonth.filter(r=>r.branchKey===bm.key);
+
+    // นับคันไม่ซ้ำ (ข้อ 5)
+    const vDoneSet = new Set(bDone.map(vehicleKeyOf));
+    const vRepSet = new Set(bRep.map(vehicleKeyOf));
+    const vAllSet = new Set([...vDoneSet, ...vRepSet]);
+    const vDoneOnlyCount = [...vDoneSet].filter(k=>!vRepSet.has(k)).length;
+
+    // 4.3 ค่าใช้จ่ายในเดือน mk ของสาขานี้
+    const items = [];
+    let repairCost = 0, oilCost = 0, tireCost = 0, fuelCost = 0;
+
+    all.filter(r=> r.branchKey===bm.key && monthKey(r.repairDate)===mk && r.cost != null && !isNaN(r.cost)).forEach(r=>{
+      const c = Number(r.cost) || 0;
+      repairCost += c;
+      if(c > 0) items.push({date:r.repairDate, plate:rjVehicleDisplay(r), type:'งานซ่อม', title:r.title, cost:c});
+    });
+
+    const bVehIds = new Set(branchVehicles.map(v=>v.id));
+    (db.oilLogs||[]).filter(l=> bVehIds.has(l.vehicleId) && l.cost != null && monthKey(l.date)===mk).forEach(l=>{
+      const c = Number(l.cost) || 0;
+      oilCost += c;
+      const v = db.vehicles.find(x=>x.id===l.vehicleId);
+      if(c > 0) items.push({date:l.date, plate:v?vehicleDisplayTitle(v):'—', type:'น้ำมันเครื่อง', title:'เปลี่ยนน้ำมันเครื่อง', cost:c});
+    });
+    (db.tireLogs||[]).filter(l=> bVehIds.has(l.vehicleId) && l.cost != null && l.date && monthKey(l.date)===mk).forEach(l=>{
+      const c = Number(l.cost) || 0;
+      tireCost += c;
+      const v = db.vehicles.find(x=>x.id===l.vehicleId);
+      if(c > 0) items.push({date:l.date, plate:v?vehicleDisplayTitle(v):'—', type:'เปลี่ยนยาง', title:'เปลี่ยนยาง'+(l.count?` (${l.count} เส้น)`:''), cost:c});
+    });
+    (db.shipments||[]).filter(s=> bVehIds.has(s.vehicleId) && s.fuelCost != null && s.date && monthKey(s.date)===mk).forEach(s=>{
+      const c = Number(s.fuelCost) || 0;
+      fuelCost += c;
+    });
+
+    const hasActivity = branchVehicles.length > 0 || bDone.length > 0 || bRep.length > 0 || repairCost > 0 || oilCost > 0 || tireCost > 0 || fuelCost > 0;
+    if(!hasActivity) return;
+
+    items.sort((a,b)=> String(b.date).localeCompare(String(a.date)));
+    costItemsByBranch.set(bm.key, items);
+
+    branchRows.push({
+      branchKey: bm.key,
+      branchName: bm.name,
+      totalVehicles: branchVehicles.length,
+      repairedVehicleCount: vAllSet.size,
+      repairedJobCount: bDone.length + bRep.length,
+      doneVehicleCount: vDoneOnlyCount,
+      doneJobCount: bDone.length,
+      repairingVehicleCount: vRepSet.size,
+      repairingJobCount: bRep.length,
+      repairCost,
+      oilCost,
+      tireCost,
+      maintTotal: repairCost + oilCost + tireCost,
+      fuelCost,
+      grandTotal: repairCost + oilCost + tireCost + fuelCost
+    });
+  });
+
+  const filteredBranchRows = branchFilter === 'all' ? branchRows : branchRows.filter(b=>b.branchKey===branchFilter);
+  const doneList = branchFilter === 'all' ? allDoneInMonth : allDoneInMonth.filter(r=>r.branchKey===branchFilter);
+  const repairingList = branchFilter === 'all' ? allRepairingInMonth : allRepairingInMonth.filter(r=>r.branchKey===branchFilter);
+
+  const totals = filteredBranchRows.reduce((acc,b)=>{
+    acc.totalVehicles += b.totalVehicles;
+    acc.repairedVehicleCount += b.repairedVehicleCount;
+    acc.repairedJobCount += b.repairedJobCount;
+    acc.doneVehicleCount += b.doneVehicleCount;
+    acc.doneJobCount += b.doneJobCount;
+    acc.repairingVehicleCount += b.repairingVehicleCount;
+    acc.repairingJobCount += b.repairingJobCount;
+    acc.repairCost += b.repairCost;
+    acc.oilCost += b.oilCost;
+    acc.tireCost += b.tireCost;
+    acc.maintTotal += b.maintTotal;
+    acc.fuelCost += b.fuelCost;
+    acc.grandTotal += b.grandTotal;
+    return acc;
+  }, {totalVehicles:0, repairedVehicleCount:0, repairedJobCount:0, doneVehicleCount:0, doneJobCount:0, repairingVehicleCount:0, repairingJobCount:0, repairCost:0, oilCost:0, tireCost:0, maintTotal:0, fuelCost:0, grandTotal:0});
+
+  return { mk, branchRows, filteredBranchRows, doneList, repairingList, totals, costItemsByBranch };
+}
+
+function getAllBranchFilterOptions(extraItems=[]){
+  const map = new Map();
+  (db.fleetGroups||[]).forEach(g=> map.set(g.id, cleanBranchLabel(g.name)));
+  extraItems.forEach(r=>{ if(r && r.branchKey && r.branchKey!=='__none__' && !map.has(r.branchKey)) map.set(r.branchKey, r.branchName); });
+  const opts = Array.from(map.entries()).map(([key,name])=>({key,name}));
+  if(db.vehicles.some(v=>!v.fleetGroupId) || extraItems.some(r=>r.branchKey==='__none__')){
+    opts.push({key:'__none__', name:'ไม่ระบุสาขา'});
+  }
+  return opts;
+}
+
+function renderRepairJobsView(){
+  const app = document.getElementById('app');
+  if(!rjSummaryMonth) rjSummaryMonth = todayStr().slice(0,7);
+  const activeCount = getActiveRepairingList().length;
+  const allCount = getAllUnifiedRepairs().length;
+  app.innerHTML = `
+    <div class="panel-block" style="margin-top:20px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+        <div>
+          <h2 style="margin:0;">🔧 งานซ่อม แจ้งเตือน &amp; สรุปประจำเดือนตามสาขา</h2>
+          <div class="hint" style="margin-bottom:0;">ติดตามรถที่อยู่ระหว่างการซ่อม (ยังไม่เสร็จ) นับจำนวนวันซ่อม ดูสรุปประจำเดือนและค่าใช้จ่ายรายสาขา</div>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn small" onclick="openRepairJobModal()">+ แจ้งซ่อมใหม่</button>
+          <button class="btn ghost small" onclick="loadRepairJobs().then(()=>drawRepairJobs())">🔄 โหลดใหม่</button>
+        </div>
+      </div>
+      <div class="rj-subtabs">
+        <button class="rj-subtab ${rjActiveSubTab==='repairing'?'active':''}" onclick="rjActiveSubTab='repairing'; renderRepairJobsView()">
+          🚨 กำลังซ่อมอยู่ <span class="cnt">${activeCount}</span>
+        </button>
+        <button class="rj-subtab ${rjActiveSubTab==='all'?'active':''}" onclick="rjActiveSubTab='all'; renderRepairJobsView()">
+          📋 งานซ่อมทั้งหมด <span class="cnt">${allCount}</span>
+        </button>
+        <button class="rj-subtab ${rjActiveSubTab==='monthly'?'active':''}" onclick="rjActiveSubTab='monthly'; renderRepairJobsView()">
+          📊 สรุปประจำเดือน / รายสาขา
+        </button>
+      </div>
+    </div>
+    <div id="rjList"></div>`;
+  drawRepairJobs();
+  loadRepairJobs();
+}
+
+function drawRepairJobs(){
+  updateRepairNavBadge();
+  const box = document.getElementById('rjList');
+  if(!box) return;
+  if(rjActiveSubTab === 'monthly'){
+    drawRepairMonthlyView(box);
+    return;
+  }
+  const all = getAllUnifiedRepairs();
+  if(repairJobsLoading && !all.length){
+    box.innerHTML = '<div class="hint" style="margin:16px 4px;">กำลังโหลดข้อมูลงานซ่อม...</div>';
+    return;
+  }
+  const errBanner = repairJobsError ? `<div class="panel-block" style="margin-top:14px; border:1px solid var(--overdue);"><b>⚠️ เชื่อมต่อตารางงานซ่อม LINE ไม่สำเร็จ (กำลังแสดงข้อมูลในเครื่อง)</b><div class="hint">${escapeHtml(repairJobsError)}</div></div>` : '';
+
+  const branchOpts = getAllBranchFilterOptions(all);
+  if(rjBranchFilter!=='all' && !branchOpts.some(b=>b.key===rjBranchFilter)) rjBranchFilter = 'all';
+
+  if(rjActiveSubTab === 'repairing'){
+    const activeAll = getActiveRepairingList();
+    const over3 = activeAll.filter(r=>r.daysRepairing >= 3).length;
+    const over7 = activeAll.filter(r=>r.daysRepairing >= 7).length;
+    const overdueDue = activeAll.filter(r=>r.isOverdueDue).length;
+    const branchCounts = new Map();
+    activeAll.forEach(r=> branchCounts.set(r.branchKey, (branchCounts.get(r.branchKey)||0)+1));
+
+    const q = repairJobsSearch.trim().toLowerCase();
+    const list = activeAll.filter(r=>{
+      if(rjBranchFilter!=='all' && r.branchKey!==rjBranchFilter) return false;
+      if(rjDurationFilter==='3plus' && r.daysRepairing < 3) return false;
+      if(rjDurationFilter==='7plus' && r.daysRepairing < 7) return false;
+      if(rjDurationFilter==='overdue' && !r.isOverdueDue) return false;
+      if(q){
+        const hay = `${r.plate} ${r.vehicleNo} ${r.branchName} ${r.title} ${r.garage} ${r.reportedName}`.toLowerCase();
+        if(!hay.includes(q)) return false;
+      }
+      return true;
+    });
+
+    box.innerHTML = errBanner + `
+      <div class="summary" style="margin:16px 0 12px;">
+        <div class="sign overdue"><div class="num mono">${activeAll.length}</div><div class="lbl">กำลังซ่อมอยู่ (ยังไม่เสร็จ)</div></div>
+        <div class="sign soon"><div class="num mono">${over3}</div><div class="lbl">ซ่อมมาแล้ว 3 วันขึ้นไป</div></div>
+        <div class="sign overdue"><div class="num mono">${over7}</div><div class="lbl">ซ่อมมาแล้ว 7 วันขึ้นไป</div></div>
+        <div class="sign ${overdueDue?'overdue':'ok'}"><div class="num mono">${overdueDue}</div><div class="lbl">เลยกำหนดนัดเสร็จ</div></div>
+      </div>
+      <div class="panel-block" style="margin-top:12px;">
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+          <button class="fleet-tab-btn ${rjBranchFilter==='all'?'active':''}" onclick="rjBranchFilter='all'; drawRepairJobs()">ทุกสาขา (${activeAll.length})</button>
+          ${branchOpts.map(b=>{
+            const c = branchCounts.get(b.key) || 0;
+            return `<button class="fleet-tab-btn ${rjBranchFilter===b.key?'active':''}" onclick="rjBranchFilter='${escapeHtml(b.key)}'; drawRepairJobs()">🏢 ${escapeHtml(b.name)} (${c})</button>`;
+          }).join('')}
+        </div>
+        <div class="filter-bar" style="margin:0;">
+          <select onchange="rjDurationFilter=this.value; drawRepairJobs()">
+            <option value="all" ${rjDurationFilter==='all'?'selected':''}>ทุกระยะเวลา</option>
+            <option value="3plus" ${rjDurationFilter==='3plus'?'selected':''}>ซ่อมมาแล้ว 3 วันขึ้นไป</option>
+            <option value="7plus" ${rjDurationFilter==='7plus'?'selected':''}>ซ่อมมาแล้ว 7 วันขึ้นไป</option>
+            <option value="overdue" ${rjDurationFilter==='overdue'?'selected':''}>เกินวันนัดซ่อมเสร็จ</option>
+          </select>
+          <input type="search" value="${escapeHtml(repairJobsSearch)}" placeholder="🔍 ค้นหาทะเบียน / เบอร์ / รายการซ่อม / อู่" oninput="repairJobsSearch=this.value; drawRepairJobs()" style="min-width:240px;">
+          <button class="btn ghost small" onclick="sendRepairingAlertToLine(rjBranchFilter)">🔔 ส่งแจ้งเตือนเข้า LINE</button>
+          <button class="btn ghost small" onclick="exportRepairingNowExcel(rjBranchFilter)">📥 ส่งออก Excel</button>
+        </div>
+      </div>
+      ${list.length ? list.map(rjUnifiedCard).join('') : '<div class="empty-state"><div class="display">✅ ไม่มีรถที่อยู่ระหว่างการซ่อมในเงื่อนไขที่เลือก</div></div>'}
+    `;
+    return;
+  }
+
+  // แท็บ: งานซ่อมทั้งหมด
+  const q = repairJobsSearch.trim().toLowerCase();
+  const list = all.filter(r=>{
+    if(repairJobsFilter!=='all' && r.status!==repairJobsFilter) return false;
+    if(rjBranchFilter!=='all' && r.branchKey!==rjBranchFilter) return false;
+    if(rjMonthFilter && monthKey(r.repairDate)!==rjMonthFilter && monthKey(r.closedDate||r.repairDate)!==rjMonthFilter) return false;
+    if(q){
+      const hay = `${r.plate} ${r.vehicleNo} ${r.branchName} ${r.title} ${r.garage} ${r.reportedName}`.toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  box.innerHTML = errBanner + `
+    <div class="panel-block" style="margin-top:16px;">
+      <div class="filter-bar" style="margin:0;">
+        <select onchange="repairJobsFilter=this.value; drawRepairJobs()">
+          <option value="all" ${repairJobsFilter==='all'?'selected':''}>ทุกสถานะ</option>
+          <option value="repairing" ${repairJobsFilter==='repairing'?'selected':''}>กำลังซ่อม (ยังไม่เสร็จ)</option>
+          <option value="done" ${repairJobsFilter==='done'?'selected':''}>ซ่อมเสร็จแล้ว</option>
+        </select>
+        <select onchange="rjBranchFilter=this.value; drawRepairJobs()">
+          <option value="all" ${rjBranchFilter==='all'?'selected':''}>ทุกสาขา</option>
+          ${branchOpts.map(b=>`<option value="${escapeHtml(b.key)}" ${rjBranchFilter===b.key?'selected':''}>🏢 ${escapeHtml(b.name)}</option>`).join('')}
+        </select>
+        <input type="month" value="${rjMonthFilter}" onchange="rjMonthFilter=this.value; drawRepairJobs()" title="กรองตามเดือน (เว้นว่าง = ทุกเดือน)">
+        ${rjMonthFilter ? `<button class="btn ghost small" onclick="rjMonthFilter=''; drawRepairJobs()">ดูทุกเดือน</button>` : ''}
+        <input type="search" value="${escapeHtml(repairJobsSearch)}" placeholder="🔍 ค้นหาทะเบียน / เบอร์ / รายการซ่อม / อู่" oninput="repairJobsSearch=this.value; drawRepairJobs()" style="min-width:220px;">
+        <button class="btn ghost small" onclick="exportRepairMonthlyExcel(rjMonthFilter || todayStr().slice(0,7), rjBranchFilter)">📥 ส่งออก Excel</button>
+      </div>
+    </div>
+    ${list.length ? list.map(rjUnifiedCard).join('') : '<div class="empty-state"><div class="display">ไม่มีงานซ่อมในรายการนี้</div></div>'}
+  `;
+}
+
+function rjUnifiedCard(r){
+  const done = r.status === 'done';
+  const cost = r.cost != null ? baht(r.cost) : 'ยังไม่ระบุราคา';
+  const d = x => x ? formatThaiDateShort(x) : '—';
+  const srcTag = r.source === 'line' ? `#${r.jobNo || '-'} (LINE)` : 'บันทึกในเว็บ';
+  return `<div class="panel-block" style="margin-top:14px; border-left:4px solid ${done ? 'var(--ok)' : 'var(--overdue)'};">
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <b style="font-family:'Kanit';font-size:16px;">${escapeHtml(rjVehicleDisplay(r))}</b>
+        <span class="rj-branch-pill">🏢 ${escapeHtml(r.branchName)}</span>
+        ${rjDayBadgeHtml(r)}
+      </div>
+      <div class="hint">${escapeHtml(srcTag)}${r.reportedName ? ' · แจ้งโดย ' + escapeHtml(r.reportedName) : ''}</div>
+    </div>
+    <div style="margin:8px 0;font-size:15.5px;font-weight:600;">🔧 ${escapeHtml(r.title)}</div>
+    <div class="hint">
+      อู่: ${escapeHtml(r.garage || '—')} · เข้าซ่อม: <strong>${d(r.repairDate)}</strong>
+      · นัดเสร็จ: ${d(r.dueDate)}
+      · ค่าใช้จ่าย: <strong style="color:var(--accent);">${cost}</strong>
+      ${done && r.closedDate ? ` · ซ่อมเสร็จเมื่อ: <strong>${d(r.closedDate)}</strong>` : ''}
+    </div>
+    ${r.note && r.source!=='line' ? `<div class="hint" style="margin-top:4px;">หมายเหตุ: ${escapeHtml(r.note)}</div>` : ''}
+    ${r.photos.length ? `<div class="rj-photo-grid">${r.photos.map(u=>`<img src="${escapeHtml(u)}" loading="lazy" onclick="openImageLightbox('${escapeHtml(u)}')" title="คลิกเพื่อดูขนาดเต็ม">`).join('')}</div>` : ''}
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+      ${done
+        ? (r.repairJobId ? `<button class="btn ghost small" onclick="rjSetStatus('${r.repairJobId}','repairing')">เปิดงานอีกครั้ง</button>` : '')
+        : `<button class="btn small" onclick="openRjCloseModal('${escapeHtml(r.key)}')">✅ ซ่อมเสร็จแล้ว</button>`}
+      <button class="btn ghost small" onclick="openRepairJobModal('${escapeHtml(r.key)}')">✏️ แก้ไข</button>
+      ${r.vehicleId ? `<button class="btn ghost small" onclick="currentVehicleId='${r.vehicleId}'; setView('dashboard')">ดูข้อมูลรถ</button>` : ''}
+      ${isAdmin || can('deleteRecords') ? `<button class="btn danger small" onclick="rjDeleteUnified('${escapeHtml(r.key)}')">ลบ</button>` : ''}
+    </div>
+  </div>`;
+}
+
+function drawRepairMonthlyView(box){
+  if(!rjSummaryMonth) rjSummaryMonth = todayStr().slice(0,7);
+  const rpt = computeMonthlyBranchReport(rjSummaryMonth, rjSummaryBranch);
+  const branchOpts = getAllBranchFilterOptions([...rpt.doneList, ...rpt.repairingList]);
+  if(rjSummaryBranch!=='all' && !rpt.branchRows.some(b=>b.branchKey===rjSummaryBranch) && !branchOpts.some(b=>b.key===rjSummaryBranch)){
+    rjSummaryBranch = 'all';
+  }
+  const activeBranchName = rjSummaryBranch==='all' ? 'ทุกสาขา' : ((rpt.branchRows.find(b=>b.branchKey===rjSummaryBranch)||{}).branchName || 'ทุกสาขา');
+  const T = rpt.totals;
+
+  box.innerHTML = `
+    <div class="panel-block" style="margin-top:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <div>
+          <h2 style="margin:0;">📊 สรุปงานซ่อมประจำเดือน — ${escapeHtml(monthLabelTH(rjSummaryMonth))} (${escapeHtml(activeBranchName)})</h2>
+          <div class="hint" style="margin-bottom:0;">สรุปรวมรายสาขา: ซ่อมกี่คัน เสร็จกี่คัน ยังไม่เสร็จกี่คัน และรวมค่าใช้จ่ายของแต่ละสาขา</div>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn small" onclick="exportRepairMonthlyExcel('${rjSummaryMonth}', '${escapeHtml(rjSummaryBranch)}')">📥 ดึงข้อมูล Excel</button>
+          <button class="btn ghost small" onclick="openRepairMonthlyReport('${rjSummaryMonth}', '${escapeHtml(rjSummaryBranch)}')">🖨️ พิมพ์ / PDF</button>
+          <button class="btn ghost small" onclick="sendRepairMonthlySummaryToLine('${rjSummaryMonth}', '${escapeHtml(rjSummaryBranch)}')">🔔 ส่งสรุปเข้า LINE</button>
+        </div>
+      </div>
+      <div class="filter-bar" style="margin:12px 0 0;">
+        <label style="font-size:13px; color:var(--muted);">เดือน:
+          <input type="month" value="${rjSummaryMonth}" onchange="rjSummaryMonth=this.value||todayStr().slice(0,7); drawRepairJobs()">
+        </label>
+        <label style="font-size:13px; color:var(--muted);">สาขา:
+          <select onchange="rjSummaryBranch=this.value; drawRepairJobs()">
+            <option value="all" ${rjSummaryBranch==='all'?'selected':''}>ทุกสาขา (${rpt.branchRows.length} สาขา)</option>
+            ${rpt.branchRows.map(b=>`<option value="${escapeHtml(b.branchKey)}" ${rjSummaryBranch===b.branchKey?'selected':''}>🏢 ${escapeHtml(b.branchName)}</option>`).join('')}
+          </select>
+        </label>
+        ${rjSummaryBranch!=='all' ? `<button class="btn ghost small" onclick="rjSummaryBranch='all'; drawRepairJobs()">แสดงทุกสาขา</button>` : ''}
+      </div>
+    </div>
+
+    <div class="summary cols-5" style="margin-top:16px;">
+      <div class="sign"><div class="num mono">${T.repairedVehicleCount}</div><div class="lbl">ซ่อมเดือนนี้ (${T.repairedJobCount} งาน)</div></div>
+      <div class="sign ok"><div class="num mono">${T.doneVehicleCount}</div><div class="lbl">ซ่อมเสร็จแล้ว (${T.doneJobCount} งาน)</div></div>
+      <div class="sign ${T.repairingVehicleCount?'overdue':'ok'}"><div class="num mono">${T.repairingVehicleCount}</div><div class="lbl">ยังไม่เสร็จ (${T.repairingJobCount} งาน)</div></div>
+      <div class="sign info"><div class="num mono">${T.repairCost.toLocaleString()}</div><div class="lbl">รวมค่าซ่อม (บาท)</div></div>
+      <div class="sign info"><div class="num mono">${T.maintTotal.toLocaleString()}</div><div class="lbl">รวมซ่อม+น้ำมันเครื่อง+ยาง</div></div>
+    </div>
+
+    <!-- ข้อ 5: สรุปรวมแยกตามสาขา -->
+    <div class="panel-block" style="margin-top:16px;">
+      <div class="rj-section-head">
+        <h2 style="margin:0;">🏢 5. สรุปรวมแยกตามสาขา (${escapeHtml(monthLabelTH(rjSummaryMonth))})</h2>
+        <span class="hint" style="margin:0;">คลิกที่สาขาเพื่อกรองดูข้อมูลเฉพาะสาขานั้น</span>
+      </div>
+      <div class="rj-branch-grid">
+        ${rpt.branchRows.map(b=>`
+          <div class="rj-branch-card ${rjSummaryBranch===b.branchKey?'selected':''}" onclick="rjSummaryBranch=(rjSummaryBranch==='${escapeHtml(b.branchKey)}'?'all':'${escapeHtml(b.branchKey)}'); drawRepairJobs()">
+            <div class="rj-branch-card-hd">
+              <span>🏢 ${escapeHtml(b.branchName)}</span>
+              <span class="hint">${b.totalVehicles} คันในสาขา</span>
+            </div>
+            <div class="rj-branch-stats">
+              <div class="rj-branch-stat"><b>${b.repairedVehicleCount}</b><span>ซ่อมเดือนนี้ (คัน)</span></div>
+              <div class="rj-branch-stat"><b style="color:var(--ok);">${b.doneVehicleCount}</b><span>เสร็จแล้ว (คัน)</span></div>
+              <div class="rj-branch-stat"><b style="color:${b.repairingVehicleCount?'var(--overdue)':'var(--muted)'};">${b.repairingVehicleCount}</b><span>ยังไม่เสร็จ (คัน)</span></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:12.5px; border-top:1px dashed var(--steel); padding-top:6px;">
+              <span>ค่าซ่อมเดือนนี้:</span><strong class="mono" style="color:var(--accent);">${baht(b.repairCost)}</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:2px;">
+              <span>รวมซ่อม+น้ำมัน+ยาง:</span><strong class="mono">${baht(b.maintTotal)}</strong>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <!-- ข้อ 4.1: ข้อมูลรถที่ซ่อมไปแล้ว -->
+    <div class="panel-block" style="margin-top:16px;">
+      <div class="rj-section-head">
+        <h2 style="margin:0;">✅ 4.1 ข้อมูลรถที่ซ่อมไปแล้ว (${rpt.doneList.length} รายการ)</h2>
+      </div>
+      ${rpt.doneList.length ? `
+      <div style="overflow-x:auto;">
+        <table class="summary-table">
+          <thead><tr>
+            <th>ทะเบียน / เบอร์รถ</th><th>สาขา</th><th>รายการซ่อม</th><th>อู่</th>
+            <th>วันเข้าซ่อม</th><th>วันซ่อมเสร็จ</th><th>ระยะเวลา</th><th>ค่าซ่อม (บาท)</th><th></th>
+          </tr></thead>
+          <tbody>
+            ${rpt.doneList.map(r=>`
+              <tr class="ok">
+                <td><strong>${escapeHtml(rjVehicleDisplay(r))}</strong></td>
+                <td>${escapeHtml(r.branchName)}</td>
+                <td>${escapeHtml(r.title)}</td>
+                <td>${escapeHtml(r.garage || '—')}</td>
+                <td>${formatThaiDateShort(r.repairDate)}</td>
+                <td>${formatThaiDateShort(r.closedDate || r.repairDate)}</td>
+                <td class="mono">${r.daysRepairing} วัน</td>
+                <td class="mono">${r.cost!=null ? baht(r.cost) : '—'}</td>
+                <td style="text-align:right;white-space:nowrap;"><button class="btn ghost small" onclick="openRepairJobModal('${escapeHtml(r.key)}')">แก้ไข</button></td>
+              </tr>
+            `).join('')}
+          </tbody>
+          <tfoot>
+            <tr style="font-weight:700; border-top:2px solid var(--steel);">
+              <td colspan="7">รวมรายการที่ซ่อมเสร็จแล้ว (${rpt.doneList.length} งาน)</td>
+              <td class="mono" style="color:var(--accent);">${baht(rpt.doneList.reduce((s,r)=>s+(r.cost||0),0))}</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>` : `<div class="hint">ไม่มีข้อมูลรถที่ซ่อมเสร็จแล้วในเดือน/สาขาที่เลือก</div>`}
+    </div>
+
+    <!-- ข้อ 4.2: ข้อมูลรถที่ยังซ่อมไม่เสร็จ -->
+    <div class="panel-block" style="margin-top:16px;">
+      <div class="rj-section-head">
+        <h2 style="margin:0;">⏳ 4.2 ข้อมูลรถที่ยังซ่อมไม่เสร็จ (${rpt.repairingList.length} รายการ)</h2>
+        ${rpt.repairingList.length ? `<button class="btn ghost small" onclick="sendRepairingAlertToLine('${escapeHtml(rjSummaryBranch)}')">🔔 แจ้งเตือนกลุ่มนี้เข้า LINE</button>` : ''}
+      </div>
+      ${rpt.repairingList.length ? `
+      <div style="overflow-x:auto;">
+        <table class="summary-table">
+          <thead><tr>
+            <th>ทะเบียน / เบอร์รถ</th><th>สาขา</th><th>รายการซ่อม</th><th>อู่</th>
+            <th>วันเข้าซ่อม</th><th>ซ่อมมาแล้ว (วัน)</th><th>นัดเสร็จ</th><th>ค่าใช้จ่าย (ประมาณ)</th><th></th>
+          </tr></thead>
+          <tbody>
+            ${rpt.repairingList.map(r=>`
+              <tr class="overdue">
+                <td><strong>${escapeHtml(rjVehicleDisplay(r))}</strong></td>
+                <td>${escapeHtml(r.branchName)}</td>
+                <td>${escapeHtml(r.title)}</td>
+                <td>${escapeHtml(r.garage || '—')}</td>
+                <td>${formatThaiDateShort(r.repairDate)}</td>
+                <td>${rjDayBadgeHtml(r)}</td>
+                <td>${r.dueDate ? formatThaiDateShort(r.dueDate) : '—'}</td>
+                <td class="mono">${r.cost!=null ? baht(r.cost) : '—'}</td>
+                <td style="text-align:right;white-space:nowrap;">
+                  <button class="btn small" onclick="openRjCloseModal('${escapeHtml(r.key)}')">✅ เสร็จแล้ว</button>
+                  <button class="btn ghost small" onclick="openRepairJobModal('${escapeHtml(r.key)}')">แก้ไข</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>` : `<div class="hint">✅ ไม่มีรถที่ยังซ่อมไม่เสร็จในเดือน/สาขาที่เลือก</div>`}
+    </div>
+
+    <!-- ข้อ 4.3: รวมค่าใช้จ่ายของสาขานั้นๆ -->
+    <div class="panel-block" style="margin-top:16px;">
+      <div class="rj-section-head">
+        <h2 style="margin:0;">💰 4.3 ข้อมูลรวมค่าใช้จ่ายของสาขา (${escapeHtml(monthLabelTH(rjSummaryMonth))})</h2>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="summary-table">
+          <thead><tr>
+            <th>สาขา</th>
+            <th>ค่าซ่อม / ซ่อมบำรุงอื่นๆ</th>
+            <th>เปลี่ยนน้ำมันเครื่อง</th>
+            <th>เปลี่ยนยาง</th>
+            <th>รวมซ่อม+บำรุง (บาท)</th>
+            <th>ค่าน้ำมันเชื้อเพลิง</th>
+            <th>รวมทั้งหมด (บาท)</th>
+          </tr></thead>
+          <tbody>
+            ${rpt.filteredBranchRows.map(b=>`
+              <tr>
+                <td><strong>🏢 ${escapeHtml(b.branchName)}</strong></td>
+                <td class="mono" style="font-weight:700; color:var(--accent);">${baht(b.repairCost)}</td>
+                <td class="mono">${b.oilCost ? baht(b.oilCost) : '—'}</td>
+                <td class="mono">${b.tireCost ? baht(b.tireCost) : '—'}</td>
+                <td class="mono" style="font-weight:700;">${baht(b.maintTotal)}</td>
+                <td class="mono">${b.fuelCost ? baht(b.fuelCost) : '—'}</td>
+                <td class="mono" style="font-weight:700;">${baht(b.grandTotal)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+          <tfoot>
+            <tr style="font-weight:700; border-top:2px solid var(--steel);">
+              <td>รวมทั้งหมด</td>
+              <td class="mono" style="color:var(--accent);">${baht(T.repairCost)}</td>
+              <td class="mono">${baht(T.oilCost)}</td>
+              <td class="mono">${baht(T.tireCost)}</td>
+              <td class="mono">${baht(T.maintTotal)}</td>
+              <td class="mono">${baht(T.fuelCost)}</td>
+              <td class="mono">${baht(T.grandTotal)}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      ${rpt.filteredBranchRows.map(b=>{
+        const items = rpt.costItemsByBranch.get(b.branchKey) || [];
+        if(!items.length) return '';
+        return `<details style="margin-top:10px; border:1px solid var(--steel-soft); border-radius:8px; padding:6px 12px;">
+          <summary style="cursor:pointer; font-size:13px; font-weight:600;">รายละเอียดบิลค่าซ่อม/บำรุง — 🏢 ${escapeHtml(b.branchName)} (${items.length} รายการ · รวม ${baht(b.maintTotal)})</summary>
+          <table class="summary-table">
+            <thead><tr><th>วันที่</th><th>ทะเบียน</th><th>หมวด</th><th>รายการ</th><th>จำนวนเงิน</th></tr></thead>
+            <tbody>${items.map(it=>`<tr><td>${formatThaiDateShort(it.date)}</td><td>${escapeHtml(it.plate)}</td><td>${escapeHtml(it.type)}</td><td>${escapeHtml(it.title)}</td><td class="mono">${baht(it.cost)}</td></tr>`).join('')}</tbody>
+          </table>
+        </details>`;
+      }).join('')}
+    </div>
+  `;
+}
+
+/* ---------------- Add / Edit Repair Job Modal & Quick Close ---------------- */
+let rjFormEditKey = null; // null | 'rj:<id>' | 'ml:<id>'
+let rjFormPhotos = [];
+
+function populateRjBranchSelect(sel, selectedName=''){
+  const cleanSel = cleanBranchLabel(selectedName);
+  const existing = (db.fleetGroups||[]).map(g=>g.name);
+  let html = '<option value="">— ไม่ระบุสาขา —</option>'
+    + existing.map(n=>`<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('');
+  if(cleanSel && !existing.some(n=>normalizeBranchName(n)===normalizeBranchName(cleanSel))){
+    html += `<option value="${escapeHtml(cleanSel)}">${escapeHtml(cleanSel)}</option>`;
+  }
+  html += '<option value="__new__">+ เพิ่มสาขาใหม่...</option>';
+  sel.innerHTML = html;
+  if(cleanSel){
+    const match = existing.find(n=>normalizeBranchName(n)===normalizeBranchName(cleanSel)) || cleanSel;
+    sel.value = match;
+  }else{
+    sel.value = '';
+  }
+}
+
+function handleRjFormBranchSelect(sel){
+  if(sel.value !== '__new__') return;
+  const name = prompt('ชื่อสาขาใหม่ (เช่น ศรีเมืองใหม่):');
+  if(name && name.trim()){
+    const g = ensureBranchGroup(name);
+    populateRjBranchSelect(sel, g ? g.name : name.trim());
+  }else{
+    sel.value = '';
+  }
+}
+
+function onRjFormVehicleChange(){
+  const vid = document.getElementById('rjFormVehicleId').value;
+  if(!vid) return;
+  const v = db.vehicles.find(x=>x.id===vid);
+  if(!v) return;
+  document.getElementById('rjFormPlate').value = v.name || '';
+  document.getElementById('rjFormVehicleNo').value = v.vehicleNo || '';
+  const br = vehicleBranchName(v);
+  if(br) populateRjBranchSelect(document.getElementById('rjFormBranch'), br);
+}
+
+function onRjFormStatusChange(){
+  const st = document.getElementById('rjFormStatus').value;
+  document.getElementById('rjFormClosedDateWrap').style.display = st==='done' ? '' : 'none';
+  if(st==='done' && !document.getElementById('rjFormClosedDate').value){
+    document.getElementById('rjFormClosedDate').value = todayStr();
+  }
+  document.getElementById('rjFormSyncVehStatusWrap').style.display = (st==='repairing' && document.getElementById('rjFormVehicleId').value) ? '' : 'none';
+}
+
+function renderRjFormPhotosGrid(){
+  const grid = document.getElementById('rjFormPhotosGrid');
+  if(!grid) return;
+  grid.innerHTML = rjFormPhotos.map((p,i)=>`
+    <div class="photo-tile">
+      <img src="${escapeHtml(p)}" onclick="openImageLightbox('${escapeHtml(p)}')" title="คลิกเพื่อดูขนาดเต็ม">
+      <button type="button" class="photo-tile-remove" onclick="rjFormPhotos.splice(${i},1); renderRjFormPhotosGrid()" title="ลบรูปนี้">✕</button>
+    </div>
+  `).join('') + (rjFormPhotos.length < 15 ? `
+    <label class="photo-tile add-tile" title="เพิ่มรูป">
+      <span>📷</span><span>เพิ่มรูป</span>
+      <input type="file" accept="image/*" multiple onchange="addRjFormPhotos(this)" style="display:none;">
+    </label>` : '');
+}
+
+async function addRjFormPhotos(input){
+  if(!input.files || !input.files.length) return;
+  for(const file of Array.from(input.files)){
+    if(rjFormPhotos.length >= 15) break;
+    try{
+      const url = await uploadImageToStorage(file, 800, 0.7);
+      rjFormPhotos.push(url);
+      renderRjFormPhotosGrid();
+    }catch(e){ console.error('upload repair photo failed', e); }
+  }
+  input.value = '';
+}
+
+function openRepairJobModal(keyOrId=null, vehicleIdHint=null){
+  const vSel = document.getElementById('rjFormVehicleId');
+  vSel.innerHTML = '<option value="">— กรอกทะเบียนเอง / ไม่ผูกคัน —</option>'
+    + db.vehicles.map(v=>`<option value="${v.id}">${escapeHtml(vehicleDisplayTitle(v))}${vehicleBranchName(v)?' ['+escapeHtml(vehicleBranchName(v))+']':''}</option>`).join('');
+  const brSel = document.getElementById('rjFormBranch');
+  const titleEl = document.getElementById('rjFormModalTitle');
+
+  let normalizedKey = keyOrId;
+  if(keyOrId && !String(keyOrId).includes(':')) normalizedKey = 'rj:' + keyOrId;
+  rjFormEditKey = normalizedKey || null;
+
+  if(rjFormEditKey){
+    const item = getAllUnifiedRepairs().find(r=>r.key===rjFormEditKey);
+    if(!item){ alert('ไม่พบรายการซ่อมนี้'); return; }
+    titleEl.textContent = item.jobNo ? `แก้ไขงานซ่อม #${item.jobNo}` : 'แก้ไขรายการซ่อม';
+    vSel.value = item.vehicleId || '';
+    document.getElementById('rjFormPlate').value = item.plate || '';
+    document.getElementById('rjFormVehicleNo').value = item.vehicleNo || '';
+    populateRjBranchSelect(brSel, item.branchName==='ไม่ระบุสาขา' ? '' : item.branchName);
+    document.getElementById('rjFormTitle').value = item.title || '';
+    document.getElementById('rjFormGarage').value = item.garage || '';
+    document.getElementById('rjFormReportedName').value = item.reportedName || '';
+    document.getElementById('rjFormRepairDate').value = item.repairDate || todayStr();
+    document.getElementById('rjFormDueDate').value = item.dueDate || '';
+    document.getElementById('rjFormStatus').value = item.status || 'repairing';
+    document.getElementById('rjFormClosedDate').value = item.closedDate || '';
+    document.getElementById('rjFormCost').value = item.cost != null ? item.cost : '';
+    document.getElementById('rjFormSyncVehStatus').checked = false;
+    rjFormPhotos = (item.photos || []).slice();
+  }else{
+    titleEl.textContent = 'แจ้งซ่อม / บันทึกงานซ่อม';
+    const v = vehicleIdHint ? db.vehicles.find(x=>x.id===vehicleIdHint) : null;
+    vSel.value = v ? v.id : '';
+    document.getElementById('rjFormPlate').value = v ? (v.name || '') : '';
+    document.getElementById('rjFormVehicleNo').value = v ? (v.vehicleNo || '') : '';
+    populateRjBranchSelect(brSel, v ? vehicleBranchName(v) : '');
+    document.getElementById('rjFormTitle').value = '';
+    document.getElementById('rjFormGarage').value = '';
+    document.getElementById('rjFormReportedName').value = currentUser ? currentUser.username : '';
+    document.getElementById('rjFormRepairDate').value = todayStr();
+    document.getElementById('rjFormDueDate').value = '';
+    document.getElementById('rjFormStatus').value = 'repairing';
+    document.getElementById('rjFormClosedDate').value = '';
+    document.getElementById('rjFormCost').value = '';
+    document.getElementById('rjFormSyncVehStatus').checked = true;
+    rjFormPhotos = [];
+  }
+  renderRjFormPhotosGrid();
+  onRjFormStatusChange();
+  document.getElementById('repairJobOverlay').classList.add('show');
+}
+
+async function saveRepairJobModal(){
+  const vehicleId = document.getElementById('rjFormVehicleId').value || null;
+  const plate = document.getElementById('rjFormPlate').value.trim();
+  const vehicleNo = document.getElementById('rjFormVehicleNo').value.trim();
+  const branch = document.getElementById('rjFormBranch').value || '';
+  const title = document.getElementById('rjFormTitle').value.trim();
+  const garage = document.getElementById('rjFormGarage').value.trim();
+  const reportedName = document.getElementById('rjFormReportedName').value.trim();
+  const repairDate = fixBEYear(document.getElementById('rjFormRepairDate').value) || todayStr();
+  const dueDate = fixBEYear(document.getElementById('rjFormDueDate').value) || null;
+  const status = document.getElementById('rjFormStatus').value;
+  const closedDate = status==='done' ? (fixBEYear(document.getElementById('rjFormClosedDate').value) || todayStr()) : null;
+  const costRaw = document.getElementById('rjFormCost').value;
+  const cost = costRaw === '' ? null : Number(costRaw);
+
+  if(!plate){ alert('กรุณากรอกทะเบียนรถ'); return; }
+  if(!title){ alert('กรุณากรอกรายการซ่อม'); return; }
+
+  const btn = document.getElementById('rjFormSubmitBtn');
+  btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
+  try{
+    if(branch) ensureBranchGroup(branch);
+    if(vehicleId){
+      const v = db.vehicles.find(x=>x.id===vehicleId);
+      if(v){
+        if(branch && !v.fleetGroupId){
+          const g = findBranchGroupByName(branch);
+          if(g) v.fleetGroupId = g.id;
+        }
+        if(vehicleNo && !v.vehicleNo) v.vehicleNo = vehicleNo;
+        if(document.getElementById('rjFormSyncVehStatus').checked && status==='repairing'){
+          v.status = 'repair';
+        }
+      }
+    }
+
+    if(rjFormEditKey && rjFormEditKey.startsWith('ml:')){
+      const mid = rjFormEditKey.slice(3);
+      const entry = db.maintenanceLogs.find(l=>l.id===mid);
+      if(entry){
+        entry.vehicleId = vehicleId;
+        entry.plate = plate;
+        entry.vehicleNo = vehicleNo;
+        entry.branch = branch;
+        entry.title = title;
+        entry.garage = garage;
+        entry.reportedName = reportedName;
+        entry.date = repairDate;
+        entry.dueDate = dueDate;
+        entry.status = status;
+        entry.closedDate = closedDate;
+        if(cost != null && !isNaN(cost)) entry.cost = cost; else delete entry.cost;
+        entry.lineImages = rjFormPhotos.slice();
+      }
+      logActivity('แก้ไขรายการซ่อม', `${plate} — ${title}`);
+      saveDB();
+      await flushDBSyncNow();
+    }else if(rjFormEditKey && rjFormEditKey.startsWith('rj:')){
+      const id = rjFormEditKey.slice(3);
+      const patch = {
+        vehicle_id: vehicleId,
+        plate,
+        vehicle_no: vehicleNo || null,
+        branch: branch || null,
+        title,
+        garage: garage || null,
+        reported_name: reportedName || null,
+        repair_date: repairDate,
+        due_date: dueDate,
+        status,
+        closed_at: status==='done' ? (closedDate + 'T12:00:00Z') : null,
+        cost: (cost != null && !isNaN(cost)) ? cost : null,
+        photos: rjFormPhotos.slice()
+      };
+      const { error } = await saveRepairJobRpc(id, patch);
+      if(error){ alert('บันทึกไม่สำเร็จ: ' + error.message); return; }
+      logActivity('แก้ไขงานซ่อม', `${plate} — ${title}`);
+      saveDB();
+      await loadRepairJobs();
+    }else{
+      const payload = {
+        vehicle_id: vehicleId,
+        plate,
+        vehicle_no: vehicleNo || null,
+        branch: branch || null,
+        title,
+        garage: garage || null,
+        reported_name: reportedName || null,
+        repair_date: repairDate,
+        due_date: dueDate,
+        status,
+        closed_at: status==='done' ? (closedDate + 'T12:00:00Z') : null,
+        cost: (cost != null && !isNaN(cost)) ? cost : null,
+        photos: rjFormPhotos.slice()
+      };
+      let savedViaRpc = false;
+      if(typeof supabaseClient !== 'undefined' && supabaseClient){
+        const { error } = await supabaseClient.rpc('create_repair_job', { p_secret: APP_SYNC_SECRET, p_data: payload });
+        if(!error) savedViaRpc = true;
+        else if(!isMissingRpc(error)) console.warn('create_repair_job fallback to local db:', error.message);
+      }
+      if(!savedViaRpc){
+        const entry = {
+          id: uid(), vehicleId, plate, vehicleNo, branch,
+          title, date: repairDate, km: null,
+          note: garage ? 'อู่ '+garage : '',
+          garage, dueDate, status, closedDate,
+          reportedName, source: 'web_repair',
+          lineImages: rjFormPhotos.slice()
+        };
+        if(cost != null && !isNaN(cost)) entry.cost = cost;
+        db.maintenanceLogs.push(entry);
+        saveDB();
+        await flushDBSyncNow();
+      }else{
+        saveDB();
+        await loadRepairJobs();
+      }
+      logActivity('แจ้งซ่อม', `${plate}${branch?' ('+branch+')':''} — ${title}`);
+    }
+    closeModal('repairJobOverlay');
+    render();
+  }finally{
+    btn.disabled = false; btn.textContent = 'บันทึกข้อมูล';
+  }
+}
+
+let rjCloseTargetKey = null;
+function openRjCloseModal(itemKey){
+  const item = getAllUnifiedRepairs().find(r=>r.key===itemKey);
+  if(!item) return;
+  rjCloseTargetKey = itemKey;
+  document.getElementById('rjCloseInfo').innerHTML = `
+    <strong>${escapeHtml(rjVehicleDisplay(item))}</strong> · 🏢 ${escapeHtml(item.branchName)}<br>
+    🔧 ${escapeHtml(item.title)} (เข้าซ่อม ${formatThaiDateShort(item.repairDate)} · ${item.daysRepairing} วัน)`;
+  document.getElementById('rjCloseDate').value = todayStr();
+  document.getElementById('rjCloseCost').value = item.cost != null ? item.cost : '';
+  document.getElementById('rjCloseReadyVehWrap').style.display = item.vehicleId ? '' : 'none';
+  document.getElementById('rjCloseReadyVeh').checked = true;
+  document.getElementById('rjCloseNotifyLineWrap').style.display = item.repairJobId ? '' : 'none';
+  document.getElementById('rjCloseNotifyLine').checked = !!item.repairJobId;
+  document.getElementById('rjCloseOverlay').classList.add('show');
+}
+
+async function submitRjCloseModal(){
+  const item = getAllUnifiedRepairs().find(r=>r.key===rjCloseTargetKey);
+  if(!item){ closeModal('rjCloseOverlay'); return; }
+  const closedDate = fixBEYear(document.getElementById('rjCloseDate').value) || todayStr();
+  const costRaw = document.getElementById('rjCloseCost').value;
+  const cost = costRaw === '' ? item.cost : Number(costRaw);
+  const readyVeh = document.getElementById('rjCloseReadyVeh').checked;
+  const notifyLine = document.getElementById('rjCloseNotifyLine').checked;
+
+  const btn = document.getElementById('rjCloseSubmitBtn');
+  btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
+  let lineMsg = '';
+  try{
+    if(item.vehicleId && readyVeh){
+      const v = db.vehicles.find(x=>x.id===item.vehicleId);
+      if(v && v.status==='repair') v.status = 'ready';
+    }
+    if(item.key.startsWith('rj:')){
+      const id = item.repairJobId;
+      const patch = {
+        status: 'done',
+        closed_at: closedDate + 'T12:00:00Z'
+      };
+      if(cost != null && !isNaN(cost)) patch.cost = cost;
+      const { error } = await saveRepairJobRpc(id, patch);
+      if(error){ alert('ปิดงานไม่สำเร็จ: ' + error.message); return; }
+      if(notifyLine){
+        const res = await rjNotifyDone(id);
+        lineMsg = res && res.sent ? 'ส่งแจ้งซ่อมเสร็จเข้า LINE แล้ว ✅' : (res && res.reason ? 'ปิดงานแล้ว แต่ยังไม่ส่ง LINE: ' + res.reason : '');
+      }
+      saveDB();
+      await loadRepairJobs();
+    }else{
+      const entry = db.maintenanceLogs.find(l=>l.id===item.maintId);
+      if(entry){
+        entry.status = 'done';
+        entry.closedDate = closedDate;
+        if(cost != null && !isNaN(cost)) entry.cost = cost;
+      }
+      saveDB();
+      await flushDBSyncNow();
+    }
+    logActivity('ปิดงานซ่อม', `${item.plate} — ${item.title}`);
+    closeModal('rjCloseOverlay');
+    render();
+    if(lineMsg) alert(lineMsg);
+  }finally{
+    btn.disabled = false; btn.textContent = 'ยืนยัน ซ่อมเสร็จแล้ว';
+  }
+}
+
+function rjEdit(id){ openRepairJobModal('rj:' + id); }
+
 // สั่งให้บอทส่งข้อความ "ซ่อมเสร็จ" เข้า LINE (บอทเป็นคนส่ง เพราะ token อยู่ฝั่งเซิร์ฟเวอร์)
 async function rjNotifyDone(id){
   try{
     const r = await fetch(`${SUPABASE_URL}/functions/v1/line-webhook`, {
       method:'POST',
       headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`},
-      body: JSON.stringify({ action:'notify_done', job_id:id })
+      body: JSON.stringify({ action:'notify_done', secret: APP_SYNC_SECRET, job_id:id })
     });
-    const t = await r.json().catch(()=>({}));
-    return t;
+    return await r.json().catch(()=>({}));
   }catch(e){ return { ok:false, error:String(e) }; }
 }
-async function rjSetStatus(id, status){
-  const patch = status === 'done' ? { status, closed_at: new Date().toISOString() } : { status, closed_at: null };
-  const { error } = await supabaseClient.rpc('save_repair_job', { p_secret: APP_SYNC_SECRET, p_id: id, p_patch: patch });
-  if(error){ alert('บันทึกไม่สำเร็จ: ' + error.message); return; }
-  let msg = '';
-  if(status === 'done'){
-    const res = await rjNotifyDone(id);
-    msg = res && res.sent ? 'ส่งแจ้งเข้า LINE แล้ว ✅' : (res && res.reason ? 'ปิดงานแล้ว แต่ยังไม่ได้แจ้ง LINE: ' + res.reason : 'ปิดงานแล้ว แต่ส่งแจ้ง LINE ไม่สำเร็จ');
+
+async function sendRepairingAlertToLine(branchFilter='all'){
+  const list = getActiveRepairingList(branchFilter);
+  const bName = branchFilter==='all' ? '' : ((getAllBranchFilterOptions(list).find(b=>b.key===branchFilter)||{}).name || '');
+  if(!list.length){
+    alert(bName ? `สาขา "${bName}" ไม่มีรถที่กำลังซ่อมอยู่ครับ` : 'ตอนนี้ไม่มีรถที่กำลังซ่อมอยู่ครับ');
+    return;
   }
-  await loadRepairJobs();
-  if(msg) alert(msg);
-}
-async function rjDelete(id){
-  const j = repairJobs.find(x=>x.id===id); if(!j) return;
-  if(!confirm(`ลบงานซ่อม #${j.job_no} ${j.plate||''} ${j.title||''} ?`)) return;
-  const { error } = await supabaseClient.rpc('delete_repair_job', { p_secret: APP_SYNC_SECRET, p_id: id });
-  if(error){ alert('ลบไม่สำเร็จ: ' + error.message); return; }
-  const mi = db.maintenanceLogs.findIndex(l=>l.id==='rj_'+id && l.source==='line');
-  if(mi>-1){ db.maintenanceLogs.splice(mi,1); saveDB(); }
-  await loadRepairJobs();
-}
-function rjEdit(id){
-  const j = repairJobs.find(x=>x.id===id); if(!j) return;
-  const f = (lbl, key, type='text', val=j[key]) => `<label style="display:block;margin-top:8px;font-size:13px;">${lbl}<input data-k="${key}" type="${type}" value="${escapeHtml(val ?? '')}" style="width:100%;padding:8px;margin-top:3px;box-sizing:border-box;"></label>`;
-  const photos = rjPhotos(j);
-  const ov = document.createElement('div');
-  ov.id = 'rjEditOv';
-  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
-  ov.innerHTML = `<div style="background:var(--card,#fff);color:inherit;border-radius:14px;padding:18px;max-width:480px;width:100%;max-height:90vh;overflow:auto;">
-    <h3 style="margin:0 0 4px;">แก้ไขงานซ่อม #${j.job_no}</h3>
-    ${f('ทะเบียน','plate')}${f('เบอร์รถ','vehicle_no')}${f('รายการซ่อม','title')}${f('อู่','garage')}
-    ${f('วันที่เข้าซ่อม','repair_date','date')}${f('อู่นัดซ่อมเสร็จ','due_date','date')}${f('ราคา (บาท)','cost','number')}
-    <div style="margin-top:10px;font-size:13px;">รูป (กดรูปเพื่อลบออก)</div>
-    <div id="rjEditPhotos" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;"></div>
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">
-      <button class="btn ghost" id="rjEditCancel">ยกเลิก</button><button class="btn" id="rjEditSave">บันทึก</button>
-    </div></div>`;
-  document.body.appendChild(ov);
-  let keep = photos.slice();
-  const drawPh = () => { ov.querySelector('#rjEditPhotos').innerHTML = keep.length ? keep.map((u,i)=>`<img src="${escapeHtml(u)}" data-i="${i}" style="width:64px;height:64px;object-fit:cover;border-radius:6px;cursor:pointer;" title="กดเพื่อลบ">`).join('') : '<span class="hint">ไม่มีรูป</span>'; };
-  drawPh();
-  ov.querySelector('#rjEditPhotos').onclick = e => { const i = e.target.dataset && e.target.dataset.i; if(i!=null && confirm('เอารูปนี้ออกจากงานซ่อม?')){ keep.splice(+i,1); drawPh(); } };
-  ov.querySelector('#rjEditCancel').onclick = () => ov.remove();
-  ov.querySelector('#rjEditSave').onclick = async () => {
-    const patch = {};
-    ov.querySelectorAll('input[data-k]').forEach(el=>{
-      const k = el.dataset.k; let v = el.value.trim();
-      if(v === '') v = null; else if(k === 'cost') v = Number(v);
-      patch[k] = v;
+  const lines = list.map((r,i)=>{
+    const dueWarn = r.isOverdueDue ? ` ⚠️เกินนัด ${rjDaysElapsed(r.dueDate, todayStr())} วัน` : '';
+    return `${i+1}. ${rjVehicleDisplay(r)} [${r.branchName}]\n   🔧 ${r.title} · ซ่อมมาแล้ว ${r.daysRepairing} วัน (เข้า ${formatThaiDateShort(r.repairDate)})${r.garage?' · '+r.garage:''}${dueWarn}`;
+  });
+  const message = `🚨 แจ้งเตือนรถกำลังซ่อม${bName ? ' (สาขา ' + bName + ')' : ''} — ${list.length} รายการ\n\n${lines.join('\n')}`;
+  try{
+    const r = await fetch(`${SUPABASE_URL}/functions/v1/line-webhook`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`},
+      body: JSON.stringify({ action:'notify_repairing', secret: APP_SYNC_SECRET, branch: bName || null, message })
     });
-    if(!patch.title){ alert('กรุณาใส่รายการซ่อม'); return; }
-    patch.photos = keep;
-    const { error } = await supabaseClient.rpc('save_repair_job', { p_secret: APP_SYNC_SECRET, p_id: id, p_patch: patch });
-    if(error){ alert('บันทึกไม่สำเร็จ: ' + error.message); return; }
-    ov.remove(); await loadRepairJobs();
-  };
+    const res = await r.json().catch(()=>({}));
+    if(res && res.sent) alert('ส่งแจ้งเตือนรถกำลังซ่อมเข้า LINE เรียบร้อยแล้ว ✅');
+    else alert('ส่งเข้า LINE ไม่สำเร็จ: ' + (res.reason || res.error || r.status));
+  }catch(e){
+    alert('เชื่อมต่อไม่สำเร็จ: ' + e.message);
+  }
+}
+
+async function sendRepairMonthlySummaryToLine(mk, branchFilter='all'){
+  const rpt = computeMonthlyBranchReport(mk, branchFilter);
+  if(!rpt.filteredBranchRows.length){ alert('ยังไม่มีข้อมูลสำหรับส่งสรุป'); return; }
+  const lines = rpt.filteredBranchRows.map(b=>
+    `🏢 ${b.branchName}\n   ซ่อมเดือนนี้ ${b.repairedVehicleCount} คัน · เสร็จ ${b.doneVehicleCount} คัน · ยังไม่เสร็จ ${b.repairingVehicleCount} คัน\n   ค่าซ่อม ${baht(b.repairCost)} · รวมบำรุงรักษา ${baht(b.maintTotal)}`
+  );
+  const T = rpt.totals;
+  const message = `📊 สรุปงานซ่อมประจำเดือน ${monthLabelTH(mk)}\n\n${lines.join('\n')}\n\nรวม: ${T.repairedVehicleCount} คัน · เสร็จ ${T.doneVehicleCount} คัน · ยังไม่เสร็จ ${T.repairingVehicleCount} คัน\nค่าซ่อมรวม ${baht(T.repairCost)} (รวมบำรุง ${baht(T.maintTotal)})`;
+  try{
+    const r = await fetch(`${SUPABASE_URL}/functions/v1/line-webhook`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`},
+      body: JSON.stringify({ action:'notify_monthly_summary', secret: APP_SYNC_SECRET, message })
+    });
+    const res = await r.json().catch(()=>({}));
+    if(res && res.sent) alert('ส่งสรุปประจำเดือนเข้า LINE เรียบร้อยแล้ว ✅');
+    else alert('ส่งเข้า LINE ไม่สำเร็จ: ' + (res.reason || res.error || r.status));
+  }catch(e){
+    alert('เชื่อมต่อไม่สำเร็จ: ' + e.message);
+  }
+}
+
+async function rjSetStatus(id, status){
+  if(status === 'done'){ openRjCloseModal('rj:' + id); return; }
+  const patch = { status, closed_at: null };
+  const { error } = await saveRepairJobRpc(id, patch);
+  if(error){ alert('บันทึกไม่สำเร็จ: ' + error.message); return; }
+  await loadRepairJobs();
+}
+
+async function rjDeleteUnified(itemKey){
+  if(!isAdmin && !can('deleteRecords')){ alert('คุณไม่มีสิทธิ์ลบบันทึกรายการ'); return; }
+  const item = getAllUnifiedRepairs().find(r=>r.key===itemKey);
+  if(!item) return;
+  if(!confirm(`ลบรายการซ่อม "${item.plate} — ${item.title}" ?`)) return;
+  if(item.key.startsWith('rj:')){
+    const { error } = await supabaseClient.rpc('delete_repair_job', { p_secret: APP_SYNC_SECRET, p_id: item.repairJobId });
+    if(error){ alert('ลบไม่สำเร็จ: ' + error.message); return; }
+    const mi = db.maintenanceLogs.findIndex(l=>l.id==='rj_'+item.repairJobId);
+    if(mi>-1){ db.maintenanceLogs.splice(mi,1); saveDB(); }
+    await loadRepairJobs();
+  }else{
+    db.maintenanceLogs = db.maintenanceLogs.filter(l=>l.id!==item.maintId);
+    saveDB();
+    render();
+  }
+}
+
+async function rjDelete(id){ return rjDeleteUnified('rj:' + id); }
+
+/* ---------------- ดึงข้อมูล / ส่งออก Excel & รายงานพิมพ์รายเดือนรายสาขา ---------------- */
+function exportRepairingNowExcel(branchFilter='all'){
+  if(typeof XLSX === 'undefined'){ alert('ไม่สามารถโหลดตัวสร้างไฟล์ Excel ได้ (ต้องต่ออินเทอร์เน็ต)'); return; }
+  const list = getActiveRepairingList(branchFilter);
+  if(!list.length){ alert('ไม่มีรถที่กำลังซ่อมอยู่'); return; }
+  const rows = list.map((r,i)=>({
+    'ลำดับ': i+1,
+    'ทะเบียนรถ': r.plate,
+    'เบอร์รถ': r.vehicleNo || '',
+    'สาขา': r.branchName,
+    'รายการซ่อม': r.title,
+    'อู่': r.garage || '',
+    'วันที่เข้าซ่อม': r.repairDate,
+    'ซ่อมมาแล้ว (วัน)': r.daysRepairing,
+    'วันนัดเสร็จ': r.dueDate || '',
+    'เกินนัด (วัน)': r.isOverdueDue ? rjDaysElapsed(r.dueDate, todayStr()) : 0,
+    'ค่าใช้จ่ายประมาณ (บาท)': r.cost != null ? r.cost : '',
+    'ผู้แจ้ง': r.reportedName || ''
+  }));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), 'รถที่กำลังซ่อม');
+  XLSX.writeFile(wb, `รถกำลังซ่อม_${todayStr()}.xlsx`);
+}
+
+function exportRepairMonthlyExcel(mk, branchFilter='all'){
+  if(typeof XLSX === 'undefined'){ alert('ไม่สามารถโหลดตัวสร้างไฟล์ Excel ได้ (ต้องต่ออินเทอร์เน็ต)'); return; }
+  const rpt = computeMonthlyBranchReport(mk, branchFilter);
+  const wb = XLSX.utils.book_new();
+
+  const sBranch = rpt.filteredBranchRows.map(b=>({
+    'สาขา': b.branchName,
+    'รถทั้งหมดในสาขา': b.totalVehicles,
+    'ซ่อมเดือนนี้ (คัน)': b.repairedVehicleCount,
+    'จำนวนงานทั้งหมด': b.repairedJobCount,
+    'ซ่อมเสร็จแล้ว (คัน)': b.doneVehicleCount,
+    'งานซ่อมเสร็จ': b.doneJobCount,
+    'ยังไม่เสร็จ (คัน)': b.repairingVehicleCount,
+    'งานยังไม่เสร็จ': b.repairingJobCount,
+    'ค่าซ่อม (บาท)': b.repairCost,
+    'ค่าน้ำมันเครื่อง (บาท)': b.oilCost,
+    'ค่าเปลี่ยนยาง (บาท)': b.tireCost,
+    'รวมค่าซ่อม+บำรุง (บาท)': b.maintTotal,
+    'ค่าน้ำมันเชื้อเพลิง (บาท)': b.fuelCost,
+    'รวมค่าใช้จ่ายทั้งหมด (บาท)': b.grandTotal
+  }));
+  sBranch.push({
+    'สาขา': 'รวมทั้งหมด',
+    'รถทั้งหมดในสาขา': rpt.totals.totalVehicles,
+    'ซ่อมเดือนนี้ (คัน)': rpt.totals.repairedVehicleCount,
+    'จำนวนงานทั้งหมด': rpt.totals.repairedJobCount,
+    'ซ่อมเสร็จแล้ว (คัน)': rpt.totals.doneVehicleCount,
+    'งานซ่อมเสร็จ': rpt.totals.doneJobCount,
+    'ยังไม่เสร็จ (คัน)': rpt.totals.repairingVehicleCount,
+    'งานยังไม่เสร็จ': rpt.totals.repairingJobCount,
+    'ค่าซ่อม (บาท)': rpt.totals.repairCost,
+    'ค่าน้ำมันเครื่อง (บาท)': rpt.totals.oilCost,
+    'ค่าเปลี่ยนยาง (บาท)': rpt.totals.tireCost,
+    'รวมค่าซ่อม+บำรุง (บาท)': rpt.totals.maintTotal,
+    'ค่าน้ำมันเชื้อเพลิง (บาท)': rpt.totals.fuelCost,
+    'รวมค่าใช้จ่ายทั้งหมด (บาท)': rpt.totals.grandTotal
+  });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(sBranch), 'สรุปรายสาขา');
+
+  const sDone = rpt.doneList.map((r,i)=>({
+    'ลำดับ': i+1,
+    'ทะเบียนรถ': r.plate,
+    'เบอร์รถ': r.vehicleNo || '',
+    'สาขา': r.branchName,
+    'รายการซ่อม': r.title,
+    'อู่': r.garage || '',
+    'วันเข้าซ่อม': r.repairDate,
+    'วันซ่อมเสร็จ': r.closedDate || r.repairDate,
+    'ระยะเวลา (วัน)': r.daysRepairing,
+    'ค่าซ่อม (บาท)': r.cost != null ? r.cost : ''
+  }));
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(sDone.length ? sDone : [{'ข้อมูล':'ไม่มีรายการ'}]), '4.1 รถที่ซ่อมไปแล้ว');
+
+  const sRep = rpt.repairingList.map((r,i)=>({
+    'ลำดับ': i+1,
+    'ทะเบียนรถ': r.plate,
+    'เบอร์รถ': r.vehicleNo || '',
+    'สาขา': r.branchName,
+    'รายการซ่อม': r.title,
+    'อู่': r.garage || '',
+    'วันเข้าซ่อม': r.repairDate,
+    'ซ่อมมาแล้ว (วัน)': r.daysRepairing,
+    'วันนัดเสร็จ': r.dueDate || '',
+    'ค่าใช้จ่ายประมาณ (บาท)': r.cost != null ? r.cost : ''
+  }));
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(sRep.length ? sRep : [{'ข้อมูล':'ไม่มีรายการ'}]), '4.2 รถยังซ่อมไม่เสร็จ');
+
+  const sCostItems = [];
+  rpt.filteredBranchRows.forEach(b=>{
+    (rpt.costItemsByBranch.get(b.branchKey) || []).forEach(it=>{
+      sCostItems.push({
+        'สาขา': b.branchName,
+        'วันที่': it.date,
+        'ทะเบียน': it.plate,
+        'หมวดค่าใช้จ่าย': it.type,
+        'รายการ': it.title,
+        'จำนวนเงิน (บาท)': it.cost
+      });
+    });
+  });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(sCostItems.length ? sCostItems : [{'ข้อมูล':'ไม่มีรายการ'}]), '4.3 รายละเอียดค่าใช้จ่าย');
+
+  XLSX.writeFile(wb, `สรุปงานซ่อม_${mk}.xlsx`);
+}
+
+function buildRepairMonthlyReportHtml(mk, branchFilter='all'){
+  const rpt = computeMonthlyBranchReport(mk, branchFilter);
+  const e = escapeHtml;
+  const T = rpt.totals;
+  const activeBranchName = branchFilter==='all' ? 'ทุกสาขา' : ((rpt.branchRows.find(b=>b.branchKey===branchFilter)||{}).branchName || 'ทุกสาขา');
+  const printDate = new Date().toLocaleDateString('th-TH', {year:'numeric', month:'long', day:'numeric'});
+
+  return `
+    <div class="rp-head">
+      <div>
+        <div class="rp-title">รายงานสรุปงานซ่อมประจำเดือน — ${e(monthLabelTH(mk))}</div>
+        <div class="rp-sub">ขอบเขต: ${e(activeBranchName)} · พิมพ์เมื่อ ${e(printDate)}</div>
+      </div>
+      <div class="rp-badge ${T.repairingVehicleCount>0?'fail':'ok'}">ซ่อม ${T.repairedVehicleCount} คัน · เสร็จ ${T.doneVehicleCount} · ยังไม่เสร็จ ${T.repairingVehicleCount}</div>
+    </div>
+
+    <div class="rp-h">5. สรุปรวมแยกตามสาขา</div>
+    <table class="rp-table">
+      <thead><tr><th>สาขา</th><th>ซ่อมเดือนนี้</th><th>เสร็จแล้ว</th><th>ยังไม่เสร็จ</th><th>ค่าซ่อม (บาท)</th><th>รวมซ่อม+น้ำมัน+ยาง</th></tr></thead>
+      <tbody>
+        ${rpt.filteredBranchRows.map(b=>`<tr>
+          <td><b>${e(b.branchName)}</b></td>
+          <td>${b.repairedVehicleCount} คัน (${b.repairedJobCount} งาน)</td>
+          <td>${b.doneVehicleCount} คัน (${b.doneJobCount} งาน)</td>
+          <td>${b.repairingVehicleCount} คัน (${b.repairingJobCount} งาน)</td>
+          <td>${baht(b.repairCost)}</td>
+          <td><b>${baht(b.maintTotal)}</b></td>
+        </tr>`).join('')}
+        <tr style="background:#EEF2F7;font-weight:700;">
+          <td>รวมทั้งหมด</td>
+          <td>${T.repairedVehicleCount} คัน</td><td>${T.doneVehicleCount} คัน</td><td>${T.repairingVehicleCount} คัน</td>
+          <td>${baht(T.repairCost)}</td><td>${baht(T.maintTotal)}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="rp-h">4.1 ข้อมูลรถที่ซ่อมไปแล้ว (${rpt.doneList.length} รายการ)</div>
+    ${rpt.doneList.length ? `<table class="rp-table">
+      <thead><tr><th>ทะเบียน / เบอร์</th><th>สาขา</th><th>รายการซ่อม</th><th>อู่</th><th>เข้าซ่อม</th><th>เสร็จ</th><th>ค่าซ่อม</th></tr></thead>
+      <tbody>${rpt.doneList.map(r=>`<tr>
+        <td>${e(rjVehicleDisplay(r))}</td><td>${e(r.branchName)}</td><td>${e(r.title)}</td><td>${e(r.garage||'—')}</td>
+        <td>${formatThaiDateShort(r.repairDate)}</td><td>${formatThaiDateShort(r.closedDate||r.repairDate)}</td>
+        <td>${r.cost!=null?baht(r.cost):'—'}</td>
+      </tr>`).join('')}</tbody>
+    </table>` : '<div class="rp-notes">ไม่มีรายการที่ซ่อมเสร็จในเดือนนี้</div>'}
+
+    <div class="rp-h">4.2 ข้อมูลรถที่ยังซ่อมไม่เสร็จ (${rpt.repairingList.length} รายการ)</div>
+    ${rpt.repairingList.length ? `<table class="rp-table">
+      <thead><tr><th>ทะเบียน / เบอร์</th><th>สาขา</th><th>รายการซ่อม</th><th>อู่</th><th>วันเข้าซ่อม</th><th>ซ่อมมาแล้ว</th><th>นัดเสร็จ</th></tr></thead>
+      <tbody>${rpt.repairingList.map(r=>`<tr class="fail">
+        <td>${e(rjVehicleDisplay(r))}</td><td>${e(r.branchName)}</td><td>${e(r.title)}</td><td>${e(r.garage||'—')}</td>
+        <td>${formatThaiDateShort(r.repairDate)}</td><td><b>${r.daysRepairing} วัน</b></td><td>${r.dueDate?formatThaiDateShort(r.dueDate):'—'}</td>
+      </tr>`).join('')}</tbody>
+    </table>` : '<div class="rp-notes">ไม่มีรถที่ยังซ่อมไม่เสร็จ</div>'}
+
+    <div class="rp-h">4.3 ค่าใช้จ่ายรวมของสาขา</div>
+    <table class="rp-table">
+      <thead><tr><th>สาขา</th><th>ค่าซ่อม</th><th>น้ำมันเครื่อง</th><th>ยาง</th><th>รวมซ่อม+บำรุง</th><th>เชื้อเพลิง</th><th>รวมทั้งหมด</th></tr></thead>
+      <tbody>${rpt.filteredBranchRows.map(b=>`<tr>
+        <td><b>${e(b.branchName)}</b></td><td>${baht(b.repairCost)}</td><td>${baht(b.oilCost)}</td><td>${baht(b.tireCost)}</td>
+        <td><b>${baht(b.maintTotal)}</b></td><td>${baht(b.fuelCost)}</td><td><b>${baht(b.grandTotal)}</b></td>
+      </tr>`).join('')}</tbody>
+    </table>
+  `;
+}
+
+function openRepairMonthlyReport(mk=null, branchFilter='all'){
+  closeInspectionReport();
+  const selMk = mk || rjSummaryMonth || todayStr().slice(0,7);
+  const selBr = branchFilter || 'all';
+  const rpt = computeMonthlyBranchReport(selMk, 'all');
+  const ov = document.createElement('div');
+  ov.id = 'reportOverlay';
+  ov.innerHTML = `
+    <div class="rp-toolbar">
+      <label style="color:#fff;display:flex;align-items:center;gap:6px;font-weight:700;">เดือน
+        <input type="month" id="rmpMonth" value="${selMk}" onchange="refreshRepairMonthlyReport()" style="padding:6px;">
+      </label>
+      <label style="color:#fff;display:flex;align-items:center;gap:6px;font-weight:700;">สาขา
+        <select id="rmpBranch" onchange="refreshRepairMonthlyReport()" style="padding:6px;">
+          <option value="all">ทุกสาขา</option>
+          ${rpt.branchRows.map(b=>`<option value="${escapeHtml(b.branchKey)}" ${selBr===b.branchKey?'selected':''}>${escapeHtml(b.branchName)}</option>`).join('')}
+        </select>
+      </label>
+      <button class="btn" onclick="printInspectionReport()">🖨️ พิมพ์ / บันทึกเป็น PDF</button>
+      <button class="btn ghost" onclick="exportRepairMonthlyExcel(document.getElementById('rmpMonth').value, document.getElementById('rmpBranch').value)">📥 ส่งออก Excel</button>
+      <button class="btn ghost" onclick="closeInspectionReport()">ปิด</button>
+    </div>
+    <div class="rp-page" id="rmpPage">${buildRepairMonthlyReportHtml(selMk, selBr)}</div>`;
+  document.body.appendChild(ov);
+  document.body.classList.add('report-open');
+}
+
+function refreshRepairMonthlyReport(){
+  const mk = document.getElementById('rmpMonth').value || todayStr().slice(0,7);
+  const br = document.getElementById('rmpBranch').value || 'all';
+  document.getElementById('rmpPage').innerHTML = buildRepairMonthlyReportHtml(mk, br);
 }
 
 function escapeHtml(s){
@@ -9364,6 +11014,7 @@ async function initApp(){
 currentVehicleId = db.vehicles.length ? db.vehicles[0].id : null;
   db.users = db.users || [];
   db.activityLog = db.activityLog || [];
+  if(typeof loadRepairJobsFromCache === 'function') loadRepairJobsFromCache();
   initAuthSession();
   applyAdminUI();
   if(!currentUser){
@@ -9400,7 +11051,7 @@ currentVehicleId = db.vehicles.length ? db.vehicles[0].id : null;
     else console.error('โหลดไลบรารี Supabase ไม่สำเร็จ — ใช้งานแบบออฟไลน์ด้วยข้อมูลในเครื่อง');
   }catch(err){ console.error('สร้างการเชื่อมต่อ Supabase ไม่สำเร็จ', err); }
 
-  initApp().then(()=>{ setTimeout(()=>{ try{ loadRepairJobs(); }catch(e){} }, 3000); });
+  initApp().then(()=>{ setTimeout(()=>{ try{ loadRepairJobs(); }catch(e){} }, 300); });
 </script>
 
 <!-- Service worker registration — required (along with manifest.json) for
